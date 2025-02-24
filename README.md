@@ -1,6 +1,6 @@
 # CSCI3100 Project
 
-This is the group project for the course CSCI3100 Software Engineering (2025 Fall) at the Chinese University of Hong Kong
+This is the group project for the course CSCI3100 Software Engineering (2025 Spring) at the Chinese University of Hong Kong
 
 ## Installation
 
