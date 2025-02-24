@@ -1,0 +1,27 @@
+{
+  "name": "csci3100_project",
+  "version": "1.0.0",
+  "description": "This is the group project for the course CSCI3100 Software Engineering (2025 Fall) at the Chinese University of Hong Kong",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npm run dev --workspace=backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iafcy/CSCI3100_Project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iafcy/CSCI3100_Project/issues"
+  },
+  "homepage": "https://github.com/iafcy/CSCI3100_Project#readme",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
