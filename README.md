@@ -17,5 +17,11 @@ npm install
 
 3. Run the application
 ```bash
-npm run dev # For development
+# For development
+# Run frontend and backend at root in parallel
+npm run dev
+
+# Run frontend and backend at root separately
+npm run dev --workspace=frontend 
+npm run dev --workspace=backend 
 ```

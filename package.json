@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npm run dev --workspace=backend"
+    "dev": "npm run dev --workspace=frontend & npm run dev --workspace=backend"
   },
   "repository": {
     "type": "git",
