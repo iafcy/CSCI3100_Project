@@ -22,15 +22,17 @@ import { Button } from '@mui/material';
 export default function TemporaryDrawer() {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
+  const [categories, setCategories] = React.useState<{id: number, name: string}[]>([]);
   const params = useParams<{ categoryId: string }>()
 
-  const categories = [
-    {id: 1, name: 'Category 1'},
-    {id: 2, name: 'Category 2'},
-    {id: 3, name: 'Category 3'},
-    {id: 4, name: 'Category 4'},
-    {id: 5, name: 'Category 5'},
-  ]
+  React.useEffect(() => {
+    async function fetchCategories() {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/category/list`);
+      const data = await response.json();
+      setCategories(data.data.category);
+    }
+    fetchCategories();
+  }, []);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);

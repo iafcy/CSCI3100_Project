@@ -1,17 +1,21 @@
+'use client';
+
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
 import Link from 'next/link';
-import { Thread } from '@/types/types'
+import { Thread } from '@/types/types';
+import { useActiveThreadId } from '@/hooks/useActiveThreadId';
 
 export default function ThreadListItem({
-  thread, isLast, active, categoryId
+  thread, isLast, categoryId
 }: {
   thread: Thread;
   isLast: boolean;
-  active: boolean;
   categoryId: number;
 }) {
+  const activeThreadId = useActiveThreadId();
+
   return (
     <ListItem
       disablePadding
@@ -27,7 +31,7 @@ export default function ThreadListItem({
         textDecoration: null,
         boxSizing: 'border-box',
         mb: isLast ? 6 : 0,
-        color: active ? '#fcba03' : '#fff'
+        color: Number(activeThreadId) == thread.id ? '#fcba03' : '#fff'
       }}
     >
       <Box

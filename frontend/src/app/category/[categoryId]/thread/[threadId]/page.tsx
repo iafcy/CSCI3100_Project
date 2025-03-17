@@ -5,25 +5,14 @@ import CommentListItem from '@/components/CommentListItem';
 import { Comment } from '@/types/types';
 import CommentListPagination from '@/components/CommentListPagination';
 
-function placeholderFetch(threadId: number, page: number) {
-  const comments: Comment[] = [
-    // dummy comments
-    {id: 1 + (page - 1) * 10, threadId: threadId, username: 'User 1', like: 20, dislike: 25, content: `Comment ${1 + (page - 1) * 10} of Thread ${threadId}` },
-    {id: 2 + (page - 1) * 10, threadId: threadId, username: 'User 2', like: 20, dislike: 25, content: `Comment ${2 + (page - 1) * 10} of Thread ${threadId}` },
-    {id: 3 + (page - 1) * 10, threadId: threadId, username: 'User 3', like: 20, dislike: 25, content: `Comment ${3 + (page - 1) * 10} of Thread ${threadId}` },
-    {id: 4 + (page - 1) * 10, threadId: threadId, username: 'User 4', like: 20, dislike: 25, content: `Comment ${4 + (page - 1) * 10} of Thread ${threadId}` },
-    {id: 5 + (page - 1) * 10, threadId: threadId, username: 'User 5', like: 20, dislike: 25, content: `Comment ${5 + (page - 1) * 10} of Thread ${threadId}` },
-    {id: 6 + (page - 1) * 10, threadId: threadId, username: 'User 6', like: 20, dislike: 25, content: `Comment ${6 + (page - 1) * 10} of Thread ${threadId}` },
-    {id: 7 + (page - 1) * 10, threadId: threadId, username: 'User 7', like: 20, dislike: 25, content: `Comment ${7 + (page - 1) * 10} of Thread ${threadId}` },
-    {id: 8 + (page - 1) * 10, threadId: threadId, username: 'User 8', like: 20, dislike: 25, content: `Comment ${8 + (page - 1) * 10} of Thread ${threadId}` },
-    {id: 9 + (page - 1) * 10, threadId: threadId, username: 'User 9', like: 20, dislike: 25, content: `Comment ${9 + (page - 1) * 10} of Thread ${threadId}` },
-    {id: 10 + (page - 1) * 10, threadId: threadId, username: 'User 10', like: 20, dislike: 25, content: `Comment ${10 + (page - 1) * 10} of Thread ${threadId}` },
-  ];
-
-  return {
-    comments,
-    totalPages: 15,
-  };
+async function fetchData(threadId: number, page: number) : Promise<{
+  page: number;
+  pageCount: number;
+  comments: Comment[];
+}>  {
+  const response  = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/thread/${threadId}?=${page}`);
+  const data = await response.json();
+  return data.data;
 }
 
 export default async function Page({
@@ -34,9 +23,10 @@ export default async function Page({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const { threadId, categoryId } =await params;
+  
   // Fetch comments
   const { page = '1' } = await searchParams;
-  const { comments, totalPages } = placeholderFetch(Number(threadId), Number(page));
+  const { comments, pageCount } = await fetchData(Number(threadId), Number(page));
 
   return (
     <List
@@ -72,7 +62,7 @@ export default async function Page({
       >
         <CommentListPagination
           page={Number(page)}
-          totalPages={totalPages}
+          totalPages={pageCount}
           categoryId={Number(categoryId)}
           threadId={Number(threadId)}
         />

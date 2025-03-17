@@ -1,18 +1,24 @@
-'use client';
-
 import * as React from 'react';
 import List from '@mui/material/List';
 import ThreadListItem from './ThreadListItem';
 import { Thread } from '@/types/types';
-import { useActiveThreadId } from '@/hooks/useActiveThreadId';
 
-export default function ThreadList({
-  threads, categoryId
+async function fetchData(categoryId: number) : Promise<{
+  threadsCount: number;
+  threads: Thread[];
+}> {
+  const response  = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/category/${categoryId}`);
+  const data = await response.json();
+  return data.data;
+}
+
+export default async function ThreadList({
+  categoryId
 }: {
-  threads: Thread[],
-  categoryId: number
+  categoryId: number;
 }) {
-  const activeThreadId = useActiveThreadId();
+  // Fetch threads
+  const { threadsCount, threads } = await fetchData(categoryId);
 
   return (
     <List
@@ -30,7 +36,6 @@ export default function ThreadList({
           categoryId={categoryId}
           thread={thread}
           isLast={i == threads.length - 1}
-          active={Number(activeThreadId) == thread.id}
         />
       ))}
     </List>
