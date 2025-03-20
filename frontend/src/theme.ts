@@ -37,6 +37,54 @@ const theme = createTheme({
   },
 });
 
-// https://coolors.co/151515-222222-aaaaaa-ffffff-f9f9f9-e8e8e8-fcba03
+export const lightScrollbar = {
+  scrollbarColor: "#c2c2c2 #e8e8e8",
+  "&::-webkit-scrollbar, & *::-webkit-scrollbar": {
+    backgroundColor: "#e8e8e8",
+  },
+  "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
+    borderRadius: 6,
+    backgroundColor: "#c2c2c2",
+    minHeight: 24,
+    border: "3px solid #e8e8e8",
+  },
+  "&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus": {
+    backgroundColor: "#aaaaaa",
+  },
+  "&::-webkit-scrollbar-thumb:active, & *::-webkit-scrollbar-thumb:active": {
+    backgroundColor: "#aaaaaa",
+  },
+  "&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover": {
+    backgroundColor: "#aaaaaa",
+  },
+  "&::-webkit-scrollbar-corner, & *::-webkit-scrollbar-corner": {
+    backgroundColor: "#e8e8e8",
+  },
+};
+
+export const darkScrollbar = {
+  scrollbarColor: "#5b5b5b #3b3a39",
+  "&::-webkit-scrollbar, & *::-webkit-scrollbar": {
+    backgroundColor: "#3b3a39",
+  },
+  "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
+    borderRadius: 6,
+    backgroundColor: "#5b5b5b",
+    minHeight: 24,
+    border: "3px solid #3b3a39",
+  },
+  "&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus": {
+    backgroundColor: "#aaaaaa",
+  },
+  "&::-webkit-scrollbar-thumb:active, & *::-webkit-scrollbar-thumb:active": {
+    backgroundColor: "#aaaaaa",
+  },
+  "&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover": {
+    backgroundColor: "#aaaaaa",
+  },
+  "&::-webkit-scrollbar-corner, & *::-webkit-scrollbar-corner": {
+    backgroundColor: "#3b3a39",
+  },
+};
 
 export default theme;
