@@ -12,6 +12,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useActiveThreadId } from '@/hooks/useActiveThreadId';
 import { useRouter } from 'next/navigation';
+import { useTheme } from '@mui/material';
 
 export default function Navbar({
   title, categoryId
@@ -20,6 +21,7 @@ export default function Navbar({
   categoryId: number;
 }) {
   const activeThreadId = useActiveThreadId();
+  const theme = useTheme();
   const router = useRouter();
 
   return (
@@ -30,11 +32,14 @@ export default function Navbar({
     >
       <AppBar
         position="static"
+        elevation={0}
         sx={{
-          backgroundColor: '#222',
           display: 'flex',
           flexDirection: 'row',
-          borderBottom: '.5px solid #3b3a39',
+          bgcolor: theme.palette.divider,
+          borderBottomWidth: '.5px',
+          borderBottomStyle: 'solid',
+          borderBottomColor: theme.palette.divider,
           alignItems: 'center',
           height: 56
         }}
@@ -43,7 +48,12 @@ export default function Navbar({
           sx={{
             width: '100%',
             maxWidth: { lg: '450px' },
-            borderRight: '.5px solid #3b3a39',
+            borderBottomWidth: '.5px',
+            borderBottomStyle: 'solid',
+            borderBottomColor: theme.palette.divider,
+            borderRightWidth: '.5px',
+            borderRightStyle: 'solid',
+            borderRightColor: theme.palette.divider,
           }}
         >
           <Toolbar>
@@ -65,7 +75,7 @@ export default function Navbar({
             flexGrow: 1,
             px: 2.5,
             alignItems: 'center',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
           }}
         >
           <Box

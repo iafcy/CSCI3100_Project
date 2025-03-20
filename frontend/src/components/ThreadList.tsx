@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ThreadListItem from './ThreadListItem';
 import { Thread } from '@/types/types';
@@ -21,23 +22,36 @@ export default async function ThreadList({
   const { threadsCount, threads } = await fetchData(categoryId);
 
   return (
-    <List
-      disablePadding
+    <Box
       sx={{
-        height: '100%',
         width: '100%',
-        bgcolor: '#151515',
-        overflowY: 'auto',
+        height: '100%',
+        maxWidth: { lg: '450px' },
+        borderRightWidth: '.5px',
+        borderRightStyle: 'solid',
+        // borderRightColor: theme.palette.divider,
+        overflowY: 'hidden'
       }}
     >
-      {threads.map((thread, i) => (
-        <ThreadListItem
-          key={thread.id}
-          categoryId={categoryId}
-          thread={thread}
-          isLast={i == threads.length - 1}
-        />
-      ))}
-    </List>
+      <List
+        disablePadding
+        sx={{
+          height: '100%',
+          width: '100%',
+          // bgcolor: theme.palette.background.default,
+          overflowY: 'auto',
+        }}
+      >
+        {threads.map((thread, i) => (
+          <ThreadListItem
+            key={thread.id}
+            categoryId={categoryId}
+            thread={thread}
+            isLast={i == threads.length - 1}
+            active={Number(activeThreadId) == thread.id}
+          />
+        ))}
+      </List>
+    </Box>
   );
 }

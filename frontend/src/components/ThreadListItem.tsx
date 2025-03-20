@@ -6,6 +6,7 @@ import ListItem from '@mui/material/ListItem';
 import Link from 'next/link';
 import { Thread } from '@/types/types';
 import { useActiveThreadId } from '@/hooks/useActiveThreadId';
+import { useTheme } from '@mui/material';
 
 export default function ThreadListItem({
   thread, isLast, categoryId
@@ -15,6 +16,7 @@ export default function ThreadListItem({
   categoryId: number;
 }) {
   const activeThreadId = useActiveThreadId();
+  const theme = useTheme();
 
   return (
     <ListItem
@@ -26,12 +28,14 @@ export default function ThreadListItem({
         alignItems: 'start',
         py: 2,
         px: 4,
-        borderBottom: '.5px solid #3b3a39',
+        borderBottomWidth: '.5px',
+        borderBottomStyle: 'solid',
+        borderBottomColor: theme.palette.divider,
         gap: 1,
         textDecoration: null,
         boxSizing: 'border-box',
         mb: isLast ? 6 : 0,
-        color: Number(activeThreadId) == thread.id ? '#fcba03' : '#fff'
+        color: Number(activeThreadId) == thread.id ? theme.palette.primary.main : theme.palette.text.primary
       }}
     >
       <Box

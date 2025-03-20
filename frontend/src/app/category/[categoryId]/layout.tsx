@@ -28,7 +28,6 @@ export default async function Layout({
         display: 'flex',
         flexDirection: 'column',
         overflowY: 'hidden',
-        color: '#fff'
       }}
     >
       <Navbar title={`Category ${categoryId}`} categoryId={Number(categoryId)} />
@@ -36,29 +35,14 @@ export default async function Layout({
         sx={{
           display: 'flex',
           flexDirection: 'row',
-          backgroundColor: '#151515',
           flexGrow: 1,
           height: 'calc(100vh - 56px)',
         }}
       >
         <Box
           sx={{
-            width: '100%',
-            height: '100%',
-            maxWidth: { lg: '450px' },
-            backgroundColor: 'inherit',
-            borderRight: '.5px solid #3b3a39',
-            overflowY: 'hidden'
-          }}
-        >
-          <ThreadList categoryId={Number(categoryId)} />
-        </Box>
-        
-        <Box
-          sx={{
             display: { xs: 'none', lg: 'block' },
             flexGrow: 1,
-            backgroundColor: 'inherit',
             width: '100%',
             height: '100%',
             overflowY: 'hidden'

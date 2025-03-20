@@ -8,6 +8,7 @@ import { Comment } from '@/types/types';
 import IconButton from '@mui/material/IconButton';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import { useTheme } from '@mui/material';
 
 export default function CommentListItem({
   comment, index, initRating
@@ -16,6 +17,7 @@ export default function CommentListItem({
   index: number;
   initRating: 'like' | 'dislike' | null;
 }) {
+  const theme = useTheme();
   const [likeCount, setLikeCount] = useState<number>(comment.like);
   const [dislikeCount, setDislikeCount] = useState<number>(comment.dislike);
   const [rating, setRating] = useState<'like' | 'dislike' | null>(initRating);
@@ -53,7 +55,8 @@ export default function CommentListItem({
         textDecoration: null,
         boxSizing: 'border-box',
         mt: 2,
-        bgcolor: '#222',
+        bgcolor: theme.palette.background.default,
+        color: theme.palette.text.primary
       }}
     >
       <Box
@@ -72,7 +75,7 @@ export default function CommentListItem({
             gap: 2
           }}
         >
-          <Typography component="h6" color={index == 0 ? '#fcba03' : '#aaa'}>
+          <Typography component="h6" color={index == 0 ? theme.palette.primary.main : theme.palette.secondary.main}>
             #{index + 1} 
           </Typography>
           <Typography component="h6" color='#34aadc'>
@@ -99,7 +102,7 @@ export default function CommentListItem({
       {/* Like and dislike buttons */}
       <Box
         sx={{
-          bgcolor: '#3b3a39',
+          bgcolor: theme.palette.divider,
           display: 'flex',
           mb: 1
         }}
@@ -122,7 +125,7 @@ export default function CommentListItem({
           >
             <ThumbUpIcon
               fontSize='small'
-              sx={{ color: rating == 'like' ? '#fcba03' : '#aaa' }}
+              sx={{ color: rating == 'like' ? theme.palette.primary.main : theme.palette.secondary.main }}
             />
           </IconButton>
           <Typography variant='body2'>{likeCount}</Typography>
@@ -145,7 +148,7 @@ export default function CommentListItem({
           >
             <ThumbDownIcon
               fontSize='small'
-              sx={{ color: rating == 'dislike' ? '#fcba03' : '#aaa' }}
+              sx={{ color: rating == 'dislike' ? theme.palette.primary.main : theme.palette.secondary.main }}
             />
           </IconButton>
           <Typography variant='body2'>{dislikeCount}</Typography>

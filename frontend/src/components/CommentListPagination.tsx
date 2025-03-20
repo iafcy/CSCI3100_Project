@@ -17,19 +17,10 @@ export default function CommentListPagination({
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     router.push(`/category/${categoryId}/thread/${threadId}?page=${value}`)
   };
-  const main = {
-    '& .MuiPaginationItem-root': {
-      color:'#fff !Important' ,
-    },
-    '& .Mui-selected': {
-      bgcolor:'#fcba03 !Important' ,
-    },
-  }
 
   return (
     <Pagination
       color="primary"
-      sx={main}
       count={totalPages}
       page={page}
       onChange={handleChange}

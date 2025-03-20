@@ -19,7 +19,7 @@ export default async function Page({
         alignItems: 'center'
       }}
     >
-      <Typography variant='h4' component='h1'>CUHKG - Category {categoryId}</Typography>
+      <Typography variant='h4' component='h1' color='textPrimary'>CUHKG - Category {categoryId}</Typography>
     </Box>
   );
 }
