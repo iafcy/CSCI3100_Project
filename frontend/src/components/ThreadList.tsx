@@ -1,25 +1,27 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
+import axios from "axios";
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ThreadListItem from './ThreadListItem';
-import { Thread } from '@/types/types';
+import { Thread } from '../types/types';
+import { useTheme } from '@mui/material';
 
-async function fetchData(categoryId: number) : Promise<{
-  threadsCount: number;
-  threads: Thread[];
-}> {
-  const response  = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/category/${categoryId}`);
-  const data = await response.json();
-  return data.data;
-}
-
-export default async function ThreadList({
+export default function ThreadList({
   categoryId
 }: {
   categoryId: number;
 }) {
+  const theme = useTheme();
+
   // Fetch threads
-  const { threadsCount, threads } = await fetchData(categoryId);
+  const [threads, setThreads] = useState<Thread[]>([]);
+
+  useEffect(() => {
+    axios.get(`http://localhost:8080/category/${categoryId}`)
+      .then((response) => {
+        setThreads(response.data.data.threads);
+      })
+  }, [categoryId]);
 
   return (
     <Box
@@ -29,7 +31,7 @@ export default async function ThreadList({
         maxWidth: { lg: '450px' },
         borderRightWidth: '.5px',
         borderRightStyle: 'solid',
-        // borderRightColor: theme.palette.divider,
+        borderRightColor: theme.palette.divider,
         overflowY: 'hidden'
       }}
     >
@@ -38,7 +40,7 @@ export default async function ThreadList({
         sx={{
           height: '100%',
           width: '100%',
-          // bgcolor: theme.palette.background.default,
+          bgcolor: theme.palette.background.default,
           overflowY: 'auto',
         }}
       >

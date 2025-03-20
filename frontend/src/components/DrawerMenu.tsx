@@ -1,5 +1,3 @@
-'use client';
-
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -14,25 +12,23 @@ import Divider from '@mui/material/Divider';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import OutboxIcon from '@mui/icons-material/Outbox';
 import PeopleIcon from '@mui/icons-material/People';
-import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Settings from './Settings';
 import { useTheme } from '@mui/material';
+import axios from "axios";
 
 export default function TemporaryDrawer() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [categories, setCategories] = React.useState<{id: number, name: string}[]>([]);
-  const params = useParams<{ categoryId: string }>()
+  const { categoryId } = useParams();
 
   React.useEffect(() => {
-    async function fetchCategories() {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/category/list`);
-      const data = await response.json();
-      setCategories(data.data.category);
-    }
-    fetchCategories();
+    axios.get(`http://localhost:8080/category/list`)
+      .then((response) => {
+        setCategories(response.data.data.category); // Store response data
+      })
   }, []);
 
   const toggleDrawer = (newOpen: boolean) => () => {
@@ -44,7 +40,7 @@ export default function TemporaryDrawer() {
 
     // Delay redirct to play the animation of Drawer
     setTimeout(() => {
-      router.push(href);
+      navigate(href);
     }, 100);
   };
 
@@ -89,7 +85,7 @@ export default function TemporaryDrawer() {
           <ListItem
             disablePadding
             component={Link}
-            href={`/`}
+            to={`/category/1`}
             sx={{ color: theme.palette.text.primary }}
           >
             <ListItemButton>
@@ -123,7 +119,7 @@ export default function TemporaryDrawer() {
               key={category.id}
               disablePadding
               sx={{
-                color: params.categoryId == category.id.toString() ? theme.palette.primary.main : theme.palette.text.primary
+                color: categoryId == category.id.toString() ? theme.palette.primary.main : theme.palette.text.primary
               }}
             >
               <ListItemButton onClick={() => handleLinkClick(`/category/${category.id}`)}>
@@ -149,9 +145,6 @@ export default function TemporaryDrawer() {
       <Drawer
         open={open}
         onClose={toggleDrawer(false)}
-        PaperProps={{
-          sx: { bgcolor: '#222' }
-        }}
       >
         {DrawerList}
       </Drawer>

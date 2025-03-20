@@ -1,5 +1,3 @@
-'use client';
-
 import * as React from 'react';
 import IconButton from '@mui/material/IconButton';
 import SettingsIcon from '@mui/icons-material/Settings';

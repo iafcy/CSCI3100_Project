@@ -1,13 +1,9 @@
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { useParams } from 'react-router-dom';
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ categoryId: string }>
-}) {
-  const categoryId = (await params).categoryId;
+export default function CategoryHome() {
+  const { categoryId } = useParams();
 
   return (
     <Box
