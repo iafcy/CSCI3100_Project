@@ -39,6 +39,7 @@ export default async function Layout({
           height: 'calc(100vh - 56px)',
         }}
       >
+        <ThreadList categoryId={Number(categoryId)} />
         <Box
           sx={{
             display: { xs: 'none', lg: 'block' },

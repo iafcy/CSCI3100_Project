@@ -48,7 +48,6 @@ export default async function ThreadList({
             categoryId={categoryId}
             thread={thread}
             isLast={i == threads.length - 1}
-            active={Number(activeThreadId) == thread.id}
           />
         ))}
       </List>
