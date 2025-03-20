@@ -1,18 +1,21 @@
+'use client';
+
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
 import Link from 'next/link';
 import { Thread } from '@/types/types';
+import { useActiveThreadId } from '@/hooks/useActiveThreadId';
 import { useTheme } from '@mui/material';
 
 export default function ThreadListItem({
-  thread, isLast, active, categoryId
+  thread, isLast, categoryId
 }: {
   thread: Thread;
   isLast: boolean;
-  active: boolean;
   categoryId: number;
 }) {
+  const activeThreadId = useActiveThreadId();
   const theme = useTheme();
 
   return (
@@ -32,7 +35,7 @@ export default function ThreadListItem({
         textDecoration: null,
         boxSizing: 'border-box',
         mb: isLast ? 6 : 0,
-        color: active ? theme.palette.primary.main : theme.palette.text.primary
+        color: Number(activeThreadId) == thread.id ? theme.palette.primary.main : theme.palette.text.primary
       }}
     >
       <Box
