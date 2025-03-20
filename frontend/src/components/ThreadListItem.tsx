@@ -1,11 +1,8 @@
-'use client';
-
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
-import Link from 'next/link';
-import { Thread } from '@/types/types';
-import { useActiveThreadId } from '@/hooks/useActiveThreadId';
+import { useParams, Link } from 'react-router-dom';
+import { Thread } from '../types/types';
 import { useTheme } from '@mui/material';
 
 export default function ThreadListItem({
@@ -15,13 +12,13 @@ export default function ThreadListItem({
   isLast: boolean;
   categoryId: number;
 }) {
-  const activeThreadId = useActiveThreadId();
+  const { threadId: activeThreadId } = useParams();
   const theme = useTheme();
 
   return (
     <ListItem
       disablePadding
-      component={Link} href={`/category/${categoryId}/thread/${thread.id}`}
+      component={Link} to={`/category/${categoryId}/thread/${thread.id}`}
       sx={{
         display: 'flex',
         flexDirection: 'column',

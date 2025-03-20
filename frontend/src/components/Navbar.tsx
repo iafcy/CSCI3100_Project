@@ -1,28 +1,19 @@
-'use client';
-
-import * as React from 'react';
 import Container from '@mui/material/Container';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import DrawerMenu from '@/components/DrawerMenu';
+import DrawerMenu from './DrawerMenu';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useActiveThreadId } from '@/hooks/useActiveThreadId';
-import { useRouter } from 'next/navigation';
+import { useParams, useNavigate } from "react-router-dom";
 import { useTheme } from '@mui/material';
 
-export default function Navbar({
-  title, categoryId
-}: {
-  title: string;
-  categoryId: number;
-}) {
-  const activeThreadId = useActiveThreadId();
+export default function Navbar() {
+  const { categoryId, threadId } = useParams();
+  const navigate = useNavigate();
   const theme = useTheme();
-  const router = useRouter();
 
   return (
     <Container
@@ -59,7 +50,7 @@ export default function Navbar({
           <Toolbar>
             <DrawerMenu />
             <Typography variant="h6" component="div" align="center" sx={{ flexGrow: 1 }}>
-              {title}
+              Category {categoryId}
             </Typography>
             <IconButton
               size="large"
@@ -85,18 +76,18 @@ export default function Navbar({
               gap: 2
             }}
           >
-            {activeThreadId && 
+            {threadId && 
               <IconButton
                 size="small"
                 color="inherit"
                 aria-label="like"
-                onClick={() => router.push(`/category/${categoryId}`)}
+                onClick={() => navigate(`/category/${categoryId}`)}
               >
                 <ArrowBackIcon fontSize='small' />
               </IconButton>
             }
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              {activeThreadId ? `Thread ${activeThreadId}` : ''}
+              {threadId ? `Thread ${threadId}` : ''}
             </Typography>
           </Box>
         </Box>
