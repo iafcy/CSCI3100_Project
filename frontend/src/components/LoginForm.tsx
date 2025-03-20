@@ -11,7 +11,9 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 export default function LoginForm() {
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState<boolean>(false);
+  const [email, setEmail] = React.useState<string>('');
+  const [password, setPassword] = React.useState<string>('');
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -21,16 +23,23 @@ export default function LoginForm() {
     event.preventDefault();
   };
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  }
+
   return (
     <Box
       component="form"
       sx={{ width: '100%', mt: 2 }}
+      onSubmit={handleSubmit}
     >
       <TextField
         id="login-email"
         label="Email"
         variant="outlined"
         fullWidth={true}
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         sx={{ mb: 2 }}
       />
       
@@ -43,6 +52,8 @@ export default function LoginForm() {
         <OutlinedInput
           id="login-password"
           type={showPassword ? 'text' : 'password'}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
@@ -63,6 +74,7 @@ export default function LoginForm() {
       </FormControl>
 
       <Button
+        type="submit"
         variant="contained"
         sx={{ width: '100%', mt: 2 }}
       >
