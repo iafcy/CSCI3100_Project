@@ -17,17 +17,8 @@ export default function Settings() {
   const { mode, setMode } = useColorScheme();
   const [open, setOpen] = React.useState(false);
 
-  const handleOpen = (event: React.MouseEvent) => {
-    event.stopPropagation();
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   const toggleTheme = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMode(event.target.checked ? 'dark' : 'light');
-    event.stopPropagation();
   };
 
   return (
@@ -35,13 +26,14 @@ export default function Settings() {
       <IconButton
         size="large"
         color="inherit"
-        onClick={handleOpen}
+        onClick={() => setOpen(true)}
       >
         <SettingsIcon />
       </IconButton>
 
       <Dialog
-        onClose={handleClose}
+        onClick={(e) => e.stopPropagation()}
+        onClose={() => setOpen(false)}
         open={open}
       >
         <DialogTitle 
@@ -56,7 +48,7 @@ export default function Settings() {
         </DialogTitle>
         <IconButton
           aria-label="close"
-          onClick={handleClose}
+          onClick={() => setOpen(false)}
           sx={(theme) => ({
             position: 'absolute',
             right: 8,
