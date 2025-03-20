@@ -5,7 +5,7 @@ import CommentListItem from '../components/CommentListItem';
 import { Comment } from '../types/types';
 import CommentListPagination from '../components/CommentListPagination';
 import { useParams, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../utils/axios';
 
 export default function Thread() {
   const { threadId, categoryId } = useParams();

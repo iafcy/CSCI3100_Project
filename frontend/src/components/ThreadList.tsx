@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from "axios";
+import axios from '../utils/axios';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ThreadListItem from './ThreadListItem';
