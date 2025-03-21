@@ -2,7 +2,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
 import { useParams, Link } from 'react-router-dom';
-import { Thread } from '../types/types';
+import { Thread } from '../../types/types';
 import { useTheme } from '@mui/material';
 
 export default function ThreadListItem({

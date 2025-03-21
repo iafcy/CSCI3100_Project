@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import CommentListItem from '../components/CommentListItem';
+import CommentListItem from '../components/Forum/CommentListItem';
 import { Comment } from '../types/types';
-import CommentListPagination from '../components/CommentListPagination';
+import CommentListPagination from '../components/Forum/CommentListPagination';
 import { useParams, useSearchParams } from 'react-router-dom';
 import axios from '../utils/axios';
 

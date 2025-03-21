@@ -14,8 +14,8 @@ import PeopleIcon from '@mui/icons-material/People';
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Settings from './Settings';
 import { useTheme } from '@mui/material';
-import axios from '../utils/axios';
-import AuthForm from './AuthForm';
+import axios from '../../utils/axios';
+import AuthForm from '../Auth/AuthForm';
 
 export default function TemporaryDrawer() {
   const navigate = useNavigate();

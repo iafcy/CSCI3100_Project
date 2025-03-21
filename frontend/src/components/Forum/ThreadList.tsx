@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import axios from '../utils/axios';
+import axios from '../../utils/axios';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ThreadListItem from './ThreadListItem';
-import { Thread } from '../types/types';
+import { Thread } from '../../types/types';
 import { useTheme } from '@mui/material';
 
 export default function ThreadList({

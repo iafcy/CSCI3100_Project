@@ -3,7 +3,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import LoginForm from './LoginForm';
-import RegisterForm from './SignupForm';
+import SignupForm from './SignupForm';
 import Box from '@mui/material/Box';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -84,7 +84,7 @@ export default function AuthDialog({
           <LoginForm />
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
-          <RegisterForm />
+          <SignupForm />
         </TabPanel>
       </DialogContent>
     </Dialog>

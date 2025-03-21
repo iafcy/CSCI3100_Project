@@ -1,7 +1,7 @@
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Navbar from '../components/Navbar';
-import ThreadList from '../components/ThreadList';
+import ThreadList from '../components/Forum/ThreadList';
 import { useParams } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import { useTheme } from '@mui/material';
