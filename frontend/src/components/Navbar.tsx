@@ -5,8 +5,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import DrawerMenu from './Menu/DrawerMenu';
 import IconButton from '@mui/material/IconButton';
-import AddIcon from '@mui/icons-material/Add';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Editor from './Editor/Editor';
 import { useParams, useNavigate } from "react-router-dom";
 import { useTheme } from '@mui/material';
 
@@ -52,12 +52,7 @@ export default function Navbar() {
             <Typography variant="h6" component="div" align="center" sx={{ flexGrow: 1 }}>
               Category {categoryId}
             </Typography>
-            <IconButton
-              size="large"
-              color="inherit"
-            >
-              <AddIcon />
-            </IconButton>
+            <Editor />
           </Toolbar>
         </Box>
         <Box
