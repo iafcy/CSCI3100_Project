@@ -9,13 +9,13 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import OutboxIcon from '@mui/icons-material/Outbox';
 import PeopleIcon from '@mui/icons-material/People';
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Settings from './Settings';
 import { useTheme } from '@mui/material';
 import axios from '../utils/axios';
+import AuthForm from './AuthForm';
 
 export default function TemporaryDrawer() {
   const navigate = useNavigate();
@@ -64,12 +64,7 @@ export default function TemporaryDrawer() {
           py: 2
         }}
       >
-        <IconButton
-          size="large"
-          color="inherit"
-        >
-          <AccountCircleIcon />
-        </IconButton>
+        <AuthForm />
         <Settings />
       </Box>
 
