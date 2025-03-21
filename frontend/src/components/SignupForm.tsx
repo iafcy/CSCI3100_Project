@@ -14,11 +14,13 @@ import FormHelperText from '@mui/material/FormHelperText';
 export default function LoginForm() {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = React.useState<boolean>(false);
+  const [username, setUsername] = React.useState<string>('');
   const [email, setEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
   const [passwordConfirm, setPasswordConfirm] = React.useState<string>('');
 
   const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true);
+  const [usernameErrorMessage, setUsernameErrorMessage] = React.useState<string | null>(null);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState<string | null>(null);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState<string | null>(null);
   const [passwordConfirmErrorMessage, setPasswordConfirmErrorMessage] = React.useState<string | null>(null);
@@ -30,6 +32,16 @@ export default function LoginForm() {
   };
   const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+  };
+
+  const validateUsername = (username: string) => {
+    if (!username) {
+      setUsernameErrorMessage("Username is required.");
+    } else {
+      setUsernameErrorMessage(null);
+      return true;
+    }
+    return false;
   };
 
   const validateEmail = (email: string) => {
@@ -75,30 +87,37 @@ export default function LoginForm() {
     return false;
   }
 
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value);
+    const isValid = validateUsername(e.target.value);
+
+    setDisableSubmit(!isValid || emailErrorMessage !== null || passwordErrorMessage !== null || passwordConfirmErrorMessage !== null);
+  }
+
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     const isValid = validateEmail(e.target.value);
 
-    setDisableSubmit(!isValid || passwordErrorMessage !== null || passwordConfirmErrorMessage !== null);
+    setDisableSubmit(usernameErrorMessage !== null || !isValid || passwordErrorMessage !== null || passwordConfirmErrorMessage !== null);
   }
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value)
     const isValid = validatePassword(e.target.value);
-    setDisableSubmit(emailErrorMessage !== null || !isValid || passwordConfirmErrorMessage !== null);
+    setDisableSubmit(usernameErrorMessage !== null || emailErrorMessage !== null || !isValid || passwordConfirmErrorMessage !== null);
   }
 
   const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasswordConfirm(e.target.value)
     const isValid = validatePasswordConfirm(e.target.value);
-    setDisableSubmit(emailErrorMessage !== null || passwordErrorMessage !== null || !isValid);
+    setDisableSubmit(usernameErrorMessage !== null || emailErrorMessage !== null || passwordErrorMessage !== null || !isValid);
   }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (validateEmail(email) && validatePassword(password) && validatePasswordConfirm(passwordConfirm)) {
-            
+    if (validateUsername(username) && validateEmail(email) && validatePassword(password) && validatePasswordConfirm(passwordConfirm)) {
+
     }
   }
 
@@ -108,6 +127,19 @@ export default function LoginForm() {
       sx={{ width: '100%', mt: 2 }}
       onSubmit={handleSubmit}
     >
+      <TextField
+        required
+        id="signup-usename"
+        label="Username"
+        variant="outlined"
+        fullWidth={true}
+        value={username}
+        onChange={handleUsernameChange}
+        error={usernameErrorMessage !== null}
+        helperText={usernameErrorMessage}
+        sx={{ mb: 2 }}
+      />
+
       <TextField
         required
         id="signup-email"
