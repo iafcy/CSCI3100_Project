@@ -3,9 +3,9 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import axios from '../../utils/axios';
 import { useParams } from "react-router-dom";
 import { useTheme } from '@mui/material';
+import useCategoies from '../../hooks/useCategories';
 
 export default function SelectCategory({
   selectedCategory, setSelectedCategory
@@ -14,17 +14,13 @@ export default function SelectCategory({
   setSelectedCategory: (c: string) => void;
 }) {
   const theme = useTheme();
-  const [categories, setCategories] = React.useState<{id: number, name: string}[]>([]);
+  const categories = useCategoies();
   const { categoryId } = useParams();
 
   React.useEffect(() => {
-    axios.get(`http://localhost:8080/category/list`)
-      .then((response) => {
-        setCategories(response.data.data.category);
-        if (categoryId) {
-          setSelectedCategory(categoryId);
-        }
-      })
+    if (categoryId) {
+      setSelectedCategory(categoryId);
+    }
   }, []);
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -50,7 +46,7 @@ export default function SelectCategory({
         }}
       >
         {categories.map(c => (
-          <MenuItem value={c.id}>{c.name}</MenuItem>
+          <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>
         ))}
       </Select>
     </FormControl>

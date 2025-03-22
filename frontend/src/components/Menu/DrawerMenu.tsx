@@ -14,22 +14,15 @@ import PeopleIcon from '@mui/icons-material/People';
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Settings from './Settings';
 import { useTheme } from '@mui/material';
-import axios from '../../utils/axios';
 import AuthForm from '../Auth/AuthForm';
+import useCategoies from '../../hooks/useCategories';
 
 export default function TemporaryDrawer() {
   const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const [categories, setCategories] = React.useState<{id: number, name: string}[]>([]);
+  const categories = useCategoies();
   const { categoryId } = useParams();
-
-  React.useEffect(() => {
-    axios.get(`http://localhost:8080/category/list`)
-      .then((response) => {
-        setCategories(response.data.data.category); // Store response data
-      })
-  }, []);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
