@@ -5,6 +5,7 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import axios from '../../utils/axios';
 import { useParams } from "react-router-dom";
+import { useTheme } from '@mui/material';
 
 export default function SelectCategory({
   selectedCategory, setSelectedCategory
@@ -12,6 +13,7 @@ export default function SelectCategory({
   selectedCategory: string;
   setSelectedCategory: (c: string) => void;
 }) {
+  const theme = useTheme();
   const [categories, setCategories] = React.useState<{id: number, name: string}[]>([]);
   const { categoryId } = useParams();
 
@@ -43,6 +45,9 @@ export default function SelectCategory({
         label="category"
         onChange={handleChange}
         size="small"
+        sx={{
+          bgcolor: theme.palette.background.default
+        }}
       >
         {categories.map(c => (
           <MenuItem value={c.id}>{c.name}</MenuItem>
