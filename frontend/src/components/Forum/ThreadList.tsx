@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import axios from '../../utils/axios';
-import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ThreadListItem from './ThreadListItem';
 import { Thread } from '../../types/types';
@@ -12,8 +11,7 @@ export default function ThreadList({
   categoryId: number;
 }) {
   const theme = useTheme();
-
-  // Fetch threads
+  
   const [threads, setThreads] = useState<Thread[]>([]);
 
   useEffect(() => {
@@ -24,35 +22,23 @@ export default function ThreadList({
   }, [categoryId]);
 
   return (
-    <Box
+    <List
+      disablePadding
       sx={{
-        width: '100%',
         height: '100%',
-        maxWidth: { lg: '450px' },
-        borderRightWidth: '.5px',
-        borderRightStyle: 'solid',
-        borderRightColor: theme.palette.divider,
-        overflowY: 'hidden'
+        width: '100%',
+        bgcolor: theme.palette.background.default,
+        overflowY: 'auto',
       }}
     >
-      <List
-        disablePadding
-        sx={{
-          height: '100%',
-          width: '100%',
-          bgcolor: theme.palette.background.default,
-          overflowY: 'auto',
-        }}
-      >
-        {threads.map((thread, i) => (
-          <ThreadListItem
-            key={thread.id}
-            categoryId={categoryId}
-            thread={thread}
-            isLast={i == threads.length - 1}
-          />
-        ))}
-      </List>
-    </Box>
+      {threads.map((thread, i) => (
+        <ThreadListItem
+          key={thread.id}
+          categoryId={categoryId}
+          thread={thread}
+          isLast={i == threads.length - 1}
+        />
+      ))}
+    </List>
   );
 }

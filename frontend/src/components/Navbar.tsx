@@ -37,6 +37,10 @@ export default function Navbar() {
       >
         <Box
           sx={{
+            display: {
+              xs: threadId ? 'none' : 'block',
+              lg: 'block'
+            },
             width: '100%',
             maxWidth: { lg: '450px' },
             borderBottomWidth: '.5px',
@@ -57,7 +61,10 @@ export default function Navbar() {
         </Box>
         <Box
           sx={{
-            display: { xs: 'none', lg: 'flex' },
+            display: {
+              xs: threadId ? 'flex' : 'none',
+              lg: 'flex'
+            },
             flexGrow: 1,
             px: 2.5,
             alignItems: 'center',

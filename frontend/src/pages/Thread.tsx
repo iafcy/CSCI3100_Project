@@ -10,7 +10,6 @@ import axios from '../utils/axios';
 export default function Thread() {
   const { threadId, categoryId } = useParams();
   
-  // Fetch comments
   const [searchParams, _] = useSearchParams();
   const page = searchParams.get('page') || 1;
   
@@ -45,7 +44,7 @@ export default function Thread() {
       <ListItem
         disablePadding
         sx={{
-          display: 'flex',
+          display: pageCount > 1 ? 'flex' : 'none',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',

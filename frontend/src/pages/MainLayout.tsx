@@ -8,7 +8,7 @@ import { useTheme } from '@mui/material';
 
 export default function MainLayout() {
   const theme = useTheme();
-  const { categoryId } = useParams();
+  const { categoryId, threadId } = useParams();
 
   return (
     <Container
@@ -41,10 +41,29 @@ export default function MainLayout() {
             height: 'calc(100vh - 56px)',
           }}
         >
-          <ThreadList categoryId={Number(categoryId)} />
           <Box
             sx={{
-              display: { xs: 'none', lg: 'block' },
+              width: '100%',
+              height: '100%',
+              maxWidth: { lg: '450px' },
+              borderRightWidth: '.5px',
+              borderRightStyle: 'solid',
+              borderRightColor: theme.palette.divider,
+              overflowY: 'hidden',
+              display: {
+                'xs': threadId ? 'none' : 'block',
+                'lg': 'block'
+              }
+            }}
+          >
+            <ThreadList categoryId={Number(categoryId)} />
+          </Box>
+          <Box
+            sx={{
+              display: {
+                xs: threadId ? 'block' : 'none',
+                lg: 'block'
+              },
               flexGrow: 1,
               width: '100%',
               height: '100%',
