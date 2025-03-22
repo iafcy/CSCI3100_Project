@@ -17,7 +17,7 @@ export default function Thread() {
   const [pageCount, setPageCount] = useState<number>(1);
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/thread/${threadId}?page=${page}`)
+    axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/thread/${threadId}?page=${page}`)
       .then((response) => {
         setComment(response.data.data.comments);
         setPageCount(response.data.data.pageCount);

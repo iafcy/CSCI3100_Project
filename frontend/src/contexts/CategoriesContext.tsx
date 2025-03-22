@@ -11,7 +11,7 @@ function CategoriesProvider({
   const [categories, setCategories] = useState<{id: number, name: string}[]>([]);
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/category/list`)
+    axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/category/list`)
       .then((response) => {
         setCategories(response.data.data.category);
       })

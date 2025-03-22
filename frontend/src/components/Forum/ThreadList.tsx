@@ -15,7 +15,7 @@ export default function ThreadList({
   const [threads, setThreads] = useState<Thread[]>([]);
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/category/${categoryId}`)
+    axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/category/${categoryId}`)
       .then((response) => {
         setThreads(response.data.data.threads);
       })
