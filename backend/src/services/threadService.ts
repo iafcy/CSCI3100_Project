@@ -5,7 +5,7 @@ const createThread = async (
   categoryId: number,
   title: string,
 ) => {
-  return;
+  return 1; // dummy threadId
 }
 
 const getThreadPageCountById = async (
@@ -36,8 +36,86 @@ const getThreadPageById = async (
   return comments;
 }
 
+const getOutboxThreadsCount = async (
+  userId: number,
+) => {
+  // dummy count
+  return 10;
+}
+
+const getOutboxThreads = async (
+  userId: number,
+) => {
+  return [
+    // dummy threads
+    {id: 1, username: 'User 1', title: `Outbox thread 1`, categoryId: 1},
+    {id: 2, username: 'User 1', title: `Outbox thread 2`, categoryId: 2},
+    {id: 3, username: 'User 1', title: `Outbox thread 3`, categoryId: 3},
+    {id: 4, username: 'User 1', title: `Outbox thread 4`, categoryId: 4},
+    {id: 5, username: 'User 1', title: `Outbox thread 5`, categoryId: 5},
+    {id: 6, username: 'User 1', title: `Outbox thread 6`, categoryId: 1},
+    {id: 7, username: 'User 1', title: `Outbox thread 7`, categoryId: 2},
+    {id: 8, username: 'User 1', title: `Outbox thread 8`, categoryId: 3},
+    {id: 9, username: 'User 1', title: `Outbox thread 9`, categoryId: 4},
+    {id: 10, username: 'User 1', title: `Outbox thread 10`, categoryId: 5},
+  ];
+}
+
+const getFollowingThreadsCount = async (
+  userId: number,
+) => {
+  // dummy count
+  return 10;
+}
+
+const getFollowingThreads = async (
+  userId: number,
+) => {
+  return [
+    // dummy threads
+    {id: 1, username: 'User 2', title: `Following thread 1`, categoryId: 1},
+    {id: 2, username: 'User 3', title: `Following thread 2`, categoryId: 2},
+    {id: 3, username: 'User 4', title: `Following thread 3`, categoryId: 3},
+    {id: 4, username: 'User 5', title: `Following thread 4`, categoryId: 4},
+    {id: 5, username: 'User 6', title: `Following thread 5`, categoryId: 5},
+    {id: 6, username: 'User 7', title: `Following thread 6`, categoryId: 1},
+    {id: 7, username: 'User 8', title: `Following thread 7`, categoryId: 2},
+    {id: 8, username: 'User 9', title: `Following thread 8`, categoryId: 3},
+    {id: 9, username: 'User 10', title: `Following thread 9`, categoryId: 4},
+    {id: 10, username: 'User 11', title: `Following thread 10`, categoryId: 5},
+  ];
+}
+
+const likeThreadById = async (
+  threadId: number,
+  userId: number,
+) => {
+  return;
+}
+
+const dislikeThreadById = async (
+  threadId: number,
+  userId: number,
+) => {
+  return;
+}
+
+const removeReactionInThreadById = async (
+  threadId: number,
+  userId: number,
+) => {
+  return;
+}
+
 export default {
-    createThread,
-    getThreadPageCountById,
-    getThreadPageById
+  createThread,
+  getThreadPageCountById,
+  getThreadPageById,
+  getOutboxThreadsCount,
+  getOutboxThreads,
+  getFollowingThreadsCount,
+  getFollowingThreads,
+  likeThreadById,
+  dislikeThreadById,
+  removeReactionInThreadById
 }
