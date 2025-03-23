@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import { useTheme } from '@mui/material';
+import axios from '../../utils/axios';
 
 export default function CommentListItem({
   comment, index, initRating
@@ -22,21 +23,37 @@ export default function CommentListItem({
 
   const handleLike = () => {
     if (rating == 'like') {
-      setRating(null);
-      setLikeCount(likeCount - 1);
+      axios.delete(`/comment/${comment.id}/reaction`)
+        .then(response => {
+          setRating(null);
+          setLikeCount(likeCount - 1);
+        })
+        .catch(error => console.log(error));
     } else {
-      setRating('like');
-      setLikeCount(likeCount + 1);
+      axios.post(`/comment/${comment.id}/like`)
+        .then(response => {
+          setRating('like');
+          setLikeCount(likeCount + 1);
+        })
+        .catch(error => console.log(error));
     }
   }
 
   const handleDislike = () => {
     if (rating == 'dislike') {
-      setRating(null);
-      setDislikeCount(dislikeCount - 1)
+      axios.delete(`/comment/${comment.id}/reaction`)
+        .then(response => {
+          setRating(null);
+          setDislikeCount(dislikeCount - 1);;
+        })
+        .catch(error => console.log(error));
     } else {
-      setRating('dislike');
-      setDislikeCount(dislikeCount + 1)
+      axios.post(`/comment/${comment.id}/dislike`)
+        .then(response => {
+          setRating('dislike');
+          setDislikeCount(dislikeCount + 1);
+        })
+        .catch(error => console.log(error));
     }
   }
 

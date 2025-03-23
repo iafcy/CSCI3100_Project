@@ -11,6 +11,8 @@ import { useTheme } from '@mui/material';
 import SelectCategory from './SelectCategory';
 import TiptapEditor from './TipTapEditor';
 import Button from '@mui/material/Button';
+import axios from '../../utils/axios';
+import { useNavigate } from "react-router-dom";
 
 export default function EditorDialog({
   open, onClose
@@ -18,6 +20,7 @@ export default function EditorDialog({
   open: boolean;
   onClose: () => void;
 }) {
+  const navigate = useNavigate();
   const theme = useTheme();
   const [selectedCategory, setSelectedCategory] = React.useState<string>('');
   const [threadTitle, setThreadTitle] = React.useState<string>('');
@@ -33,7 +36,19 @@ export default function EditorDialog({
   }
 
   const handleCreate = () => {
-    console.log(threadContent);
+    const data = {
+      category: selectedCategory,
+      title: threadTitle,
+      content: threadContent,
+    }
+
+    axios.post('/thread', data)
+      .then(response => {
+        console.log(response);
+        navigate(`/category/${selectedCategory}`);
+        onClose();
+      })
+      .catch(error => console.log(error));
   };
 
   return (

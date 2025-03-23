@@ -4,15 +4,13 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import DrawerMenu from './Menu/DrawerMenu';
-import IconButton from '@mui/material/IconButton';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Editor from './Editor/Editor';
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useTheme } from '@mui/material';
+import ThreadHeader from './Forum/ThreadHeader';
 
 export default function Navbar() {
   const { categoryId, threadId } = useParams();
-  const navigate = useNavigate();
   const theme = useTheme();
 
   return (
@@ -59,39 +57,7 @@ export default function Navbar() {
             <Editor />
           </Toolbar>
         </Box>
-        <Box
-          sx={{
-            display: {
-              xs: threadId ? 'flex' : 'none',
-              lg: 'flex'
-            },
-            flexGrow: 1,
-            px: 2.5,
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2
-            }}
-          >
-            {threadId && 
-              <IconButton
-                color="inherit"
-                aria-label="like"
-                onClick={() => navigate(`/category/${categoryId}`)}
-              >
-                <ArrowBackIcon fontSize='small' />
-              </IconButton>
-            }
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              {threadId ? `Thread ${threadId}` : ''}
-            </Typography>
-          </Box>
-        </Box>
+        {threadId && <ThreadHeader />}
       </AppBar>
     </Container>
   );
