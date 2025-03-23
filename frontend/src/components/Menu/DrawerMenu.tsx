@@ -54,7 +54,8 @@ export default function TemporaryDrawer() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'space-between',
-          py: 2
+          py: 2,
+          px: 1
         }}
       >
         <AuthForm />

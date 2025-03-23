@@ -17,7 +17,7 @@ export default function AuthForm() {
   return (
     <>
       <IconButton
-        size="large"
+        size="small"
         onClick={handleOpen}
       >
         <AccountCircleIcon />

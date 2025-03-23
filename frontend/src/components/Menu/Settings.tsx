@@ -33,7 +33,7 @@ export default function Settings() {
   return (
     <>
       <IconButton
-        size="large"
+        size="small"
         color="inherit"
         onClick={handleOpen}
       >
@@ -44,29 +44,32 @@ export default function Settings() {
         onClick={(e) => e.stopPropagation()}
         onClose={handleClose}
         open={open}
+        maxWidth='sm'
+        fullWidth={true}
       >
         <DialogTitle 
           sx={{
             m: 0,
-            p: 2,
+            py: 1,
             color: theme.palette.text.primary,
             backgroundColor: theme.palette.background.paper,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
           }}
         >
           Settings
+          <IconButton
+            aria-label="close"
+            onClick={handleClose}
+            sx={{
+              color: theme.palette.text.primary,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleClose}
-          sx={(theme) => ({
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: theme.palette.text.primary,
-          })}
-        >
-          <CloseIcon />
-        </IconButton>
+
         <DialogContent 
           dividers
           sx={{
@@ -75,7 +78,13 @@ export default function Settings() {
           }}
         >
           <List sx={{ minWidth: 250 }}>
-            <ListItem sx={{ display: 'flex', justifyContent: 'space-between'}}>
+            <ListItem
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                p: 0
+              }}
+            >
               <Typography>Theme</Typography>
               <Switch
                 onChange={toggleTheme}

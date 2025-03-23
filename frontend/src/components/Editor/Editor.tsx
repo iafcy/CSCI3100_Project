@@ -17,7 +17,6 @@ export default function Editor() {
   return (
     <>
       <IconButton
-        size="large"
         color="inherit"
         onClick={handleOpen}
       >

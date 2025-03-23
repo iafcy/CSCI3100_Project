@@ -80,7 +80,6 @@ export default function Navbar() {
           >
             {threadId && 
               <IconButton
-                size="small"
                 color="inherit"
                 aria-label="like"
                 onClick={() => navigate(`/category/${categoryId}`)}
