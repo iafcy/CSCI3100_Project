@@ -13,6 +13,7 @@ import CategoryHome from "./pages/CategoryHome";
 import Thread from "./pages/Thread";
 import './App.css';
 import { CategoriesProvider } from "./contexts/CategoriesContext";
+import { ThreadProvider } from "./contexts/ThreadContext";
 
 function App() {
   return (
@@ -22,15 +23,17 @@ function App() {
         styles={(theme) => theme.palette.mode == 'dark' ? darkScrollbar : lightScrollbar}
       />
       <CategoriesProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<Navigate to="/category/1" replace />} />
-            <Route path="/category/:categoryId" element={<MainLayout />}>
-              <Route index element={<CategoryHome />} />
-              <Route path="thread/:threadId" element={<Thread />} />
-            </Route>
-          </Routes>
-        </Router>
+        <ThreadProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<Navigate to="/category/1" replace />} />
+              <Route path="/category/:categoryId" element={<MainLayout />}>
+                <Route index element={<CategoryHome />} />
+                <Route path="thread/:threadId" element={<Thread />} />
+              </Route>
+            </Routes>
+          </Router>
+        </ThreadProvider>
       </CategoriesProvider>
     </ThemeProvider>
   )

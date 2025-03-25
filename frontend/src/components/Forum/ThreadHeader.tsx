@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -8,15 +8,35 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useParams, useNavigate } from "react-router-dom";
 import axios from '../../utils/axios';
 import { useTheme } from '@mui/material';
+import ReplyIcon from '@mui/icons-material/Reply';
+import CommentEditorDialog from '../Editor/CommentEditorDialog';
+import useThread from '../../hooks/useThreads';
 
 export default function ThreadHeader () {
   const theme = useTheme();
   const { categoryId, threadId } = useParams();
   const navigate = useNavigate();
+  const { thread } = useThread();
 
   const [likeCount, setLikeCount] = useState<number>(0);
   const [dislikeCount, setDislikeCount] = useState<number>(0);
   const [reaction, setReaction] = useState<'like' | 'dislike' | null>(null);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (thread) {
+      setLikeCount(thread.like);
+      setDislikeCount(thread.dislike);
+    }
+  }, [thread]);
+    
+  const handleOpen = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleLike = () => {
     if (reaction == 'like') {
@@ -71,7 +91,7 @@ export default function ThreadHeader () {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          gap: 2
+          gap: 2,
         }}
       >
         {threadId && 
@@ -83,8 +103,8 @@ export default function ThreadHeader () {
             <ArrowBackIcon fontSize='small' />
           </IconButton>
         }
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          {threadId ? `Thread ${threadId}` : ''}
+        <Typography noWrap variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          {threadId ? thread?.title : ''}
         </Typography>
       </Box>
 
@@ -92,9 +112,23 @@ export default function ThreadHeader () {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          gap: 2
+          gap: 0.5
         }}
       >
+        <IconButton
+          color="inherit"
+          onClick={handleOpen}
+        >
+          <ReplyIcon />
+        </IconButton>
+
+        <CommentEditorDialog
+          open={open}
+          onClose={handleClose}
+          treadTitle={threadId && thread ? thread.title : ''}
+          threadId={Number(threadId)}
+        />
+
         <Box
           sx={{
             display: 'flex',

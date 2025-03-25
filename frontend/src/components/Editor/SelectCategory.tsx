@@ -14,7 +14,7 @@ export default function SelectCategory({
   setSelectedCategory: (c: string) => void;
 }) {
   const theme = useTheme();
-  const categories = useCategoies();
+  const { categories } = useCategoies();
   const { categoryId } = useParams();
 
   React.useEffect(() => {

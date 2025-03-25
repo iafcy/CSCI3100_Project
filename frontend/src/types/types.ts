@@ -3,11 +3,10 @@ export type Thread = {
   title: string;
   userId: number;
   username: string;
-  categorId: number;
+  categoryId: number;
   like: number;
   dislike: number;
-  view: number;
-  createdAt: Date
+  createdAt: Date;
 }
 
 export type Comment = {

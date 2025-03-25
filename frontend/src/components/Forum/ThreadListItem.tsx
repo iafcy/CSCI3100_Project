@@ -4,6 +4,8 @@ import ListItem from '@mui/material/ListItem';
 import { useParams, Link } from 'react-router-dom';
 import { Thread } from '../../types/types';
 import { useTheme } from '@mui/material';
+import useThread from '../../hooks/useThreads';
+import { useEffect } from 'react';
 
 export default function ThreadListItem({
   thread, isLast, categoryId
@@ -14,6 +16,14 @@ export default function ThreadListItem({
 }) {
   const { threadId: activeThreadId } = useParams();
   const theme = useTheme();
+  const { setThread } = useThread();
+
+  useEffect(() => {
+    if (Number(activeThreadId) == thread.id) {
+      setThread(thread);
+      document.title = `${thread.title} | CUHKG`;
+    }
+  }, [activeThreadId]);
 
   return (
     <ListItem

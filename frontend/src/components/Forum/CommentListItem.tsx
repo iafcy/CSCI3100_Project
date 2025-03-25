@@ -8,6 +8,10 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import { useTheme } from '@mui/material';
 import axios from '../../utils/axios';
+import ReplyIcon from '@mui/icons-material/Reply';
+import CommentEditorDialog from '../Editor/CommentEditorDialog';
+import useThread from '../../hooks/useThreads';
+import { useSearchParams } from 'react-router-dom';
 
 export default function CommentListItem({
   comment, index, initRating
@@ -17,9 +21,25 @@ export default function CommentListItem({
   initRating: 'like' | 'dislike' | null;
 }) {
   const theme = useTheme();
+  const { thread } = useThread();
   const [likeCount, setLikeCount] = useState<number>(comment.like);
   const [dislikeCount, setDislikeCount] = useState<number>(comment.dislike);
   const [rating, setRating] = useState<'like' | 'dislike' | null>(initRating);
+  const [open, setOpen] = useState(false);
+  const [searchParams, _] = useSearchParams();
+  const page = searchParams.get('page') || 1;
+
+  if (!thread) {
+    return null;
+  }
+    
+  const handleOpen = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleLike = () => {
     if (rating == 'like') {
@@ -90,18 +110,33 @@ export default function CommentListItem({
             gap: 2
           }}
         >
-          <Typography component="h6" color={index == 0 ? theme.palette.primary.main : theme.palette.secondary.main}>
-            #{index + 1} 
+          <Typography component="h6" color={thread.userId == comment.userId ? theme.palette.primary.main : theme.palette.secondary.main}>
+            #{(index + 1) + (Number(page) - 1) * 10} 
           </Typography>
           <Typography component="h6" color='#34aadc'>
             {comment.username}
           </Typography>
         </Box>
 
-        <Box>
-          <Typography component="h6">
-            ...
-          </Typography>
+        <Box
+
+        >
+          <IconButton
+            color="inherit"
+            onClick={handleOpen}
+          >
+            <ReplyIcon />
+          </IconButton>
+
+          <CommentEditorDialog
+            open={open}
+            onClose={handleClose}
+            treadTitle={thread.title}
+            threadId={Number(thread.id)}
+            commentToReply={comment}
+            index={(index + 1) + (Number(page) - 1) * 10}
+            isOp={comment.userId == thread?.userId}
+          />
         </Box>
       </Box>
 

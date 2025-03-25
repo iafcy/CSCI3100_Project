@@ -21,8 +21,16 @@ export default function TemporaryDrawer() {
   const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const categories = useCategoies();
+  const { categories, activeCategory, setActiveCategory } = useCategoies();
   const { categoryId } = useParams();
+
+  React.useEffect(() => {
+    const category = categories.find(c => c.id === Number(categoryId));
+    if (category) {
+      setActiveCategory(category);
+      document.title = `${category.name} | CUHKG`;
+    }
+  }, [categoryId, categories]);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -108,7 +116,7 @@ export default function TemporaryDrawer() {
               key={category.id}
               disablePadding
               sx={{
-                color: categoryId == category.id.toString() ? theme.palette.primary.main : theme.palette.text.primary
+                color: activeCategory?.id == category.id ? theme.palette.primary.main : theme.palette.text.primary
               }}
             >
               <ListItemButton onClick={() => handleLinkClick(`/category/${category.id}`)}>

@@ -2,24 +2,24 @@ import { useState, useEffect } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import CommentListItem from '../components/Forum/CommentListItem';
-import { Comment } from '../types/types';
 import CommentListPagination from '../components/Forum/CommentListPagination';
 import { useParams, useSearchParams } from 'react-router-dom';
 import axios from '../utils/axios';
+import useThread from '../hooks/useThreads';
 
 export default function Thread() {
   const { threadId, categoryId } = useParams();
   
   const [searchParams, _] = useSearchParams();
   const page = searchParams.get('page') || 1;
-  
-  const [comments, setComment] = useState<Comment[]>([]);
+
+  const { comments, setComments } = useThread();
   const [pageCount, setPageCount] = useState<number>(1);
 
   useEffect(() => {
     axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/thread/${threadId}?page=${page}`)
       .then((response) => {
-        setComment(response.data.data.comments);
+        setComments(response.data.data.comments);
         setPageCount(response.data.data.pageCount);
       })
   }, [threadId, categoryId, searchParams]);
@@ -32,7 +32,7 @@ export default function Thread() {
         overflowY: 'auto',
       }}
     >      
-      {comments.map((comment, i) => (
+      {comments?.map((comment, i) => (
         <CommentListItem
           key={comment.id}
           comment={comment}

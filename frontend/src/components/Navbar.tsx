@@ -1,17 +1,31 @@
+import * as React from 'react';
 import Container from '@mui/material/Container';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import DrawerMenu from './Menu/DrawerMenu';
-import Editor from './Editor/Editor';
+import IconButton from '@mui/material/IconButton';
+import AddIcon from '@mui/icons-material/Add';
+import ThreadEditorDialog from '../components/Editor/ThreadEditorDialog';
 import { useParams } from "react-router-dom";
 import { useTheme } from '@mui/material';
 import ThreadHeader from './Forum/ThreadHeader';
+import useCategoies from '../hooks/useCategories';
 
 export default function Navbar() {
-  const { categoryId, threadId } = useParams();
+  const { threadId } = useParams();
   const theme = useTheme();
+  const [open, setOpen] = React.useState(false);
+  const { activeCategory } = useCategoies();
+    
+  const handleOpen = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <Container
@@ -52,9 +66,20 @@ export default function Navbar() {
           <Toolbar>
             <DrawerMenu />
             <Typography variant="h6" component="div" align="center" sx={{ flexGrow: 1 }}>
-              Category {categoryId}
+              {activeCategory?.name}
             </Typography>
-            <Editor />
+
+            <IconButton
+              color="inherit"
+              onClick={handleOpen}
+            >
+              <AddIcon />
+            </IconButton>
+            
+            <ThreadEditorDialog
+              open={open}
+              onClose={handleClose}
+            />
           </Toolbar>
         </Box>
         {threadId && <ThreadHeader />}

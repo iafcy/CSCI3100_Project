@@ -1,9 +1,13 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { useParams } from 'react-router-dom';
+import useCategoies from '../hooks/useCategories';
 
 export default function CategoryHome() {
-  const { categoryId } = useParams();
+  const { activeCategory } = useCategoies();
+
+  if (!activeCategory) {
+    return null;
+  }
 
   return (
     <Box
@@ -15,7 +19,7 @@ export default function CategoryHome() {
         alignItems: 'center'
       }}
     >
-      <Typography variant='h4' component='h1' color='textPrimary'>CUHKG - Category {categoryId}</Typography>
+      <Typography variant='h4' component='h1' color='textPrimary'>CUHKG - {activeCategory.name}</Typography>
     </Box>
   );
 }
