@@ -6,6 +6,7 @@ import CommentListPagination from '../components/Forum/CommentListPagination';
 import { useParams, useSearchParams } from 'react-router-dom';
 import axios from '../utils/axios';
 import useThread from '../hooks/useThreads';
+import CommentListItemSkeleton from '../components/Forum/CommentListItemSkeleton';
 
 export default function Thread() {
   const { threadId, categoryId } = useParams();
@@ -15,13 +16,16 @@ export default function Thread() {
 
   const { comments, setComments } = useThread();
   const [pageCount, setPageCount] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    setLoading(true);
     axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/thread/${threadId}?page=${page}`)
       .then((response) => {
         setComments(response.data.data.comments);
         setPageCount(response.data.data.pageCount);
       })
+      .finally(() => setLoading(false));
   }, [threadId, categoryId, searchParams]);
 
   return (
@@ -32,14 +36,22 @@ export default function Thread() {
         overflowY: 'auto',
       }}
     >      
-      {comments?.map((comment, i) => (
-        <CommentListItem
-          key={comment.id}
-          comment={comment}
-          index={i}
-          initRating={null}
-        />
-      ))}
+      {loading ? (
+        <>
+          <CommentListItemSkeleton />
+          <CommentListItemSkeleton />
+          <CommentListItemSkeleton />
+        </>
+      ) : (
+        comments?.map((comment, i) => (
+          <CommentListItem
+            key={comment.id}
+            comment={comment}
+            index={i}
+            initRating={null}
+          />
+        ))
+      )}
 
       <ListItem
         disablePadding
