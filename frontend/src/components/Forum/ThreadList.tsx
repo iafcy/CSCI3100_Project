@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from '../../utils/axios';
 import List from '@mui/material/List';
 import ThreadListItem from './ThreadListItem';
+import ThreadListItemSkeleton from './ThreadListItemSkeleton';
 import { Thread } from '../../types/types';
 import { useTheme } from '@mui/material';
 
@@ -13,12 +14,15 @@ export default function ThreadList({
   const theme = useTheme();
   
   const [threads, setThreads] = useState<Thread[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    setLoading(true);
     axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/category/${categoryId}`)
       .then((response) => {
         setThreads(response.data.data.threads);
       })
+      .finally(() => setLoading(false));
   }, [categoryId]);
 
   return (
@@ -31,14 +35,22 @@ export default function ThreadList({
         overflowY: 'auto',
       }}
     >
-      {threads.map((thread, i) => (
-        <ThreadListItem
-          key={thread.id}
-          categoryId={categoryId}
-          thread={thread}
-          isLast={i == threads.length - 1}
-        />
-      ))}
+      {loading ? (
+        <>
+          <ThreadListItemSkeleton />
+          <ThreadListItemSkeleton />
+          <ThreadListItemSkeleton />
+        </>
+      ) : (
+        threads.map((thread, i) => (
+          <ThreadListItem
+            key={thread.id}
+            categoryId={categoryId}
+            thread={thread}
+            isLast={i == threads.length - 1}
+          />
+        ))
+      )}
     </List>
   );
 }

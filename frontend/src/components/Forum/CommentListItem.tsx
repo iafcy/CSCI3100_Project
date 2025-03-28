@@ -145,7 +145,7 @@ export default function CommentListItem({
         sx={{ py: 2 }}
       >
         <Typography variant='body1'>
-          {comment.content}
+          <div dangerouslySetInnerHTML={{__html: comment.content}} />
         </Typography>
       </Box>
 
