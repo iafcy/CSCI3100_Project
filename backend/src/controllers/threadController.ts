@@ -2,24 +2,30 @@ import threadService from '../services/threadService';
 import commentService from '../services/commentService';
 
 const createThread = async (req: any, res: any) => {
-  const userId = 1; // req.user.id;
+  const userId = req.user.id;
   const payload = req.body;
 
   const categoryId = payload.categoryId;
   const title = payload.title;
   const content = payload.content;
 
-  const threadId = await threadService.createThread(
+  const { data: threadData, error: threadError } = await threadService.createThread(
     userId,
     categoryId,
     title,
   );
 
-  commentService.createComment(userId, threadId, content);
+  if (!threadError && threadData) {
+    const threadId = threadData[0].id;
+    const { data: commentData, error: commentError } = await commentService.createComment(userId, threadId, content);
 
-  return res.status(200).json({
-    message: 'success'
-  });
+    if (!commentError) {
+      return res.status(200).json({
+        message: 'success',
+        data: threadData
+      });
+    }
+  }
 }
 
 const getThreads = async (req: any, res: any) => {
@@ -27,20 +33,22 @@ const getThreads = async (req: any, res: any) => {
   const { page = 1 } = req.query;
 
   const pageCount = await threadService.getThreadPageCountById(threadId);
-  const comments = await threadService.getThreadPageById(threadId, page);
+  const { data, error } = await threadService.getThreadPageById(threadId, page);
 
-  return res.status(200).json({
-    message: 'success',
-    data: {
-      page: Number(page),
-      pageCount,
-      comments
-    },
-  });
+  if (!error) {
+    return res.status(200).json({
+      message: 'success',
+      data: {
+        page: Number(page),
+        pageCount,
+        comments: data
+      },
+    });
+  }
 }
 
 const getOutboxThreads = async (req: any, res: any) => {
-  const userId = 1; // req.user.id;
+  const userId = req.user.id;
 
   const threadsCount = await threadService.getOutboxThreadsCount(userId);
   const threads = await threadService.getOutboxThreads(userId);
@@ -55,7 +63,7 @@ const getOutboxThreads = async (req: any, res: any) => {
 }
 
 const getFollowingThreads = async (req: any, res: any) => {
-  const userId = 1; // req.user.id;
+  const userId = req.user.id;
 
   const threadsCount = await threadService.getFollowingThreadsCount(userId);
   const threads = await threadService.getFollowingThreads(userId);
@@ -70,39 +78,45 @@ const getFollowingThreads = async (req: any, res: any) => {
 }
 
 const likeThread = async (req: any, res: any) => {
-  const userId = 1; // req.user.id;
+  const userId = req.user.id;
   const { threadId } = req.params;
 
-  await threadService.likeThreadById(threadId, userId);
+  const { data, error } = await threadService.likeThreadById(threadId, userId);
 
-  return res.status(200).json({
-    message: 'success',
-    data: {},
-  });
+  if (!error) {
+    return res.status(200).json({
+      message: 'success',
+      data: data,
+    });
+  }
 }
 
 const dislikeThread = async (req: any, res: any) => {
-  const userId = 1; // req.user.id;
+  const userId = req.user.id;
   const { threadId } = req.params;
 
-  await threadService.dislikeThreadById(threadId, userId);
+  const { data, error } = await threadService.dislikeThreadById(threadId, userId);
 
-  return res.status(200).json({
-    message: 'success',
-    data: {},
-  });
+  if (!error) {
+    return res.status(200).json({
+      message: 'success',
+      data: data,
+    });
+  }
 }
 
 const removeReaction = async (req: any, res: any) => {
-  const userId = 1; // req.user.id;
+  const userId = req.user.id;
   const { threadId } = req.params;
 
-  await threadService.removeReactionInThreadById(threadId, userId);
+  const { data, error } = await threadService.removeReactionInThreadById(threadId, userId);
 
-  return res.status(200).json({
-    message: 'success',
-    data: {},
-  });
+  if (!error) {
+    return res.status(200).json({
+      message: 'success',
+      data: data,
+    });
+  }
 }
 
 export default {

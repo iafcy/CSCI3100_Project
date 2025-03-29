@@ -1,57 +1,66 @@
 import commentService from '../services/commentService';
 
 const createComment = async (req: any, res: any) => {
-  const userId = 1; // req.user.id;
+  const userId = req.user.id;
   const payload = req.body;
 
-  const categoryId = payload.categoryId;
+  const threadId = payload.threadId;
   const content = payload.content;
 
-  await commentService.createComment(
+  const { data, error } = await commentService.createComment(
     userId,
-    categoryId,
+    threadId,
     content,
   );
 
-  return res.status(200).json({
-    message: 'success'
-  });
+  if (!error) {
+    return res.status(200).json({
+      message: 'success',
+      data: data
+    });
+  }
 }
 
 const likeComment = async (req: any, res: any) => {
-  const userId = 1; // req.user.id;
+  const userId = req.user.id;
   const { commentId } = req.params;
 
-  await commentService.likeCommentById(commentId, userId);
-  console.log(`Like comment ${commentId}`)
+  const { data, error } = await commentService.likeCommentById(commentId, userId);
 
-  return res.status(200).json({
-    message: 'success',
-  });
+  if (!error) {
+    return res.status(200).json({
+      message: 'success',
+      data: data
+    });
+  }
 }
 
 const dislikeComment = async (req: any, res: any) => {
-  const userId = 1; // req.user.id;
+  const userId = req.user.id;
   const { commentId } = req.params;
 
-  await commentService.dislikeCommentById(commentId, userId);
-  console.log(`Dislike comment ${commentId}`)
+  const { data, error } = await commentService.dislikeCommentById(commentId, userId);
 
-  return res.status(200).json({
-    message: 'success',
-  });
+  if (!error) {
+    return res.status(200).json({
+      message: 'success',
+      data: data
+    });
+  }
 }
 
 const removeReaction = async (req: any, res: any) => {
-  const userId = 1; // req.user.id;
+  const userId = req.user.id;
   const { commentId } = req.params;
 
-  await commentService.removeReactionInCommentById(commentId, userId);
-  console.log(`Remove reaction in comment ${commentId}`)
+  const { data, error } = await commentService.removeReactionInCommentById(commentId, userId);
 
-  return res.status(200).json({
-    message: 'success',
-  });
+  if (!error) {
+    return res.status(200).json({
+      message: 'success',
+      data: data
+    });
+  }
 }
 
 export default {
