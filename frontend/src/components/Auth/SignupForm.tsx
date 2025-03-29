@@ -10,14 +10,20 @@ import TextField from '@mui/material/TextField';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import FormHelperText from '@mui/material/FormHelperText';
+import supabase from '../../utils/supabase';
 
-export default function LoginForm() {
+export default function LoginForm({
+  onClose
+} : {
+  onClose: () => void;
+}) {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = React.useState<boolean>(false);
   const [username, setUsername] = React.useState<string>('');
   const [email, setEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
   const [passwordConfirm, setPasswordConfirm] = React.useState<string>('');
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true);
   const [usernameErrorMessage, setUsernameErrorMessage] = React.useState<string | null>(null);
@@ -113,11 +119,23 @@ export default function LoginForm() {
     setDisableSubmit(usernameErrorMessage !== null || emailErrorMessage !== null || passwordErrorMessage !== null || !isValid);
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (validateUsername(username) && validateEmail(email) && validatePassword(password) && validatePasswordConfirm(passwordConfirm)) {
+      setLoading(true);
+      const { data, error } = await supabase.auth.signUp({
+        email, password, options: { data: { username  } }
+      });
 
+      if (error) {
+        console.log(error.message);
+        setLoading(false);
+      } else {
+        console.log(data);
+        setLoading(false);
+        onClose();
+      }
     }
   }
 
@@ -228,6 +246,7 @@ export default function LoginForm() {
           variant="contained"
           disabled={disableSubmit}
           sx={{ width: '100%', mt: 2 }}
+          loading={loading}
         >
           Register
         </Button>
