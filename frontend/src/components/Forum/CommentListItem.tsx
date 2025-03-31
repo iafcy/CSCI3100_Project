@@ -12,19 +12,21 @@ import ReplyIcon from '@mui/icons-material/Reply';
 import CommentEditorDialog from '../Editor/CommentEditorDialog';
 import useThread from '../../hooks/useThreads';
 import { useSearchParams } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
+import AuthDialog from '../Auth/AuthDialog';
 
 export default function CommentListItem({
-  comment, index, initRating
+  comment, index
 }: {
   comment: Comment;
   index: number;
-  initRating: 'like' | 'dislike' | null;
 }) {
+  const { user } = useAuth();
   const theme = useTheme();
   const { thread } = useThread();
   const [likeCount, setLikeCount] = useState<number>(comment.like);
   const [dislikeCount, setDislikeCount] = useState<number>(comment.dislike);
-  const [rating, setRating] = useState<'like' | 'dislike' | null>(initRating);
+  const [reaction, setReaction] = useState<'like' | 'dislike' | null>(comment.user_reaction);
   const [open, setOpen] = useState(false);
   const [searchParams, _] = useSearchParams();
   const page = searchParams.get('page') || 1;
@@ -42,17 +44,21 @@ export default function CommentListItem({
   };
 
   const handleLike = () => {
-    if (rating == 'like') {
+    if (reaction == 'like') {
       axios.delete(`/comment/${comment.id}/reaction`)
         .then(response => {
-          setRating(null);
+          setReaction(null);
           setLikeCount(likeCount - 1);
         })
         .catch(error => console.log(error));
     } else {
       axios.post(`/comment/${comment.id}/like`)
         .then(response => {
-          setRating('like');
+          if (reaction == 'dislike') {
+            setDislikeCount(dislikeCount - 1);
+          }
+
+          setReaction('like');
           setLikeCount(likeCount + 1);
         })
         .catch(error => console.log(error));
@@ -60,17 +66,21 @@ export default function CommentListItem({
   }
 
   const handleDislike = () => {
-    if (rating == 'dislike') {
+    if (reaction == 'dislike') {
       axios.delete(`/comment/${comment.id}/reaction`)
         .then(response => {
-          setRating(null);
+          setReaction(null);
           setDislikeCount(dislikeCount - 1);;
         })
         .catch(error => console.log(error));
     } else {
       axios.post(`/comment/${comment.id}/dislike`)
         .then(response => {
-          setRating('dislike');
+          if (reaction == 'like') {
+            setLikeCount(likeCount - 1);
+          }
+
+          setReaction('dislike');
           setDislikeCount(dislikeCount + 1);
         })
         .catch(error => console.log(error));
@@ -128,15 +138,22 @@ export default function CommentListItem({
             <ReplyIcon />
           </IconButton>
 
-          <CommentEditorDialog
-            open={open}
-            onClose={handleClose}
-            treadTitle={thread.title}
-            threadId={Number(thread.id)}
-            commentToReply={comment}
-            index={(index + 1) + (Number(page) - 1) * 10}
-            isOp={comment.userId == thread?.userId}
-          />
+          {user ? (
+            <CommentEditorDialog
+              open={open}
+              onClose={handleClose}
+              treadTitle={thread.title}
+              threadId={Number(thread.id)}
+              commentToReply={comment}
+              index={(index + 1) + (Number(page) - 1) * 10}
+              isOp={comment.userId == thread?.userId}
+            />
+          ) : (
+            <AuthDialog
+              open={open}
+              onClose={handleClose}
+            />
+          )}
         </Box>
       </Box>
 
@@ -171,13 +188,14 @@ export default function CommentListItem({
             color="inherit"
             aria-label="like"
             edge='start'
-            onClick={handleLike}
+            onClick={user ? handleLike : handleOpen}
           >
             <ThumbUpIcon
               fontSize='small'
-              sx={{ color: rating == 'like' ? theme.palette.primary.main : theme.palette.secondary.main }}
+              sx={{ color: reaction == 'like' ? theme.palette.primary.main : theme.palette.secondary.main }}
             />
           </IconButton>
+
           <Typography variant='body2'>{likeCount}</Typography>
         </Box>
         <Box
@@ -194,13 +212,14 @@ export default function CommentListItem({
             color="inherit"
             aria-label="dislike"
             edge='start'
-            onClick={handleDislike}
+            onClick={user ? handleDislike : handleOpen}
           >
             <ThumbDownIcon
               fontSize='small'
-              sx={{ color: rating == 'dislike' ? theme.palette.primary.main : theme.palette.secondary.main }}
+              sx={{ color: reaction == 'dislike' ? theme.palette.primary.main : theme.palette.secondary.main }}
             />
           </IconButton>
+
           <Typography variant='body2'>{dislikeCount}</Typography>
         </Box>
       </Box>

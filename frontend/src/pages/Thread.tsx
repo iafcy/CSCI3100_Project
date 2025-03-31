@@ -7,9 +7,11 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import axios from '../utils/axios';
 import useThread from '../hooks/useThreads';
 import CommentListItemSkeleton from '../components/Forum/CommentListItemSkeleton';
+import useAuth from '../hooks/useAuth';
 
 export default function Thread() {
   const { threadId, categoryId } = useParams();
+  const { user } = useAuth();
   
   const [searchParams, _] = useSearchParams();
   const page = searchParams.get('page') || 1;
@@ -26,7 +28,7 @@ export default function Thread() {
         setPageCount(response.data.data.pageCount);
       })
       .finally(() => setLoading(false));
-  }, [threadId, categoryId, searchParams]);
+  }, [threadId, categoryId, searchParams, user]);
 
   return (
     <List
@@ -48,7 +50,6 @@ export default function Thread() {
             key={comment.id}
             comment={comment}
             index={i}
-            initRating={null}
           />
         ))
       )}
