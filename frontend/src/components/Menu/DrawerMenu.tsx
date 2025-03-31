@@ -14,7 +14,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Settings from './Settings';
 import { useTheme } from '@mui/material';
-import AuthForm from '../Auth/AuthForm';
+import UserDialog from '../Auth/UserDialog';
 import useCategoies from '../../hooks/useCategories';
 
 export default function TemporaryDrawer() {
@@ -66,7 +66,7 @@ export default function TemporaryDrawer() {
           px: 1
         }}
       >
-        <AuthForm />
+        <UserDialog />
         <Settings />
       </Box>
 

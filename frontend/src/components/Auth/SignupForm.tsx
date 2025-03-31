@@ -125,14 +125,13 @@ export default function LoginForm({
     if (validateUsername(username) && validateEmail(email) && validatePassword(password) && validatePasswordConfirm(passwordConfirm)) {
       setLoading(true);
       const { data, error } = await supabase.auth.signUp({
-        email, password, options: { data: { username  } }
+        email, password, options: { data: { username } }
       });
 
       if (error) {
         console.log(error.message);
         setLoading(false);
       } else {
-        console.log(data);
         setLoading(false);
         onClose();
       }

@@ -93,13 +93,15 @@ export default function LoginForm({
 
         setLoading(false);
       } else {
-        const { data: { user }} = await supabase.auth.getUser();
-        const metadata = user
+        const { data, error } = await supabase.auth.getUser();
 
-        console.log(metadata)
-
-        setLoading(false);
-        onClose();
+        if (error) {
+          console.log(error.message);
+          setLoading(false);
+        } else {
+          setLoading(false);
+          onClose();
+        }
       }
     }
   }

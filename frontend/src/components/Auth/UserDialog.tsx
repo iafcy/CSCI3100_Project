@@ -13,6 +13,7 @@ export default function UserDialog() {
     event.stopPropagation();
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -26,7 +27,7 @@ export default function UserDialog() {
         <AccountCircleIcon />
       </IconButton>
 
-      {session ? (
+      {session && open ? (
         <AccountDialog
           open={open}
           onClose={handleClose}
