@@ -120,7 +120,7 @@ export default function CommentListItem({
             gap: 2
           }}
         >
-          <Typography component="h6" color={thread.userId == comment.userId ? theme.palette.primary.main : theme.palette.secondary.main}>
+          <Typography component="h6" color={thread.user_id == comment.user_id ? theme.palette.primary.main : theme.palette.secondary.main}>
             #{(index + 1) + (Number(page) - 1) * 10} 
           </Typography>
           <Typography component="h6" color='#34aadc'>
@@ -146,7 +146,7 @@ export default function CommentListItem({
               threadId={Number(thread.id)}
               commentToReply={comment}
               index={(index + 1) + (Number(page) - 1) * 10}
-              isOp={comment.userId == thread?.userId}
+              isOp={comment.user_id == thread?.user_id}
             />
           ) : (
             <AuthDialog
