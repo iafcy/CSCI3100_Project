@@ -11,12 +11,15 @@ import { useTheme } from '@mui/material';
 import ReplyIcon from '@mui/icons-material/Reply';
 import CommentEditorDialog from '../Editor/CommentEditorDialog';
 import useThread from '../../hooks/useThreads';
+import useAuth from '../../hooks/useAuth';
+import AuthDialog from '../Auth/AuthDialog';
 
 export default function ThreadHeader () {
   const theme = useTheme();
   const { categoryId, threadId } = useParams();
   const navigate = useNavigate();
   const { thread } = useThread();
+  const { user } = useAuth();
 
   const [likeCount, setLikeCount] = useState<number>(0);
   const [dislikeCount, setDislikeCount] = useState<number>(0);
@@ -27,8 +30,9 @@ export default function ThreadHeader () {
     if (thread) {
       setLikeCount(thread.like);
       setDislikeCount(thread.dislike);
+      setReaction(thread.user_reaction);
     }
-  }, [thread]);
+  }, [thread, user]);
     
   const handleOpen = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -49,6 +53,10 @@ export default function ThreadHeader () {
     } else {
       axios.post(`/thread/${threadId}/like`)
         .then(response => {
+          if (reaction == 'dislike') {
+            setDislikeCount(dislikeCount - 1);
+          }
+
           setReaction('like');
           setLikeCount(likeCount + 1);
         })
@@ -67,6 +75,10 @@ export default function ThreadHeader () {
     } else {
       axios.post(`/thread/${threadId}/dislike`)
         .then(response => {
+          if (reaction == 'like') {
+            setLikeCount(likeCount - 1);
+          }
+
           setReaction('dislike');
           setDislikeCount(dislikeCount + 1);
         })
@@ -122,12 +134,19 @@ export default function ThreadHeader () {
           <ReplyIcon />
         </IconButton>
 
-        <CommentEditorDialog
-          open={open}
-          onClose={handleClose}
-          treadTitle={threadId && thread ? thread.title : ''}
-          threadId={Number(threadId)}
-        />
+        {user ? (
+          <CommentEditorDialog
+            open={open}
+            onClose={handleClose}
+            treadTitle={threadId && thread ? thread.title : ''}
+            threadId={Number(threadId)}
+          />
+        ) : (
+          <AuthDialog
+            open={open}
+            onClose={handleClose}
+          />
+        )}
 
         <Box
           sx={{
@@ -143,7 +162,7 @@ export default function ThreadHeader () {
             color="inherit"
             aria-label="like"
             edge='start'
-            onClick={handleLike}
+            onClick={user ? handleLike : handleOpen}
           >
             <ThumbUpIcon
               fontSize='small'
@@ -166,7 +185,7 @@ export default function ThreadHeader () {
             color="inherit"
             aria-label="dislike"
             edge='start'
-            onClick={handleDislike}
+            onClick={user ? handleDislike : handleOpen}
           >
             <ThumbDownIcon
               fontSize='small'

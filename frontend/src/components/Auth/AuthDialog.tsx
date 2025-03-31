@@ -81,10 +81,10 @@ export default function AuthDialog({
         </Tabs>
 
         <TabPanel value={tabValue} index={0}>
-          <LoginForm />
+          <LoginForm onClose={onClose} />
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
-          <SignupForm />
+          <SignupForm onClose={onClose} />
         </TabPanel>
       </DialogContent>
     </Dialog>

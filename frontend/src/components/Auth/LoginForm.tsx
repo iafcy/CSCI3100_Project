@@ -10,11 +10,17 @@ import TextField from '@mui/material/TextField';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import FormHelperText from '@mui/material/FormHelperText';
+import supabase from '../../utils/supabase';
 
-export default function LoginForm() {
+export default function LoginForm({
+  onClose
+} : {
+  onClose: () => void;
+}) {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [email, setEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState<string | null>(null);
@@ -72,11 +78,31 @@ export default function LoginForm() {
     setDisableSubmit(emailErrorMessage !== null || !isValid);
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (validateEmail(email) && validatePassword(password)) {
-      
+      setLoading(true);
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+      if (error) {
+        console.log(error.message);
+
+        setLoading(false);
+      } else {
+        const { data, error } = await supabase.auth.getUser();
+
+        if (error) {
+          console.log(error.message);
+          setLoading(false);
+        } else {
+          setLoading(false);
+          onClose();
+        }
+      }
     }
   }
 
@@ -139,6 +165,7 @@ export default function LoginForm() {
         variant="contained"
         disabled={disableSubmit}
         sx={{ width: '100%', mt: 2 }}
+        loading={loading}
       >
         Login
       </Button>

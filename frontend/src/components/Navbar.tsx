@@ -12,12 +12,15 @@ import { useParams } from "react-router-dom";
 import { useTheme } from '@mui/material';
 import ThreadHeader from './Forum/ThreadHeader';
 import useCategoies from '../hooks/useCategories';
+import useAuth from '../hooks/useAuth';
+import AuthDialog from './Auth/AuthDialog';
 
 export default function Navbar() {
   const { threadId } = useParams();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const { activeCategory } = useCategoies();
+  const { session } = useAuth();
     
   const handleOpen = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -76,10 +79,17 @@ export default function Navbar() {
               <AddIcon />
             </IconButton>
             
-            <ThreadEditorDialog
-              open={open}
-              onClose={handleClose}
-            />
+            {session ? (
+              <ThreadEditorDialog
+                open={open}
+                onClose={handleClose}
+              />
+            ) : (
+              <AuthDialog
+                open={open}
+                onClose={handleClose}
+              />
+            )}
           </Toolbar>
         </Box>
         {threadId && <ThreadHeader />}

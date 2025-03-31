@@ -1,21 +1,21 @@
 export type Thread = {
   id: number;
   title: string;
-  userId: number;
+  user_id: number;
   username: string;
-  categoryId: number;
+  category_id: number;
   like: number;
   dislike: number;
-  createdAt: Date;
+  created_at: Date;
 }
 
 export type Comment = {
   id: number;
-  userId: number;
+  user_id: number;
   username: string;
-  threadId: number;
+  thread_id: number;
   content: string;
   like: number;
   dislike: number;
-  createdAt: Date;
+  created_at: Date;
 }

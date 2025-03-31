@@ -14,6 +14,7 @@ import Thread from "./pages/Thread";
 import './App.css';
 import { CategoriesProvider } from "./contexts/CategoriesContext";
 import { ThreadProvider } from "./contexts/ThreadContext";
+import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
   return (
@@ -22,19 +23,21 @@ function App() {
       <GlobalStyles
         styles={(theme) => theme.palette.mode == 'dark' ? darkScrollbar : lightScrollbar}
       />
-      <CategoriesProvider>
-        <ThreadProvider>
-          <Router>
-            <Routes>
-              <Route path="/" element={<Navigate to="/category/1" replace />} />
-              <Route path="/category/:categoryId" element={<MainLayout />}>
-                <Route index element={<CategoryHome />} />
-                <Route path="thread/:threadId" element={<Thread />} />
-              </Route>
-            </Routes>
-          </Router>
-        </ThreadProvider>
-      </CategoriesProvider>
+      <AuthProvider>
+        <CategoriesProvider>
+          <ThreadProvider>
+            <Router>
+              <Routes>
+                <Route path="/" element={<Navigate to="/category/1" replace />} />
+                <Route path="/category/:categoryId" element={<MainLayout />}>
+                  <Route index element={<CategoryHome />} />
+                  <Route path="thread/:threadId" element={<Thread />} />
+                </Route>
+              </Routes>
+            </Router>
+          </ThreadProvider>
+        </CategoriesProvider>
+      </AuthProvider>
     </ThemeProvider>
   )
 }

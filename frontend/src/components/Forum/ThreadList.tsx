@@ -5,6 +5,7 @@ import ThreadListItem from './ThreadListItem';
 import ThreadListItemSkeleton from './ThreadListItemSkeleton';
 import { Thread } from '../../types/types';
 import { useTheme } from '@mui/material';
+import useAuth from '../../hooks/useAuth';
 
 export default function ThreadList({
   categoryId
@@ -12,6 +13,7 @@ export default function ThreadList({
   categoryId: number;
 }) {
   const theme = useTheme();
+  const { user } = useAuth();
   
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -23,7 +25,7 @@ export default function ThreadList({
         setThreads(response.data.data.threads);
       })
       .finally(() => setLoading(false));
-  }, [categoryId]);
+  }, [categoryId, user]);
 
   return (
     <List

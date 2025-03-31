@@ -1,39 +1,46 @@
-import { Comment } from '../types/types';
+import supabase from '../utils/supabase';
+
+const COMMENTS_PER_PAGE = 10;
 
 const createThread = async (
   userId: number,
   categoryId: number,
   title: string,
 ) => {
-  return 1; // dummy threadId
+  const { data, error } = await supabase.from('threads').insert({
+    title,
+    category_id: categoryId,
+    user_id: userId
+  }).select();
+
+  return { data, error };
 }
 
 const getThreadPageCountById = async (
   threadId: number,
 ) => {
-  // dummy page count
-  return 15;
+  const { data, error, status, count } = await supabase
+    .from('comments')
+    .select('*', { count: 'exact', head: true })
+    .eq('thread_id', threadId);
+
+  return Math.ceil(count! / COMMENTS_PER_PAGE);
 }
 
 const getThreadPageById = async (
   threadId: number,
   page: number,
+  userId: string | null
 ) => {
-  const comments: Comment[] = [
-    // dummy comments
-    {id: 1 + (page - 1) * 10, threadId: threadId, username: 'User 1', userId: 1, like: 20, dislike: 25, content: `Comment ${1 + (page - 1) * 10} of Thread ${threadId}`, createdAt: new Date() },
-    {id: 2 + (page - 1) * 10, threadId: threadId, username: 'User 2', userId: 2, like: 20, dislike: 25, content: `Comment ${2 + (page - 1) * 10} of Thread ${threadId}`, createdAt: new Date() },
-    {id: 3 + (page - 1) * 10, threadId: threadId, username: 'User 3', userId: 3, like: 20, dislike: 25, content: `Comment ${3 + (page - 1) * 10} of Thread ${threadId}`, createdAt: new Date() },
-    {id: 4 + (page - 1) * 10, threadId: threadId, username: 'User 4', userId: 4, like: 20, dislike: 25, content: `Comment ${4 + (page - 1) * 10} of Thread ${threadId}`, createdAt: new Date() },
-    {id: 5 + (page - 1) * 10, threadId: threadId, username: 'User 5', userId: 5, like: 20, dislike: 25, content: `Comment ${5 + (page - 1) * 10} of Thread ${threadId}`, createdAt: new Date() },
-    {id: 6 + (page - 1) * 10, threadId: threadId, username: 'User 1', userId: 1, like: 20, dislike: 25, content: `Comment ${6 + (page - 1) * 10} of Thread ${threadId}`, createdAt: new Date() },
-    {id: 7 + (page - 1) * 10, threadId: threadId, username: 'User 2', userId: 2, like: 20, dislike: 25, content: `Comment ${7 + (page - 1) * 10} of Thread ${threadId}`, createdAt: new Date() },
-    {id: 8 + (page - 1) * 10, threadId: threadId, username: 'User 3', userId: 3, like: 20, dislike: 25, content: `Comment ${8 + (page - 1) * 10} of Thread ${threadId}`, createdAt: new Date() },
-    {id: 9 + (page - 1) * 10, threadId: threadId, username: 'User 4', userId: 4, like: 20, dislike: 25, content: `Comment ${9 + (page - 1) * 10} of Thread ${threadId}`, createdAt: new Date() },
-    {id: 10 + (page - 1) * 10, threadId: threadId, username: 'User 5', userId: 5, like: 20, dislike: 25, content: `Comment ${10 + (page - 1) * 10} of Thread ${threadId}`, createdAt: new Date() },
-  ];
+  const { data, error } = await supabase
+    .rpc('get_comments_in_thread_with_counts', {
+      current_thread_id: threadId,
+      return_limit: COMMENTS_PER_PAGE,
+      return_offset: COMMENTS_PER_PAGE * (page - 1),
+      current_user_id: userId
+    });
 
-  return comments;
+  return { data, error };
 }
 
 const getOutboxThreadsCount = async (
@@ -90,21 +97,39 @@ const likeThreadById = async (
   threadId: number,
   userId: number,
 ) => {
-  return;
+  const { data, error } = await supabase.from('thread_reactions').upsert({
+    thread_id: threadId,
+    user_id: userId,
+    is_like: true,
+  }).select();
+
+  return { data, error };
 }
 
 const dislikeThreadById = async (
   threadId: number,
   userId: number,
 ) => {
-  return;
+  const { data, error } = await supabase.from('thread_reactions').upsert({
+    thread_id: threadId,
+    user_id: userId,
+    is_like: false,
+  }).select();
+
+  return { data, error };
 }
 
 const removeReactionInThreadById = async (
   threadId: number,
   userId: number,
 ) => {
-  return;
+  const { data, error } = await supabase.from('thread_reactions')
+    .delete()
+    .eq('thread_id', threadId)
+    .eq('user_id', userId)
+    .select();
+
+  return { data, error };
 }
 
 export default {

@@ -37,14 +37,13 @@ export default function EditorDialog({
 
   const handleCreate = () => {
     const data = {
-      category: selectedCategory,
+      categoryId: selectedCategory,
       title: threadTitle,
       content: threadContent,
     }
 
     axios.post('/thread', data)
       .then(response => {
-        console.log(response);
         navigate(`/category/${selectedCategory}`);
         onClose();
       })
