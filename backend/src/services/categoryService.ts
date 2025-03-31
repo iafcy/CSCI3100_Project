@@ -18,10 +18,15 @@ const getThreadsCountByCategoryId = async (
 }
 
 const getThreadsByCategoryId = async (
-  categoryId: number
+  categoryId: number,
+  userId: string | null
 ) => {
   const { data, error } = await supabase
-    .rpc('get_threads_with_counts', { categoryid: categoryId, n_limit: 20 });
+    .rpc('get_threads_with_counts', {
+      current_category_id: categoryId,
+      return_limit: 20,
+      current_user_id: userId
+    });
 
   return { data, error };
 }

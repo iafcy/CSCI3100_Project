@@ -31,9 +31,10 @@ const createThread = async (req: any, res: any) => {
 const getThreads = async (req: any, res: any) => {
   const { threadId } = req.params;
   const { page = 1 } = req.query;
+  const userId = req.user?.id ?? null;
 
   const pageCount = await threadService.getThreadPageCountById(threadId);
-  const { data, error } = await threadService.getThreadPageById(threadId, page);
+  const { data, error } = await threadService.getThreadPageById(threadId, page, userId);
 
   if (!error) {
     return res.status(200).json({

@@ -30,12 +30,14 @@ const getThreadPageCountById = async (
 const getThreadPageById = async (
   threadId: number,
   page: number,
+  userId: string | null
 ) => {
   const { data, error } = await supabase
-    .rpc('get_comments_in_threads_with_counts', {
-      n_limit: COMMENTS_PER_PAGE, 
-      n_offset: COMMENTS_PER_PAGE * (page - 1), 
-      threadid: threadId
+    .rpc('get_comments_in_thread_with_counts', {
+      current_thread_id: threadId,
+      return_limit: COMMENTS_PER_PAGE,
+      return_offset: COMMENTS_PER_PAGE * (page - 1),
+      current_user_id: userId
     });
 
   return { data, error };
