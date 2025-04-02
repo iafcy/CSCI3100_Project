@@ -18,7 +18,7 @@ export default function ThreadHeader () {
   const theme = useTheme();
   const { categoryId, threadId } = useParams();
   const navigate = useNavigate();
-  const { thread } = useThread();
+  const { thread, setThread } = useThread();
   const { user } = useAuth();
 
   const [likeCount, setLikeCount] = useState<number>(0);
@@ -38,6 +38,7 @@ export default function ThreadHeader () {
     event.stopPropagation();
     setOpen(true);
   };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -86,6 +87,11 @@ export default function ThreadHeader () {
     }
   }
 
+  const handleBack = () => {
+    setThread(null);
+    navigate(`/category/${categoryId}`);
+  }
+
   return (
     <Box
       sx={{
@@ -110,7 +116,7 @@ export default function ThreadHeader () {
           <IconButton
             color="inherit"
             aria-label="like"
-            onClick={() => navigate(`/category/${categoryId}`)}
+            onClick={handleBack}
           >
             <ArrowBackIcon fontSize='small' />
           </IconButton>
