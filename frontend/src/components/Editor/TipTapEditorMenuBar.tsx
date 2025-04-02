@@ -9,6 +9,7 @@ import FormatStrikethroughIcon from '@mui/icons-material/FormatStrikethrough';
 import TitleIcon from '@mui/icons-material/Title';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
+import LockOutlineIcon from '@mui/icons-material/LockOutlined';
 import { useTheme } from '@mui/material';
 
 export default function TipTapEditorMenuBar ({
@@ -19,7 +20,7 @@ export default function TipTapEditorMenuBar ({
   const theme = useTheme();
 
   return (
-    <ButtonGroup variant="text" aria-label="text formatting">
+    <ButtonGroup variant="text" aria-label="text formatting" sx={{ mb: 1 }}>
       <IconButton
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         disabled={!editor.can().chain().focus().toggleBold().run()}
@@ -85,6 +86,17 @@ export default function TipTapEditorMenuBar ({
         }}
       >
         <FormatListNumberedIcon />
+      </IconButton>
+
+      <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+
+      <IconButton
+        onClick={() => editor.chain().focus().toggleHidden().run()}
+        sx={{
+          bgcolor: editor.isActive('hidden') ? theme.palette.divider : ''
+        }}
+      >
+        <LockOutlineIcon />
       </IconButton>
     </ButtonGroup>
   )

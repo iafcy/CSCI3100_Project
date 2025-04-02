@@ -12,3 +12,7 @@ div:has(> .tiptap) {
   margin-top: 0;
   margin-bottom: 0.5rem;
 }
+
+.hidden-content {
+  border: 1px white dotted;
+}

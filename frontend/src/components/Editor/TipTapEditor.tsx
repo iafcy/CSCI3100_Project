@@ -11,6 +11,7 @@ import Heading from '@tiptap/extension-heading'
 import BulletList from '@tiptap/extension-bullet-list'
 import OrderedList from '@tiptap/extension-ordered-list'
 import ListItem from '@tiptap/extension-list-item'
+import HiddenMark from './HiddenMark'
 import { EditorContent, useEditor } from '@tiptap/react';
 import { Box, useTheme } from '@mui/material';
 import TipTapEditorMenuBar from './TipTapEditorMenuBar'
@@ -36,6 +37,7 @@ export default ({
       BulletList,
       OrderedList,
       ListItem,
+      HiddenMark
     ],
     content: content,
     onUpdate: ({ editor }) => {
