@@ -1,7 +1,7 @@
 import { Editor } from '@tiptap/react'
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import ButtonGroup from '@mui/material/ButtonGroup';
+import Box from '@mui/material/Box';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
@@ -20,8 +20,27 @@ export default function TipTapEditorMenuBar ({
   const theme = useTheme();
 
   return (
-    <ButtonGroup variant="text" aria-label="text formatting" sx={{ mb: 1 }}>
+    <Box
+      sx={{
+        mb: 1,
+        display: 'flex',
+        width: '100%',
+        overflowX: 'auto',
+        '&::-webkit-scrollbar': {
+          width: '4px',
+          height: '4px',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: theme.palette.divider,
+          borderRadius: '10px',
+        },
+        '&::-webkit-scrollbar-track': {
+          backgroundColor: theme.palette.background.default,
+        },
+      }}
+    >
       <IconButton
+        size='small'
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         disabled={!editor.can().chain().focus().toggleBold().run()}
         sx={{
@@ -34,6 +53,7 @@ export default function TipTapEditorMenuBar ({
       <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
 
       <IconButton
+        size='small'
         onClick={() => editor.chain().focus().toggleBold().run()}
         disabled={!editor.can().chain().focus().toggleBold().run()}
         sx={{
@@ -43,6 +63,7 @@ export default function TipTapEditorMenuBar ({
         <FormatBoldIcon />
       </IconButton>
       <IconButton
+        size='small'
         onClick={() => editor.chain().focus().toggleItalic().run()}
         disabled={!editor.can().chain().focus().toggleItalic().run()}
         sx={{
@@ -52,6 +73,7 @@ export default function TipTapEditorMenuBar ({
         <FormatItalicIcon />
       </IconButton>
       <IconButton
+        size='small'
         onClick={() => editor.chain().focus().toggleUnderline().run()}
         disabled={!editor.can().chain().focus().toggleUnderline().run()}
         sx={{
@@ -61,6 +83,7 @@ export default function TipTapEditorMenuBar ({
         <FormatUnderlinedIcon />
       </IconButton>
       <IconButton
+        size='small'
         onClick={() => editor.chain().focus().toggleStrike().run()}
         sx={{
           bgcolor: editor.isActive('strike') ? theme.palette.divider : ''
@@ -72,6 +95,7 @@ export default function TipTapEditorMenuBar ({
       <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
 
       <IconButton
+        size='small'
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         sx={{
           bgcolor: editor.isActive('bulletList') ? theme.palette.divider : ''
@@ -80,6 +104,7 @@ export default function TipTapEditorMenuBar ({
         <FormatListBulletedIcon />
       </IconButton>
       <IconButton
+        size='small'
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
         sx={{
           bgcolor: editor.isActive('orderedList') ? theme.palette.divider : ''
@@ -91,6 +116,7 @@ export default function TipTapEditorMenuBar ({
       <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
 
       <IconButton
+        size='small'
         onClick={() => editor.chain().focus().toggleHidden().run()}
         sx={{
           bgcolor: editor.isActive('hidden') ? theme.palette.divider : ''
@@ -98,6 +124,6 @@ export default function TipTapEditorMenuBar ({
       >
         <LockOutlineIcon />
       </IconButton>
-    </ButtonGroup>
+    </Box>
   )
 }

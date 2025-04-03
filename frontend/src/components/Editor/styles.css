@@ -14,5 +14,8 @@ div:has(> .tiptap) {
 }
 
 .hidden-content {
-  border: 1px white dotted;
+  display: inline-block;
+  padding: 4px 8px;
+  border: 2px #AAAAAA dashed;
+  border-radius: 6px;
 }
