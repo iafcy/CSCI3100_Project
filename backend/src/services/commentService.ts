@@ -1,4 +1,31 @@
 import supabase from '../utils/supabase';
+import * as cheerio from 'cheerio';
+
+const filterHiddenContent = (html: string) => {
+  const $ = cheerio.load(html);
+  
+  $('.hidden-content').remove();
+
+  $('p').each((_, p) => {
+    if ($(p).text().trim() === '') {
+      $(p).remove();
+    }
+  });
+
+  $('li').each((_, li) => {
+    if ($(li).children().length === 0 && $(li).text().trim() === '') {
+      $(li).remove();
+    }
+  });
+
+  $('ul, ol').each((_, list) => {
+    if ($(list).children().length === 0) {
+      $(list).remove();
+    }
+  });
+  
+  return $('body').html();
+}
 
 const createComment = async (
   userId: number,
@@ -7,6 +34,7 @@ const createComment = async (
 ) => {
   const { data, error } = await supabase.from('comments').insert({
     content,
+    filtered_content: filterHiddenContent(content),
     thread_id: threadId,
     user_id: userId
   }).select();
