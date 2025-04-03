@@ -21,7 +21,6 @@ export default function ThreadListItem({
   useEffect(() => {
     if (Number(activeThreadId) == thread.id) {
       setThread(thread);
-      document.title = `${thread.title} | CUHKG`;
     }
   }, [activeThreadId]);
 

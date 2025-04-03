@@ -16,6 +16,7 @@ import Settings from './Settings';
 import { useTheme } from '@mui/material';
 import UserDialog from '../Auth/UserDialog';
 import useCategoies from '../../hooks/useCategories';
+import useThread from '../../hooks/useThreads';
 
 export default function TemporaryDrawer() {
   const navigate = useNavigate();
@@ -23,14 +24,19 @@ export default function TemporaryDrawer() {
   const [open, setOpen] = React.useState(false);
   const { categories, activeCategory, setActiveCategory } = useCategoies();
   const { categoryId } = useParams();
+  const { thread } = useThread();
 
   React.useEffect(() => {
-    const category = categories.find(c => c.id === Number(categoryId));
-    if (category) {
-      setActiveCategory(category);
-      document.title = `${category.name} | CUHKG`;
+    if (thread) {
+      document.title = `${thread.title} | CUHKG`;
+    } else {
+      const category = categories.find(c => c.id === Number(categoryId));
+      if (category) {
+        setActiveCategory(category);
+        document.title = `${category.name} | CUHKG`;
+      }
     }
-  }, [categoryId, categories]);
+  }, [categoryId, categories, thread]);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);

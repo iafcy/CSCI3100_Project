@@ -122,7 +122,6 @@ export default function EditorDialog({
         <Box sx={{
           flex: 1,
           overflow: 'hidden',
-          p: 1
         }}>
           <TiptapEditor
             content={threadContent}
