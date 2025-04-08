@@ -43,29 +43,39 @@ const getThreadPageById = async (
   return { data, error };
 }
 
-const getOutboxThreadsCount = async (
-  userId: number,
+const getUserNameById = async (
+  userId: number
 ) => {
-  // dummy count
-  return 10;
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('username')
+    .eq('id', userId)
+    .single();
+
+  return { data, error };
 }
 
-const getOutboxThreads = async (
+const getUserThreadsCount = async (
   userId: number,
 ) => {
-  return [
-    // dummy threads
-    {id: 1, username: 'User 1', title: `Outbox thread 1`, categoryId: 1},
-    {id: 2, username: 'User 1', title: `Outbox thread 2`, categoryId: 2},
-    {id: 3, username: 'User 1', title: `Outbox thread 3`, categoryId: 3},
-    {id: 4, username: 'User 1', title: `Outbox thread 4`, categoryId: 4},
-    {id: 5, username: 'User 1', title: `Outbox thread 5`, categoryId: 5},
-    {id: 6, username: 'User 1', title: `Outbox thread 6`, categoryId: 1},
-    {id: 7, username: 'User 1', title: `Outbox thread 7`, categoryId: 2},
-    {id: 8, username: 'User 1', title: `Outbox thread 8`, categoryId: 3},
-    {id: 9, username: 'User 1', title: `Outbox thread 9`, categoryId: 4},
-    {id: 10, username: 'User 1', title: `Outbox thread 10`, categoryId: 5},
-  ];
+  const { data, error, status, count } = await supabase
+    .from('threads')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', userId);
+
+  return { count, error };
+}
+
+const getUserThreads = async (
+  userId: number,
+) => {
+  const { data, error } = await supabase
+    .rpc('get_user_threads_with_counts', {
+      return_limit: 20,
+      current_user_id: userId
+    });
+
+  return { data, error };
 }
 
 const getFollowingThreadsCount = async (
@@ -136,8 +146,9 @@ export default {
   createThread,
   getThreadPageCountById,
   getThreadPageById,
-  getOutboxThreadsCount,
-  getOutboxThreads,
+  getUserNameById,
+  getUserThreadsCount,
+  getUserThreads,
   getFollowingThreadsCount,
   getFollowingThreads,
   likeThreadById,

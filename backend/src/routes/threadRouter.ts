@@ -9,9 +9,9 @@ router
   .route('/')
   .post(authRequired, threadController.createThread)
 
+router.route('/following').get(authRequired, threadController.getFollowingThreads)
+router.route('/user/:userId').get(threadController.getUserThreads)
 router.route('/:threadId').get(authOptional, threadController.getThreads)
-router.route('/:threadId/outbox').get(authRequired, threadController.getOutboxThreads)
-router.route('/:threadId/following').get(authRequired, threadController.getFollowingThreads)
 
 router.route('/:threadId/like').post(authRequired, threadController.likeThread)
 router.route('/:threadId/dislike').post(authRequired, threadController.dislikeThread)
