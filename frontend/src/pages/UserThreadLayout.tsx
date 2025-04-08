@@ -9,24 +9,34 @@ import { useTheme } from '@mui/material';
 import { Thread } from '../types/types';
 import axios from "../utils/axios";
 import useAuth from '../hooks/useAuth';
+import useNav from '../hooks/useNav';
 
-export default function MainLayout() {
+export default function UserThreadLayout() {
   const theme = useTheme();
-  const { categoryId, threadId } = useParams();
+  const { userId, threadId } = useParams();
   const { user } = useAuth();
+  const { setActiveUserProfile } = useNav();
 
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
+  if (!userId) {
+    return null;
+  }
+
   useEffect(() => {
     setLoading(true);
 
-    axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/category/${categoryId}`)
+    axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/thread/user/${userId}`)
       .then((response) => {
         setThreads(response.data.data.threads);
+        setActiveUserProfile({
+          userId: userId,
+          username: response.data.data.username
+        });
       })
       .finally(() => setLoading(false));
-  }, [categoryId, user]);
+  }, [userId, user]);
 
   return (
     <Container
@@ -75,10 +85,10 @@ export default function MainLayout() {
             }}
           >
             <ThreadList
-              id={Number(categoryId)}
+              id={userId}
               loading={loading}
               threads={threads}
-              page='category'
+              page='user'
             />
           </Box>
           <Box

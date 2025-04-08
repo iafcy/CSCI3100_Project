@@ -11,7 +11,7 @@ import axios from '../../utils/axios';
 import ReplyIcon from '@mui/icons-material/Reply';
 import CommentEditorDialog from '../Editor/CommentEditorDialog';
 import useThread from '../../hooks/useThreads';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import AuthDialog from '../Auth/AuthDialog';
 
@@ -123,7 +123,14 @@ export default function CommentListItem({
           <Typography component="h6" color={thread.user_id == comment.user_id ? theme.palette.primary.main : theme.palette.secondary.main}>
             #{(index + 1) + (Number(page) - 1) * 10} 
           </Typography>
-          <Typography component="h6" color='#34aadc'>
+          <Typography
+            component={Link}
+            color='#34aadc'
+            to={`/user/${comment.user_id}`}
+            sx={{
+              textDecoration: 'none'
+            }}
+          >
             {comment.username}
           </Typography>
         </Box>

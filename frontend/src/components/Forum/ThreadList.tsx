@@ -1,31 +1,18 @@
-import { useState, useEffect } from 'react';
-import axios from '../../utils/axios';
 import List from '@mui/material/List';
 import ThreadListItem from './ThreadListItem';
 import ThreadListItemSkeleton from './ThreadListItemSkeleton';
 import { Thread } from '../../types/types';
 import { useTheme } from '@mui/material';
-import useAuth from '../../hooks/useAuth';
 
 export default function ThreadList({
-  categoryId
+  id, loading, threads, page
 }: {
-  categoryId: number;
+  id: number | string;
+  loading: boolean;
+  threads: Thread[];
+  page: 'category' | 'user';
 }) {
   const theme = useTheme();
-  const { user } = useAuth();
-  
-  const [threads, setThreads] = useState<Thread[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    setLoading(true);
-    axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/category/${categoryId}`)
-      .then((response) => {
-        setThreads(response.data.data.threads);
-      })
-      .finally(() => setLoading(false));
-  }, [categoryId, user]);
 
   return (
     <List
@@ -47,9 +34,10 @@ export default function ThreadList({
         threads.map((thread, i) => (
           <ThreadListItem
             key={thread.id}
-            categoryId={categoryId}
+            id={id}
             thread={thread}
             isLast={i == threads.length - 1}
+            page={page}
           />
         ))
       )}

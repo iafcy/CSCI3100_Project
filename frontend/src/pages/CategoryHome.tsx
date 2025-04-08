@@ -1,9 +1,9 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import useCategoies from '../hooks/useCategories';
+import useNav from '../hooks/useNav';
 
 export default function CategoryHome() {
-  const { activeCategory } = useCategoies();
+  const { activeCategory } = useNav();
 
   if (!activeCategory) {
     return null;

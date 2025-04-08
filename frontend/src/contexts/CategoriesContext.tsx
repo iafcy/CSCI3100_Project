@@ -4,14 +4,10 @@ import { Category } from '../types/types';
 
 type CategoriesContextType = {
   categories: Category[];
-  activeCategory: Category | null;
-  setActiveCategory: React.Dispatch<React.SetStateAction<Category | null>>;
 }
 
 const CategoriesContext = createContext<CategoriesContextType>({
   categories: [],
-  activeCategory: null,
-  setActiveCategory: () => {},
 });
 
 function CategoriesProvider({
@@ -20,7 +16,6 @@ function CategoriesProvider({
   children: React.ReactNode
 }) {
   const [categories, setCategories] = useState<Category[]>([]);
-  const [activeCategory, setActiveCategory] = useState<Category | null>(null);
 
   useEffect(() => {
     axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/category/list`)
@@ -31,7 +26,7 @@ function CategoriesProvider({
 
   return (
     <CategoriesContext.Provider
-      value={{ categories, activeCategory, setActiveCategory }}
+      value={{ categories }}
     >
       {children}
     </CategoriesContext.Provider>
