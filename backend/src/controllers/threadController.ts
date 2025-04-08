@@ -48,19 +48,23 @@ const getThreads = async (req: any, res: any) => {
   }
 }
 
-const getOutboxThreads = async (req: any, res: any) => {
-  const userId = req.user.id;
+const getUserThreads = async (req: any, res: any) => {
+  const { userId } = req.params;
 
-  const threadsCount = await threadService.getOutboxThreadsCount(userId);
-  const threads = await threadService.getOutboxThreads(userId);
+  const { data: userData, error: userError} = await threadService.getUserNameById(userId);
+  const { count, error: countError } = await threadService.getUserThreadsCount(userId);
+  const { data, error } = await threadService.getUserThreads(userId);
 
-  return res.status(200).json({
-    message: 'success',
-    data: {
-      threadsCount: Number(threadsCount),
-      threads
-    }
-  });
+  if (!error && !countError && !userError) {
+    return res.status(200).json({
+      message: 'success',
+      data: {
+        username: userData?.username,
+        threadsCount: Number(count),
+        threads: data
+      }
+    });
+  }
 }
 
 const getFollowingThreads = async (req: any, res: any) => {
@@ -123,7 +127,7 @@ const removeReaction = async (req: any, res: any) => {
 export default {
   createThread,
   getThreads,
-  getOutboxThreads,
+  getUserThreads,
   getFollowingThreads,
   likeThread,
   dislikeThread,

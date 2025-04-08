@@ -8,11 +8,12 @@ import useThread from '../../hooks/useThreads';
 import { useEffect } from 'react';
 
 export default function ThreadListItem({
-  thread, isLast, categoryId
+  thread, isLast, id, page
 }: {
   thread: Thread;
   isLast: boolean;
-  categoryId: number;
+  id: number | string;
+  page: 'category' | 'user';
 }) {
   const { threadId: activeThreadId } = useParams();
   const theme = useTheme();
@@ -27,7 +28,10 @@ export default function ThreadListItem({
   return (
     <ListItem
       disablePadding
-      component={Link} to={`/category/${categoryId}/thread/${thread.id}`}
+      component={Link}
+      to={page == 'category'
+        ? `/category/${id}/thread/${thread.id}`
+        : `/user/${id}/thread/${thread.id}`}
       sx={{
         display: 'flex',
         flexDirection: 'column',

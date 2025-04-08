@@ -1,4 +1,3 @@
-import { equal } from 'assert';
 import categoryService from '../services/categoryService';
 
 const getCategory = async (req: any, res: any) => {
@@ -18,7 +17,7 @@ const getThreads = async (req: any, res: any) => {
   const { categoryId } = req.params;
   const userId = req.user?.id ?? null;
 
-  const { count, error: countError }= await categoryService.getThreadsCountByCategoryId(categoryId);
+  const { count, error: countError } = await categoryService.getThreadsCountByCategoryId(categoryId);
   const { data, error } = await categoryService.getThreadsByCategoryId(categoryId, userId);
 
   if (!error && !countError) {

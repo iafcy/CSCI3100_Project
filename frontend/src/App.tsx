@@ -15,6 +15,8 @@ import './App.css';
 import { CategoriesProvider } from "./contexts/CategoriesContext";
 import { ThreadProvider } from "./contexts/ThreadContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { NavProvider } from "./contexts/NavContext";
+import UserThreadLayout from "./pages/UserThreadLayout";
 
 function App() {
   return (
@@ -26,15 +28,20 @@ function App() {
       <AuthProvider>
         <CategoriesProvider>
           <ThreadProvider>
-            <Router>
-              <Routes>
-                <Route path="/" element={<Navigate to="/category/1" replace />} />
-                <Route path="/category/:categoryId" element={<MainLayout />}>
-                  <Route index element={<CategoryHome />} />
-                  <Route path="thread/:threadId" element={<Thread />} />
-                </Route>
-              </Routes>
-            </Router>
+            <NavProvider>
+              <Router>
+                <Routes>
+                  <Route path="/" element={<Navigate to="/category/1" replace />} />
+                  <Route path="/category/:categoryId" element={<MainLayout />}>
+                    <Route index element={<CategoryHome />} />
+                    <Route path="thread/:threadId" element={<Thread />} />
+                  </Route>
+                  <Route path="/user/:userId" element={<UserThreadLayout />}>
+                    <Route path="thread/:threadId" element={<Thread />} />
+                  </Route>
+                </Routes>
+              </Router>
+            </NavProvider>
           </ThreadProvider>
         </CategoriesProvider>
       </AuthProvider>

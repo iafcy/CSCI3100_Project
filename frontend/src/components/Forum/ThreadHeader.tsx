@@ -16,7 +16,7 @@ import AuthDialog from '../Auth/AuthDialog';
 
 export default function ThreadHeader () {
   const theme = useTheme();
-  const { categoryId, threadId } = useParams();
+  const { categoryId, threadId, userId } = useParams();
   const navigate = useNavigate();
   const { thread, setThread } = useThread();
   const { user } = useAuth();
@@ -89,7 +89,11 @@ export default function ThreadHeader () {
 
   const handleBack = () => {
     setThread(null);
-    navigate(`/category/${categoryId}`);
+    if (categoryId) {
+      navigate(`/category/${categoryId}`);
+    } else if (userId) {
+      navigate(`/user/${userId}`);
+    }
   }
 
   return (

@@ -11,15 +11,15 @@ import ThreadEditorDialog from '../components/Editor/ThreadEditorDialog';
 import { useParams } from "react-router-dom";
 import { useTheme } from '@mui/material';
 import ThreadHeader from './Forum/ThreadHeader';
-import useCategoies from '../hooks/useCategories';
+import useNav from '../hooks/useNav';
 import useAuth from '../hooks/useAuth';
 import AuthDialog from './Auth/AuthDialog';
 
 export default function Navbar() {
-  const { threadId } = useParams();
+  const { threadId, categoryId, userId } = useParams();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const { activeCategory } = useCategoies();
+  const { activeCategory, activeUserProfile } = useNav();
   const { session } = useAuth();
     
   const handleOpen = (event: React.MouseEvent) => {
@@ -68,9 +68,17 @@ export default function Navbar() {
         >
           <Toolbar>
             <DrawerMenu />
-            <Typography variant="h6" component="div" align="center" sx={{ flexGrow: 1 }}>
-              {activeCategory?.name}
-            </Typography>
+            
+            {categoryId && 
+              <Typography variant="h6" component="div" align="center" sx={{ flexGrow: 1 }}>
+                {activeCategory?.name}
+              </Typography>
+            }
+            {userId && 
+              <Typography variant="h6" component="div" align="center" sx={{ flexGrow: 1 }}>
+                {activeUserProfile?.username}
+              </Typography>
+            }
 
             <IconButton
               color="inherit"

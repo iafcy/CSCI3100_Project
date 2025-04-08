@@ -17,24 +17,30 @@ import { useTheme } from '@mui/material';
 import UserDialog from '../Auth/UserDialog';
 import useCategoies from '../../hooks/useCategories';
 import useThread from '../../hooks/useThreads';
+import useNav from '../../hooks/useNav';
+import useAuth from '../../hooks/useAuth';
 
 export default function TemporaryDrawer() {
   const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const { categories, activeCategory, setActiveCategory } = useCategoies();
-  const { categoryId } = useParams();
+  const { categories } = useCategoies();
+  const { activeCategory, setActiveCategory, activeUserProfile } = useNav();
+  const { categoryId, userId, threadId } = useParams();
   const { thread } = useThread();
+  const { user } = useAuth();
 
   React.useEffect(() => {
-    if (thread) {
+    if (thread && threadId) {
       document.title = `${thread.title} | CUHKG`;
-    } else {
+    } else if (categoryId) {
       const category = categories.find(c => c.id === Number(categoryId));
       if (category) {
         setActiveCategory(category);
         document.title = `${category.name} | CUHKG`;
       }
+    } else if (userId) {
+      document.title = `${activeUserProfile?.username} | CUHKG`;
     }
   }, [categoryId, categories, thread]);
 
@@ -98,16 +104,29 @@ export default function TemporaryDrawer() {
 
           <Divider sx={{ my: 2 }} />
 
-          <ListItem disablePadding>
-            <ListItemButton>
+          <ListItem
+            disablePadding
+            component={user ? Link : 'div'}
+            to={user ? `/user/${user?.id}` : undefined}
+            sx={{
+              color: user?.id == userId && userId ? theme.palette.primary.main : theme.palette.text.primary
+            }}
+          >
+            <ListItemButton disabled={!user} >
               <ListItemIcon>
                 <OutboxIcon sx={{ color: theme.palette.text.primary }} />
               </ListItemIcon>
               <ListItemText primary="Outbox" />
             </ListItemButton>
           </ListItem>
-          <ListItem disablePadding>
-            <ListItemButton>
+          <ListItem
+            disablePadding
+            component={user ? Link : 'div'}
+            sx={{
+              color: theme.palette.text.primary
+            }}
+          >
+            <ListItemButton disabled={!user}>
               <ListItemIcon>
                 <PeopleIcon sx={{ color: theme.palette.text.primary }} />
               </ListItemIcon>
@@ -122,7 +141,7 @@ export default function TemporaryDrawer() {
               key={category.id}
               disablePadding
               sx={{
-                color: activeCategory?.id == category.id ? theme.palette.primary.main : theme.palette.text.primary
+                color: activeCategory?.id == category.id && categoryId ? theme.palette.primary.main : theme.palette.text.primary
               }}
             >
               <ListItemButton onClick={() => handleLinkClick(`/category/${category.id}`)}>
