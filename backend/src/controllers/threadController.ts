@@ -50,10 +50,15 @@ const getThreads = async (req: any, res: any) => {
 
 const getUserThreads = async (req: any, res: any) => {
   const { userId } = req.params;
+  const { sort_by = 'time' } = req.query; // sort by time or likes
+
+  if (!['time', 'likes'].includes(sort_by)) {
+    return res.status(400).json({ message: "Invalid sort_by parameter. Use 'time' or 'likes'." });
+  }
 
   const { data: userData, error: userError} = await threadService.getUserNameById(userId);
   const { count, error: countError } = await threadService.getUserThreadsCount(userId);
-  const { data, error } = await threadService.getUserThreads(userId);
+  const { data, error } = await threadService.getUserThreads(userId, sort_by);
 
   if (!error && !countError && !userError) {
     return res.status(200).json({

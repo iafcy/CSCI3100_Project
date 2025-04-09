@@ -3,17 +3,24 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Navbar from '../components/Navbar';
 import ThreadList from '../components/Forum/ThreadList';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import { useTheme } from '@mui/material';
 import { Thread } from '../types/types';
 import axios from "../utils/axios";
 import useAuth from '../hooks/useAuth';
+import { a11yProps } from '../components/Shared/TabPanel';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
 export default function MainLayout() {
   const theme = useTheme();
   const { categoryId, threadId } = useParams();
   const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+  const sortBy = searchParams.get('sort_by') || 'time';
 
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -21,12 +28,12 @@ export default function MainLayout() {
   useEffect(() => {
     setLoading(true);
 
-    axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/category/${categoryId}`)
+    axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/category/${categoryId}?sort_by=${sortBy}`)
       .then((response) => {
         setThreads(response.data.data.threads);
       })
       .finally(() => setLoading(false));
-  }, [categoryId, user]);
+  }, [categoryId, user, sortBy]);
 
   return (
     <Container
@@ -74,11 +81,18 @@ export default function MainLayout() {
               }
             }}
           >
+            <Tabs
+              value={sortBy == 'time' ? 0 : 1}
+              onChange={(_, num) => {navigate(`/category/${categoryId}?sort_by=${num == 0 ? 'time' : 'likes'}`)}}
+              variant="fullWidth"
+            >
+              <Tab label="Recent" {...a11yProps(0)} sx={{ fontWeight: 700 }} />
+              <Tab label="Popular" {...a11yProps(1)} sx={{ fontWeight: 700 }} />
+            </Tabs>
             <ThreadList
               id={Number(categoryId)}
               loading={loading}
               threads={threads}
-              page='category'
             />
           </Box>
           <Box
