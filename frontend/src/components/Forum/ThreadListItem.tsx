@@ -1,23 +1,25 @@
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { Thread } from '../../types/types';
 import { useTheme } from '@mui/material';
 import useThread from '../../hooks/useThreads';
 import { useEffect } from 'react';
 
 export default function ThreadListItem({
-  thread, isLast, id, page
+  thread, isLast
 }: {
   thread: Thread;
   isLast: boolean;
   id: number | string;
-  page: 'category' | 'user';
 }) {
   const { threadId: activeThreadId } = useParams();
   const theme = useTheme();
   const { setThread } = useThread();
+
+  const [searchParams] = useSearchParams();
+  const sortBy = searchParams.get('sort_by');
 
   useEffect(() => {
     if (Number(activeThreadId) == thread.id) {
@@ -29,9 +31,7 @@ export default function ThreadListItem({
     <ListItem
       disablePadding
       component={Link}
-      to={page == 'category'
-        ? `/category/${id}/thread/${thread.id}`
-        : `/user/${id}/thread/${thread.id}`}
+      to={sortBy == null ? `thread/${thread.id}` : `thread/${thread.id}?sort_by=${sortBy}`}
       sx={{
         display: 'flex',
         flexDirection: 'column',

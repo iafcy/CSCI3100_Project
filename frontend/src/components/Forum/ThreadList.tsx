@@ -5,12 +5,11 @@ import { Thread } from '../../types/types';
 import { useTheme } from '@mui/material';
 
 export default function ThreadList({
-  id, loading, threads, page
+  id, loading, threads
 }: {
   id: number | string;
   loading: boolean;
   threads: Thread[];
-  page: 'category' | 'user';
 }) {
   const theme = useTheme();
 
@@ -37,7 +36,6 @@ export default function ThreadList({
             id={id}
             thread={thread}
             isLast={i == threads.length - 1}
-            page={page}
           />
         ))
       )}
