@@ -68,11 +68,13 @@ const getUserThreadsCount = async (
 
 const getUserThreads = async (
   userId: number,
+  sort_by: 'time' | 'likes',
 ) => {
   const { data, error } = await supabase
     .rpc('get_user_threads_with_counts', {
       return_limit: 20,
-      current_user_id: userId
+      current_user_id: userId,
+      sort_by: sort_by
     });
 
   return { data, error };
