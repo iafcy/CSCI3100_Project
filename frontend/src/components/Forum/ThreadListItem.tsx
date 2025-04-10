@@ -6,6 +6,9 @@ import { Thread } from '../../types/types';
 import { useTheme } from '@mui/material';
 import useThread from '../../hooks/useThreads';
 import { useEffect } from 'react';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 export default function ThreadListItem({
   thread, isLast
@@ -20,6 +23,8 @@ export default function ThreadListItem({
 
   const [searchParams] = useSearchParams();
   const sortBy = searchParams.get('sort_by');
+
+  dayjs.extend(relativeTime);
 
   useEffect(() => {
     if (Number(activeThreadId) == thread.id) {
@@ -52,16 +57,46 @@ export default function ThreadListItem({
         sx={{
           display: 'flex',
           flexDirection: 'row',
+          justifyContent: 'space-between',
+          width: '100%'
         }}
       >
         <Typography component="h6">
           {thread.username}
         </Typography>
+        <Typography
+          sx={{
+            flexShrink: 0,
+            color: Number(activeThreadId) == thread.id ? theme.palette.primary.main : theme.palette.secondary.main
+          }}  
+        >
+          {dayjs(thread.created_at).fromNow()}
+        </Typography>
       </Box>
-      <Box>
-        <Typography component="div">
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          width: '100%',
+        }}
+      >
+        <Typography component="h6">
           {thread.title}
         </Typography>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 1,
+            flexShrink: 0,
+            color: Number(activeThreadId) == thread.id ? theme.palette.primary.main : theme.palette.secondary.main
+          }}
+        >
+          <ThumbUpIcon fontSize='small' />
+          {thread.like}
+        </Box>
       </Box>
     </ListItem>
   )

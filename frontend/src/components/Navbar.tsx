@@ -47,7 +47,7 @@ export default function Navbar() {
           borderBottomStyle: 'solid',
           borderBottomColor: theme.palette.divider,
           alignItems: 'center',
-          height: 56
+          height: 64
         }}
       >
         <Box

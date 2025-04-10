@@ -14,6 +14,8 @@ import useThread from '../../hooks/useThreads';
 import { Link, useSearchParams } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import AuthDialog from '../Auth/AuthDialog';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 
 export default function CommentListItem({
   comment, index
@@ -30,6 +32,8 @@ export default function CommentListItem({
   const [open, setOpen] = useState(false);
   const [searchParams, _] = useSearchParams();
   const page = searchParams.get('page') || 1;
+
+  dayjs.extend(relativeTime);
 
   if (!thread) {
     return null;
@@ -117,7 +121,7 @@ export default function CommentListItem({
           sx={{
             display: 'flex',
             flexDirection: 'row',
-            gap: 2
+            gap: 1
           }}
         >
           <Typography component="h6" color={thread.user_id == comment.user_id ? theme.palette.primary.main : theme.palette.secondary.main}>
@@ -132,6 +136,20 @@ export default function CommentListItem({
             }}
           >
             {comment.username}
+          </Typography>
+          <Typography
+            sx={{
+              color: theme.palette.secondary.main
+            }}
+          >
+            •
+          </Typography>
+          <Typography
+            sx={{
+              color: theme.palette.secondary.main
+            }}
+          >
+            {dayjs(comment.created_at).fromNow()}
           </Typography>
         </Box>
 
