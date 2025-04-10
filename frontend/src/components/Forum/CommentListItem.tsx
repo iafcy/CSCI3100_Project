@@ -16,6 +16,7 @@ import useAuth from '../../hooks/useAuth';
 import AuthDialog from '../Auth/AuthDialog';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import UserActionDialog from './UserActionDialog';
 
 export default function CommentListItem({
   comment, index
@@ -127,16 +128,7 @@ export default function CommentListItem({
           <Typography component="h6" color={thread.user_id == comment.user_id ? theme.palette.primary.main : theme.palette.secondary.main}>
             #{(index + 1) + (Number(page) - 1) * 10} 
           </Typography>
-          <Typography
-            component={Link}
-            color='#34aadc'
-            to={`/user/${comment.user_id}`}
-            sx={{
-              textDecoration: 'none'
-            }}
-          >
-            {comment.username}
-          </Typography>
+          <UserActionDialog username={comment.username} userId={comment.user_id} />
           <Typography
             sx={{
               color: theme.palette.secondary.main
