@@ -90,7 +90,6 @@ export default function MainLayout() {
               <Tab label="Popular" {...a11yProps(1)} sx={{ fontWeight: 700 }} />
             </Tabs>
             <ThreadList
-              id={Number(categoryId)}
               loading={loading}
               threads={threads}
             />

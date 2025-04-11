@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from '../../utils/axios';
 import { useTheme } from '@mui/material';
 import ReplyIcon from '@mui/icons-material/Reply';
@@ -20,6 +20,7 @@ export default function ThreadHeader () {
   const navigate = useNavigate();
   const { thread, setThread } = useThread();
   const { user } = useAuth();
+  const location = useLocation();
 
   const [likeCount, setLikeCount] = useState<number>(0);
   const [dislikeCount, setDislikeCount] = useState<number>(0);
@@ -93,6 +94,8 @@ export default function ThreadHeader () {
       navigate(`/category/${categoryId}`);
     } else if (userId) {
       navigate(`/user/${userId}`);
+    } else if (location.pathname.startsWith('/following')) {
+      navigate('/following');
     }
   }
 
