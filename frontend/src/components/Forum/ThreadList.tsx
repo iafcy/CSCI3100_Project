@@ -6,9 +6,8 @@ import { useTheme } from '@mui/material';
 import useUser from '../../hooks/useUser';
 
 export default function ThreadList({
-  id, loading, threads
+  loading, threads
 }: {
-  id: number | string;
   loading: boolean;
   threads: Thread[];
 }) {
@@ -36,10 +35,9 @@ export default function ThreadList({
           (
             !isBlocking(thread.user_id) &&
             <ThreadListItem
-            key={thread.id}
-            id={id}
-            thread={thread}
-            isLast={i == threads.length - 1}
+              key={thread.id}
+              thread={thread}
+              isLast={i == threads.length - 1}
             />
           )
         ))

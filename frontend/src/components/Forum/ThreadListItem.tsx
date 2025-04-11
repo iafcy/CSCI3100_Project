@@ -15,7 +15,6 @@ export default function ThreadListItem({
 }: {
   thread: Thread;
   isLast: boolean;
-  id: number | string;
 }) {
   const { threadId: activeThreadId } = useParams();
   const theme = useTheme();

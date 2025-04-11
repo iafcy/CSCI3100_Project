@@ -11,7 +11,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import OutboxIcon from '@mui/icons-material/Outbox';
 import PeopleIcon from '@mui/icons-material/People';
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import Settings from './Settings';
 import { useTheme } from '@mui/material';
 import UserDialog from '../Auth/UserDialog';
@@ -29,6 +29,7 @@ export default function TemporaryDrawer() {
   const { categoryId, userId, threadId } = useParams();
   const { thread } = useThread();
   const { user } = useAuth();
+  const location = useLocation();
 
   React.useEffect(() => {
     if (thread && threadId) {
@@ -114,7 +115,7 @@ export default function TemporaryDrawer() {
           >
             <ListItemButton disabled={!user} >
               <ListItemIcon>
-                <OutboxIcon sx={{ color: theme.palette.text.primary }} />
+                <OutboxIcon sx={{ color: user?.id == userId && userId ? theme.palette.primary.main : theme.palette.text.primary }} />
               </ListItemIcon>
               <ListItemText primary="Outbox" />
             </ListItemButton>
@@ -122,13 +123,14 @@ export default function TemporaryDrawer() {
           <ListItem
             disablePadding
             component={user ? Link : 'div'}
+            to={user ? '/following/' : undefined}
             sx={{
-              color: theme.palette.text.primary
+              color: location.pathname.startsWith('/following') ? theme.palette.primary.main : theme.palette.text.primary
             }}
           >
             <ListItemButton disabled={!user}>
               <ListItemIcon>
-                <PeopleIcon sx={{ color: theme.palette.text.primary }} />
+                <PeopleIcon sx={{ color: location.pathname.startsWith('/following') ? theme.palette.primary.main : theme.palette.text.primary }} />
               </ListItemIcon>
               <ListItemText primary="Following" />
             </ListItemButton>

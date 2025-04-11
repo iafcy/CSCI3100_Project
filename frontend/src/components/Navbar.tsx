@@ -8,7 +8,7 @@ import DrawerMenu from './Menu/DrawerMenu';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import ThreadEditorDialog from '../components/Editor/ThreadEditorDialog';
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useTheme } from '@mui/material';
 import ThreadHeader from './Forum/ThreadHeader';
 import useNav from '../hooks/useNav';
@@ -17,6 +17,7 @@ import AuthDialog from './Auth/AuthDialog';
 
 export default function Navbar() {
   const { threadId, categoryId, userId } = useParams();
+  const location = useLocation();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const { activeCategory, activeUserProfile } = useNav();
@@ -77,6 +78,11 @@ export default function Navbar() {
             {userId && 
               <Typography variant="h6" component="div" align="center" sx={{ flexGrow: 1 }}>
                 {activeUserProfile?.username}
+              </Typography>
+            }
+            {location.pathname.startsWith('/following') && 
+              <Typography variant="h6" component="div" align="center" sx={{ flexGrow: 1 }}>
+                Following
               </Typography>
             }
 

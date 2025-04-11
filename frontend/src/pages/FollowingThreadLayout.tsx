@@ -9,16 +9,19 @@ import { useTheme } from '@mui/material';
 import { Thread } from '../types/types';
 import axios from "../utils/axios";
 import useAuth from '../hooks/useAuth';
-import useNav from '../hooks/useNav';
 import { a11yProps } from '../components/Shared/TabPanel';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
-export default function UserThreadLayout() {
-  const theme = useTheme();
-  const { userId, threadId } = useParams();
+export default function FollowingThreadLayout() {
   const { user } = useAuth();
-  const { setActiveUserProfile } = useNav();
+
+  if (!user) {
+    return null;
+  }
+
+  const theme = useTheme();
+  const { threadId } = useParams();
   const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
@@ -27,23 +30,15 @@ export default function UserThreadLayout() {
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  if (!userId) {
-    return null;
-  }
-
   useEffect(() => {
     setLoading(true);
 
-    axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/thread/user/${userId}?sort_by=${sortBy}`)
+    axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/thread/following?sort_by=${sortBy}`)
       .then((response) => {
         setThreads(response.data.data.threads);
-        setActiveUserProfile({
-          userId: userId,
-          username: response.data.data.username
-        });
       })
       .finally(() => setLoading(false));
-  }, [userId, user, sortBy]);
+  }, [user, sortBy]);
 
   return (
     <Container
@@ -93,7 +88,7 @@ export default function UserThreadLayout() {
           >
             <Tabs
               value={sortBy == 'time' ? 0 : 1}
-              onChange={(_, num) => {navigate(`/user/${userId}?sort_by=${num == 0 ? 'time' : 'likes'}`)}}
+              onChange={(_, num) => {navigate(`/following?sort_by=${num == 0 ? 'time' : 'likes'}`)}}
               variant="fullWidth"
             >
               <Tab label="Recent" {...a11yProps(0)} sx={{ fontWeight: 700 }} />

@@ -18,6 +18,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { NavProvider } from "./contexts/NavContext";
 import { UserProvider } from "./contexts/UserContext";
 import UserThreadLayout from "./pages/UserThreadLayout";
+import FollowingThreadLayout from "./pages/FollowingThreadLayout";
 
 function App() {
   return (
@@ -39,6 +40,9 @@ function App() {
                       <Route path="thread/:threadId" element={<Thread />} />
                     </Route>
                     <Route path="/user/:userId" element={<UserThreadLayout />}>
+                      <Route path="thread/:threadId" element={<Thread />} />
+                    </Route>
+                    <Route path="/following" element={<FollowingThreadLayout />}>
                       <Route path="thread/:threadId" element={<Thread />} />
                     </Route>
                   </Routes>
