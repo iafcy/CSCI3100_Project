@@ -11,6 +11,11 @@ import Avatar from '@mui/material/Avatar';
 import { Divider, useTheme } from '@mui/material';
 import supabase from '../../utils/supabase';
 import useAuth from '../../hooks/useAuth';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import FollowingListDialog from './FollowingListDialog';
+import BlockingListDialog from './BlockingListDialog';
 
 export default function AccountDialog({
   open, onClose
@@ -21,6 +26,8 @@ export default function AccountDialog({
   const { user } = useAuth();
   const theme = useTheme();
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [isOpenFollowingList, setIsOpenFollowingList] = React.useState<boolean>(false);
+  const [isOpenBlockingList, setIsOpenBlockingList] = React.useState<boolean>(false);
 
   const handleLogout = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
@@ -35,6 +42,16 @@ export default function AccountDialog({
       setLoading(false);
       onClose();
     }
+  }
+
+  const handleOpenFollowingList = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setIsOpenFollowingList(true);
+  }
+
+  const handleOpenBlockingList = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setIsOpenBlockingList(true);
   }
 
   return (
@@ -86,6 +103,48 @@ export default function AccountDialog({
           >
             <Avatar></Avatar>
             {user?.user_metadata.username}
+          </ListItem>
+
+          <Divider />
+
+          <ListItem
+            disablePadding
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+            }}
+          >
+            <ListItemButton sx={{ py: 1 }} onClick={handleOpenFollowingList}>
+              <ListItemText primary="Following list" />
+              <ArrowForwardIosIcon />
+            </ListItemButton>
+
+            <FollowingListDialog
+              open={isOpenFollowingList}
+              onClose={() => setIsOpenFollowingList(false)}
+            />
+          </ListItem>
+
+          <Divider />
+
+          <ListItem
+            disablePadding
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+            }}
+          >
+            <ListItemButton sx={{ py: 1 }} onClick={handleOpenBlockingList}>
+              <ListItemText primary="Blocking list" />
+              <ArrowForwardIosIcon />
+            </ListItemButton>
+
+            <BlockingListDialog
+              open={isOpenBlockingList}
+              onClose={() => setIsOpenBlockingList(false)}
+            />
           </ListItem>
 
           <Divider />
