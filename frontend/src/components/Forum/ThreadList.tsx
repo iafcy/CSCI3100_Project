@@ -3,6 +3,7 @@ import ThreadListItem from './ThreadListItem';
 import ThreadListItemSkeleton from './ThreadListItemSkeleton';
 import { Thread } from '../../types/types';
 import { useTheme } from '@mui/material';
+import useUser from '../../hooks/useUser';
 
 export default function ThreadList({
   id, loading, threads
@@ -12,6 +13,7 @@ export default function ThreadList({
   threads: Thread[];
 }) {
   const theme = useTheme();
+  const { isBlocking } = useUser();
 
   return (
     <List
@@ -31,12 +33,15 @@ export default function ThreadList({
         </>
       ) : (
         threads.map((thread, i) => (
-          <ThreadListItem
+          (
+            !isBlocking(thread.user_id) &&
+            <ThreadListItem
             key={thread.id}
             id={id}
             thread={thread}
             isLast={i == threads.length - 1}
-          />
+            />
+          )
         ))
       )}
     </List>
