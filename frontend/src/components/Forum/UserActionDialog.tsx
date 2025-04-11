@@ -9,14 +9,20 @@ import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import { useTheme } from '@mui/material';
 import { Link } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 
 export default function UserActionDialog({
-  username, userId
+  username, userId, isFollowed, isBlocked, handleToggleFollow, handleToggleBlock
 } : {
   username: string;
   userId: number;
+  isFollowed: boolean;
+  isBlocked: boolean;
+  handleToggleFollow: () => void;
+  handleToggleBlock: () => void;
 }) {
   const theme = useTheme();
+  const { user } = useAuth();
 
   const [open, setOpen] = useState(false);
 
@@ -109,20 +115,24 @@ export default function UserActionDialog({
               Profile
             </Button>
             <Button
+              disabled={!user || user.id == String(userId)}
+              onClick={handleToggleFollow}
               sx={{
                 flex: 1,
                 py: 1
               }}
             >
-              Follow
+              {isFollowed ? 'Unfollow' : 'Follow'}
             </Button>
             <Button
+              disabled={!user || user.id == String(userId)}
+              onClick={handleToggleBlock}
               sx={{
                 flex: 1,
                 py: 1
               }}
             >
-              Block
+              {isBlocked ? 'Unblock' : 'Block'}
             </Button>
           </Box>
         </DialogContent>

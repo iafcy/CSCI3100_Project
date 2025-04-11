@@ -8,10 +8,12 @@ import axios from '../utils/axios';
 import useThread from '../hooks/useThreads';
 import CommentListItemSkeleton from '../components/Forum/CommentListItemSkeleton';
 import useAuth from '../hooks/useAuth';
+import useUser from '../hooks/useUser';
 
 export default function Thread() {
   const { threadId, categoryId } = useParams();
   const { user } = useAuth();
+  const { isFollowing, isBlocking } = useUser();
   
   const [searchParams, _] = useSearchParams();
   const page = searchParams.get('page') || 1;
@@ -50,6 +52,8 @@ export default function Thread() {
             key={comment.id}
             comment={comment}
             index={i}
+            isFollowingUser={isFollowing(comment.user_id)}
+            isBlockingUser={isBlocking(comment.user_id)}
           />
         ))
       )}
