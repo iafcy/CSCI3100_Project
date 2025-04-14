@@ -6,23 +6,23 @@ import ThreadList from '../components/Forum/ThreadList';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
 import { useTheme } from '@mui/material';
-import { Thread } from '../types/types';
 import axios from "../utils/axios";
 import useAuth from '../hooks/useAuth';
 import { a11yProps } from '../components/Shared/TabPanel';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import useThread from '../hooks/useThreads';
 
 export default function MainLayout() {
   const theme = useTheme();
   const { categoryId, threadId } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { threads, setThreads } = useThread();
 
   const [searchParams] = useSearchParams();
   const sortBy = searchParams.get('sort_by') || 'time';
 
-  const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {

@@ -29,7 +29,7 @@ export default function CommentListItem({
 }) {
   const { user } = useAuth();
   const theme = useTheme();
-  const { thread } = useThread();
+  const { activeThread } = useThread();
   const [likeCount, setLikeCount] = useState<number>(comment.like);
   const [dislikeCount, setDislikeCount] = useState<number>(comment.dislike);
   const [reaction, setReaction] = useState<'like' | 'dislike' | null>(comment.user_reaction);
@@ -42,7 +42,7 @@ export default function CommentListItem({
 
   dayjs.extend(relativeTime);
 
-  if (!thread) {
+  if (!activeThread) {
     return null;
   }
     
@@ -165,7 +165,7 @@ export default function CommentListItem({
                 gap: 1
               }}
             >
-              <Typography component="h6" color={thread.user_id == comment.user_id ? theme.palette.primary.main : theme.palette.secondary.main}>
+              <Typography component="h6" color={activeThread.user_id == comment.user_id ? theme.palette.primary.main : theme.palette.secondary.main}>
                 #{(index + 1) + (Number(page) - 1) * 10} 
               </Typography>
               <UserActionDialog
@@ -204,11 +204,11 @@ export default function CommentListItem({
                 <CommentEditorDialog
                   open={open}
                   onClose={handleClose}
-                  treadTitle={thread.title}
-                  threadId={Number(thread.id)}
+                  treadTitle={activeThread.title}
+                  threadId={Number(activeThread.id)}
                   commentToReply={comment}
                   index={(index + 1) + (Number(page) - 1) * 10}
-                  isOp={comment.user_id == thread?.user_id}
+                  isOp={comment.user_id == activeThread?.user_id}
                 />
               ) : (
                 <AuthDialog

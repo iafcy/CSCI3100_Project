@@ -18,7 +18,7 @@ export default function ThreadListItem({
 }) {
   const { threadId: activeThreadId } = useParams();
   const theme = useTheme();
-  const { setThread } = useThread();
+  const { setActiveThread } = useThread();
 
   const [searchParams] = useSearchParams();
   const sortBy = searchParams.get('sort_by');
@@ -27,7 +27,7 @@ export default function ThreadListItem({
 
   useEffect(() => {
     if (Number(activeThreadId) == thread.id) {
-      setThread(thread);
+      setActiveThread(thread);
     }
   }, [activeThreadId]);
 
