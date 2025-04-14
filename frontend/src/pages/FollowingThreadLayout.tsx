@@ -16,13 +16,14 @@ import useThread from '../hooks/useThreads';
 export default function FollowingThreadLayout() {
   const { user } = useAuth();
 
-  if (!user) {
-    return null;
-  }
-
   const theme = useTheme();
   const { threadId } = useParams();
   const navigate = useNavigate();
+
+  if (!user) {
+    navigate('/');
+  }
+
   const { threads, setThreads } = useThread();
 
   const [searchParams] = useSearchParams();
