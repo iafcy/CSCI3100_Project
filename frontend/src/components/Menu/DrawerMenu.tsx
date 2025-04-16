@@ -27,13 +27,13 @@ export default function TemporaryDrawer() {
   const { categories } = useCategoies();
   const { activeCategory, setActiveCategory, activeUserProfile } = useNav();
   const { categoryId, userId, threadId } = useParams();
-  const { thread } = useThread();
+  const { activeThread } = useThread();
   const { user } = useAuth();
   const location = useLocation();
 
   React.useEffect(() => {
-    if (thread && threadId) {
-      document.title = `${thread.title} | CUHKG`;
+    if (activeThread && threadId) {
+      document.title = `${activeThread.title} | CUHKG`;
     } else if (categoryId) {
       const category = categories.find(c => c.id === Number(categoryId));
       if (category) {
@@ -42,8 +42,12 @@ export default function TemporaryDrawer() {
       }
     } else if (userId) {
       document.title = `${activeUserProfile?.username} | CUHKG`;
+    } else if (location.pathname.startsWith('/following')) {
+      document.title = 'Following | CUHKG';
+    } else {
+      document.title = 'CUHKG';
     }
-  }, [categoryId, categories, thread]);
+  }, [categoryId, categories, activeThread]);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);

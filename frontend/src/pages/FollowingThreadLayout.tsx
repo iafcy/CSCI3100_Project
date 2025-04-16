@@ -91,9 +91,10 @@ export default function FollowingThreadLayout() {
               value={sortBy == 'time' ? 0 : 1}
               onChange={(_, num) => {navigate(`/following?sort_by=${num == 0 ? 'time' : 'likes'}`)}}
               variant="fullWidth"
+              
             >
-              <Tab label="Recent" {...a11yProps(0)} sx={{ fontWeight: 700 }} />
-              <Tab label="Popular" {...a11yProps(1)} sx={{ fontWeight: 700 }} />
+              <Tab label="Recent" {...a11yProps(0)} sx={{ fontWeight: 700 }} disabled={threads.length == 0} />
+              <Tab label="Popular" {...a11yProps(1)} sx={{ fontWeight: 700 }} disabled={threads.length == 0} />
             </Tabs>
             <ThreadList
               loading={loading}

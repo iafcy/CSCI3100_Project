@@ -1,4 +1,6 @@
 import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import Typography from '@mui/material/Typography';
 import ThreadListItem from './ThreadListItem';
 import ThreadListItemSkeleton from './ThreadListItemSkeleton';
 import { Thread } from '../../types/types';
@@ -31,16 +33,34 @@ export default function ThreadList({
           <ThreadListItemSkeleton />
         </>
       ) : (
-        threads.map((thread, i) => (
-          (
-            !isBlocking(thread.user_id) &&
-            <ThreadListItem
-              key={thread.id}
-              thread={thread}
-              isLast={i == threads.length - 1}
-            />
-          )
-        ))
+        threads.length == 0 ? (
+          <ListItem
+            disablePadding
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              py: 2,
+              px: 4,
+              gap: 1,
+              mb: 6,
+              color: theme.palette.secondary.main
+            }}
+          >
+            <Typography>There is no threads here...</Typography>
+          </ListItem>
+        ) : (
+          threads.map((thread, i) => (
+            (
+              !isBlocking(thread.user_id) &&
+              <ThreadListItem
+                key={thread.id}
+                thread={thread}
+                isLast={i == threads.length - 1}
+              />
+            )
+          ))
+        )
       )}
     </List>
   );
