@@ -1,4 +1,4 @@
-import supabase from '../utils/supabase';
+import { supabase } from '../utils/supabase';
 import * as cheerio from 'cheerio';
 
 const filterHiddenContent = (html: string) => {
