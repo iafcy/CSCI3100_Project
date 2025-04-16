@@ -1,4 +1,4 @@
-import supabase from "../utils/supabase";
+import { supabase } from "../utils/supabase";
 
 const getCategoryList = async () => {
   const { data, error } = await supabase.from('categories').select().order('id', { ascending: true });
