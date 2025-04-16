@@ -9,22 +9,41 @@ const createThread = async (req: any, res: any) => {
   const title = payload.title;
   const content = payload.content;
 
-  const { data: threadData, error: threadError } = await threadService.createThread(
+  const { data: newThread, error: threadError } = await threadService.createThread(
     userId,
     categoryId,
     title,
   );
 
-  if (!threadError && threadData) {
-    const threadId = threadData[0].id;
-    const { data: commentData, error: commentError } = await commentService.createComment(userId, threadId, content);
+  if (!threadError) {
+    const { data: newComment, error: commentError } = await commentService.createComment(
+      userId,
+      newThread.id,
+      content
+    );
 
     if (!commentError) {
       return res.status(200).json({
         message: 'success',
-        data: threadData
+        data: {
+          ...newThread,
+          username: req.user.user_metadata.username,
+          like: 0,
+          dislike: 0,
+          user_reaction: null,
+        }
+      });
+    } else {
+      return res.status(500).json({
+        message: 'Internal server error',
+        error: commentError.message
       });
     }
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: threadError.message
+    })
   }
 }
 

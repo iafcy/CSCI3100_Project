@@ -37,7 +37,7 @@ const createComment = async (
     filtered_content: filterHiddenContent(content),
     thread_id: threadId,
     user_id: userId
-  }).select();
+  }).select().single();
 
   return { data, error };
 }

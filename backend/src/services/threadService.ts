@@ -11,7 +11,7 @@ const createThread = async (
     title,
     category_id: categoryId,
     user_id: userId
-  }).select();
+  }).select().single();
 
   return { data, error };
 }

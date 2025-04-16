@@ -16,7 +16,18 @@ const createComment = async (req: any, res: any) => {
   if (!error) {
     return res.status(200).json({
       message: 'success',
-      data: data
+      data: {
+        ...data,
+        username: req.user.user_metadata.username,
+        like: 0,
+        dislike: 0,
+        user_reaction: null,
+      }
+    });
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
     });
   }
 }
