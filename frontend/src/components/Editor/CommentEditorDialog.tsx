@@ -6,17 +6,15 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
 import { useTheme } from '@mui/material';
 import TiptapEditor from './TipTapEditor';
 import Button from '@mui/material/Button';
 import axios from '../../utils/axios';
-import { useNavigate } from "react-router-dom";
 import { Comment } from '../../types/types';
-import CommentToReply from './CommentToReply';
+import useThread from '../../hooks/useThreads';
 
 export default function EditorDialog({
-  open, onClose, treadTitle, threadId, commentToReply, index, isOp
+  open, onClose, treadTitle, threadId
 } : {
   open: boolean;
   onClose: () => void;
@@ -26,8 +24,8 @@ export default function EditorDialog({
   index?: number;
   isOp?: boolean;
 }) {
-  const navigate = useNavigate();
   const theme = useTheme();
+  const { comments, setComments } = useThread();
   const [commentContent, setCommentContent] = React.useState<string>('');
 
   const handleClose = () => {
@@ -45,10 +43,16 @@ export default function EditorDialog({
       content: commentContent,
     }
 
-    axios.post('/comment', data)
+    axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/comment`, data)
       .then(response => {
-        console.log(response);
-        // navigate(`/category/${selectedCategory}`);
+        console.log(response.data.data);
+
+        setComments([
+          ...comments,
+          response.data.data,
+        ])
+
+        setCommentContent('');
         onClose();
       })
       .catch(error => console.log(error));
@@ -96,14 +100,6 @@ export default function EditorDialog({
           overflowY: 'hidden'
         }}
       >
-        {commentToReply && index && isOp !== undefined &&
-          <>
-            <CommentToReply comment={commentToReply} index={index} isOp={isOp} />
-            <Divider sx={{ my: 1 }} />
-          </>
-        }
-
-
         <Box sx={{
           flex: 1,
           overflow: 'hidden',

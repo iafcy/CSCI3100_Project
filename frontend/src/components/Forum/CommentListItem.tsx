@@ -8,8 +8,6 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import { useTheme } from '@mui/material';
 import axios from '../../utils/axios';
-import ReplyIcon from '@mui/icons-material/Reply';
-import CommentEditorDialog from '../Editor/CommentEditorDialog';
 import useThread from '../../hooks/useThreads';
 import { useSearchParams } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
@@ -191,32 +189,6 @@ export default function CommentListItem({
                 {dayjs(comment.created_at).fromNow()}
               </Typography>
             </Box>
-
-            <Box>
-              <IconButton
-                color="inherit"
-                onClick={handleOpen}
-              >
-                <ReplyIcon />
-              </IconButton>
-
-              {user ? (
-                <CommentEditorDialog
-                  open={open}
-                  onClose={handleClose}
-                  treadTitle={activeThread.title}
-                  threadId={Number(activeThread.id)}
-                  commentToReply={comment}
-                  index={(index + 1) + (Number(page) - 1) * 10}
-                  isOp={comment.user_id == activeThread?.user_id}
-                />
-              ) : (
-                <AuthDialog
-                  open={open}
-                  onClose={handleClose}
-                />
-              )}
-            </Box>
           </Box>
 
           {/* Comment content */}
@@ -285,6 +257,11 @@ export default function CommentListItem({
               <Typography variant='body2'>{dislikeCount}</Typography>
             </Box>
           </Box>
+
+          <AuthDialog
+            open={open}
+            onClose={handleClose}
+          />
         </>
       }
     </ListItem>

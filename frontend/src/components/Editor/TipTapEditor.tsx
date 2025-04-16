@@ -42,7 +42,6 @@ export default ({
     content: content,
     onUpdate: ({ editor }) => {
       onContentUpdate(editor.getHTML());
-      console.log(editor.getHTML())
     },
   })
 

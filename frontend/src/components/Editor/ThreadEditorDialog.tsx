@@ -13,6 +13,8 @@ import TiptapEditor from './TipTapEditor';
 import Button from '@mui/material/Button';
 import axios from '../../utils/axios';
 import { useNavigate } from "react-router-dom";
+import useThread from '../../hooks/useThreads';
+import useNav from '../../hooks/useNav';
 
 export default function EditorDialog({
   open, onClose
@@ -22,6 +24,8 @@ export default function EditorDialog({
 }) {
   const navigate = useNavigate();
   const theme = useTheme();
+  const { threads, setThreads } = useThread();
+  const { activeCategory } = useNav();
   const [selectedCategory, setSelectedCategory] = React.useState<string>('');
   const [threadTitle, setThreadTitle] = React.useState<string>('');
   const [threadContent, setThreadContent] = React.useState<string>('');
@@ -42,9 +46,22 @@ export default function EditorDialog({
       content: threadContent,
     }
 
-    axios.post('/thread', data)
+    axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/thread`, data)
       .then(response => {
-        navigate(`/category/${selectedCategory}`);
+        const newThread = response.data.data;
+        console.log(newThread)
+
+        if (newThread.category_id == activeCategory?.id) {
+          setThreads([
+            response.data.data,
+            ...threads,
+          ]);
+        }
+
+        setThreadTitle('');
+        setThreadContent('');
+
+        navigate(`/category/${newThread.category_id}`);
         onClose();
       })
       .catch(error => console.log(error));

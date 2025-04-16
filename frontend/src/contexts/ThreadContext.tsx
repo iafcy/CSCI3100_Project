@@ -5,10 +5,10 @@ import axios from "../utils/axios";
 type ThreadContextType = {
   activeThread: Thread | null;
   threads: Thread[];
-  comments: Comment[] | null;
+  comments: Comment[];
   setActiveThread: React.Dispatch<React.SetStateAction<Thread | null>>;
   setThreads: React.Dispatch<React.SetStateAction<Thread[]>>;
-  setComments: React.Dispatch<React.SetStateAction<Comment[] | null>>;
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
   toggleLike: (threadId: number) => void;
   toggleDislike: (threadId: number) => void;
 }
@@ -16,7 +16,7 @@ type ThreadContextType = {
 const ThreadContext = createContext<ThreadContextType>({
   activeThread: null,
   threads: [],
-  comments: null,
+  comments: [],
   setActiveThread: () => {},
   setThreads: () => {},
   setComments: () => {},
@@ -31,7 +31,7 @@ const ThreadProvider = ({
 }) => {
   const [activeThread, setActiveThread] = useState<Thread | null>(null);
   const [threads, setThreads] = useState<Thread[]>([]);
-  const [comments, setComments] = useState<Comment[] | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   const toggleLike = (threadId: number) => {
     setThreads(threads.map(thread => {
