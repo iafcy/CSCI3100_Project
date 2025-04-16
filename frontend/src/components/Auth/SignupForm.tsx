@@ -11,6 +11,8 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import FormHelperText from '@mui/material/FormHelperText';
 import supabase from '../../utils/supabase';
+import FileUploadButton from './FileUploadButton';
+import axios from '../../utils/axios';
 
 export default function LoginForm({
   onClose
@@ -23,6 +25,7 @@ export default function LoginForm({
   const [email, setEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
   const [passwordConfirm, setPasswordConfirm] = React.useState<string>('');
+  const [licenseKeyFile, setLicenseKeyFile] = React.useState<File | null>(null);
   const [loading, setLoading] = React.useState<boolean>(false);
 
   const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true);
@@ -30,6 +33,7 @@ export default function LoginForm({
   const [emailErrorMessage, setEmailErrorMessage] = React.useState<string | null>(null);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState<string | null>(null);
   const [passwordConfirmErrorMessage, setPasswordConfirmErrorMessage] = React.useState<string | null>(null);
+  const [licenseKeyFileErrorMessage, setLicenseKeyFileErrorMessage] = React.useState<string | null>(null);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleClickShowPasswordConfirm = () => setShowPasswordConfirm((show) => !show);
@@ -93,6 +97,43 @@ export default function LoginForm({
     return false;
   }
 
+  const validateLicenseKeyFile = (files: File | FileList | null) => {
+    let file: File | null = null;
+
+    if (!files) {
+      setLicenseKeyFileErrorMessage('License key is required.');
+      return false;
+    }
+
+    if (files instanceof FileList) {
+      if (files.length === 0) {
+        setLicenseKeyFileErrorMessage('License key is required.');
+        return false;
+      } else if (files.length > 1) {
+        setLicenseKeyFileErrorMessage('Please only upload 1 file.');
+        return false;
+      }
+      file = files[0];
+    } else if (files instanceof File) {
+      file = files;
+    }
+
+    if (file) {
+      if (file.size > 256) {
+        setLicenseKeyFileErrorMessage('File size exceeds 0.25KB. Please upload a smaller file.');
+        return false;
+      } else if (file.type !== 'text/plain') {
+        setLicenseKeyFileErrorMessage('Please upload a txt file.');
+        return false;
+      } else {
+        setLicenseKeyFileErrorMessage(null);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
     const isValid = validateUsername(e.target.value);
@@ -119,21 +160,45 @@ export default function LoginForm({
     setDisableSubmit(usernameErrorMessage !== null || emailErrorMessage !== null || passwordErrorMessage !== null || !isValid);
   }
 
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLicenseKeyFile(event.target.files ? event.target.files[0] : null);
+    const isValid = validateLicenseKeyFile(event.target.files);
+    setDisableSubmit(usernameErrorMessage !== null || emailErrorMessage !== null || passwordErrorMessage !== null || passwordConfirmErrorMessage !== null || !isValid);
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (validateUsername(username) && validateEmail(email) && validatePassword(password) && validatePasswordConfirm(passwordConfirm)) {
+    if (validateUsername(username) && validateEmail(email) && validatePassword(password) && validatePasswordConfirm(passwordConfirm) && validateLicenseKeyFile(licenseKeyFile)) {
       setLoading(true);
-      const { data, error } = await supabase.auth.signUp({
-        email, password, options: { data: { username } }
-      });
 
-      if (error) {
-        console.log(error.message);
-        setLoading(false);
-      } else {
-        setLoading(false);
-        onClose();
+      if (licenseKeyFile) {
+        const formData = new FormData();
+        formData.append('file', licenseKeyFile);
+
+        axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/license/verify`, formData)
+          .then(async (response) => {
+            // license key is verified, proceed to signup
+            const { data, error } = await supabase.auth.signUp({
+              email, password, options: { data: {
+                username,
+                license_id: response.data.data.license_id
+              }}
+            });
+      
+            if (error) {
+              console.log(error.message);
+              setLoading(false);
+            } else {
+              setLoading(false);
+              onClose();
+            }
+          })
+          .catch((error) => {
+            // invalid license key file
+            setLicenseKeyFileErrorMessage(error.response.data.message);
+            setLoading(false);
+          })
       }
     }
   }
@@ -238,17 +303,29 @@ export default function LoginForm({
           {passwordConfirmErrorMessage !== null && (
             <FormHelperText error={true}>{passwordConfirmErrorMessage}</FormHelperText>
           )}
-        </FormControl>
+      </FormControl>
 
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={disableSubmit}
-          sx={{ width: '100%', mt: 2 }}
-          loading={loading}
-        >
-          Register
-        </Button>
+      <FormControl
+        required
+        variant="outlined"
+        fullWidth={true}
+        sx={{ mb: 2 }}
+      >
+        <FileUploadButton onChange={handleFileChange} filename={licenseKeyFile?.name} />
+        {licenseKeyFileErrorMessage !== null && (
+          <FormHelperText error={true}>{licenseKeyFileErrorMessage}</FormHelperText>
+        )}
+      </FormControl>
+
+      <Button
+        type="submit"
+        variant="contained"
+        disabled={disableSubmit}
+        sx={{ width: '100%', mt: 2 }}
+        loading={loading}
+      >
+        Register
+      </Button>
     </Box>
   );
 }
