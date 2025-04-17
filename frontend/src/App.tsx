@@ -4,10 +4,6 @@ import {
   Routes,
   Navigate
 } from "react-router-dom";
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import GlobalStyles from '@mui/material/GlobalStyles';
-import theme, { lightScrollbar, darkScrollbar } from './theme';
 import MainLayout from "./pages/MainLayout";
 import CategoryHome from "./pages/CategoryHome";
 import Thread from "./pages/Thread";
@@ -17,16 +13,13 @@ import { ThreadProvider } from "./contexts/ThreadContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { NavProvider } from "./contexts/NavContext";
 import { UserProvider } from "./contexts/UserContext";
+import { SettingsProvider } from "./contexts/SettingsContext";
 import UserThreadLayout from "./pages/UserThreadLayout";
 import FollowingThreadLayout from "./pages/FollowingThreadLayout";
 
 function App() {
   return (
-    <ThemeProvider theme={theme} defaultMode="system">
-      <CssBaseline />
-      <GlobalStyles
-        styles={(theme) => theme.palette.mode == 'dark' ? darkScrollbar : lightScrollbar}
-      />
+    <SettingsProvider>
       <AuthProvider>
         <CategoriesProvider>
           <ThreadProvider>
@@ -52,7 +45,7 @@ function App() {
           </ThreadProvider>
         </CategoriesProvider>
       </AuthProvider>
-    </ThemeProvider>
+    </SettingsProvider>
   )
 }
 

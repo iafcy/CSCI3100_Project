@@ -1,41 +1,52 @@
 import { createTheme } from '@mui/material/styles';
 
-const theme = createTheme({
-  colorSchemes: {
-    dark: {
-      palette: {
-        mode: 'dark',
-        primary: {
-          main: '#fcba03',
+const getTheme = ({
+  fontSize
+} : {
+  fontSize: number
+}) => {
+  const theme = createTheme({
+    colorSchemes: {
+      dark: {
+        palette: {
+          mode: 'dark',
+          primary: {
+            main: '#fcba03',
+          },
+          secondary: {
+            main: '#AAAAAA',
+          },
+          background: {
+            paper: '#222222',
+            default: '#151515',
+          },
+          divider: '#3b3a39',
         },
-        secondary: {
-          main: '#AAAAAA',
-        },
-        background: {
-          paper: '#222222',
-          default: '#151515',
-        },
-        divider: '#3b3a39',
       },
+      light: {
+        palette: {
+          mode: 'light',
+          primary: {
+            main: '#fcba03',
+          },
+          secondary: {
+            main: '#AAAAAA',
+          },
+          background: {
+            paper: '#f2f2f2',
+            default: '#ffffff',
+          },
+          divider: '#e8e8e8',
+        },
+      }
     },
-    light: {
-      palette: {
-        mode: 'light',
-        primary: {
-          main: '#fcba03',
-        },
-        secondary: {
-          main: '#AAAAAA',
-        },
-        background: {
-          paper: '#f2f2f2',
-          default: '#ffffff',
-        },
-        divider: '#e8e8e8',
-      },
+    typography: {
+      fontSize: fontSize
     }
-  },
-});
+  });
+
+  return theme;
+};
 
 export const lightScrollbar = {
   scrollbarColor: "#c2c2c2 #e8e8e8",
@@ -87,4 +98,4 @@ export const darkScrollbar = {
   },
 };
 
-export default theme;
+export default getTheme;

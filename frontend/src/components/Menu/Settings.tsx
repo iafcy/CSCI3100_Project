@@ -9,13 +9,18 @@ import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Switch from '@mui/material/Switch';
+import Slider from '@mui/material/Slider';
 import { useColorScheme } from '@mui/material/styles';
 import { useTheme } from '@mui/material';
+import useSettings from '../../hooks/useSettings';
 
 export default function Settings() {
   const theme = useTheme();
   const { mode, setMode } = useColorScheme();
+  const { fontSize, setFontSize } = useSettings();
+
   const [open, setOpen] = React.useState(false);
+  const [fontValue, setFontValue] = React.useState<number>((fontSize - 12) / 2); // 0, 1, 2
 
   const handleOpen = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -29,6 +34,12 @@ export default function Settings() {
     setMode(event.target.checked ? 'dark' : 'light');
     event.stopPropagation();
   };
+
+  const handleFontSizeChange = (_ : Event, val: number | number[]) => {
+    const newVal = Array.isArray(val) ? val[0] : val;
+    setFontValue(newVal);
+    setFontSize(12 + newVal * 2); // 12, 14, 16
+  }
 
   return (
     <>
@@ -85,10 +96,46 @@ export default function Settings() {
                 p: 0
               }}
             >
-              <Typography>Theme</Typography>
+              <Typography>Dark mode</Typography>
               <Switch
                 onChange={toggleTheme}
                 checked={mode == 'dark'}
+                edge='end'
+              />
+            </ListItem>
+
+            <ListItem
+              sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                p: 0
+              }}
+            >
+              <Typography>Font size</Typography>
+              <Slider
+                sx={{
+                  maxWidth: 125,
+                  mr: 1.5
+                }}
+                value={fontValue}
+                onChange={handleFontSizeChange}
+                step={1}
+                marks={[
+                  {
+                    value: 0,
+                    label: 'Small',
+                  },
+                  {
+                    value: 1,
+                    label: 'Default',
+                  },
+                  {
+                    value: 2,
+                    label: 'Large',
+                  },
+                ]}
+                min={0}
+                max={2}
               />
             </ListItem>
           </List>
