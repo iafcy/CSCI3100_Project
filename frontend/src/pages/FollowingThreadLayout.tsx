@@ -14,7 +14,7 @@ import Tab from '@mui/material/Tab';
 import useThread from '../hooks/useThreads';
 
 export default function FollowingThreadLayout() {
-  const { user } = useAuth();
+  const { user, authenticated } = useAuth();
 
   const theme = useTheme();
   const { threadId } = useParams();
@@ -41,7 +41,7 @@ export default function FollowingThreadLayout() {
         setThreadsCount(response.data.data.threadsCount)
       })
       .finally(() => setLoading(false));
-  }, [user, sortBy]);
+  }, [authenticated, sortBy]);
 
   const loadMoreThreads = async () => {
     if (threads.length >= threadsCount) {

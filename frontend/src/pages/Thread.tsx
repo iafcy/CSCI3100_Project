@@ -12,7 +12,7 @@ import useUser from '../hooks/useUser';
 
 export default function Thread() {
   const { threadId, categoryId } = useParams();
-  const { user } = useAuth();
+  const { authenticated } = useAuth();
   const { isFollowing, isBlocking } = useUser();
   
   const [searchParams, _] = useSearchParams();
@@ -30,7 +30,7 @@ export default function Thread() {
         setPageCount(response.data.data.pageCount);
       })
       .finally(() => setLoading(false));
-  }, [threadId, categoryId, searchParams, user]);
+  }, [threadId, categoryId, searchParams, authenticated]);
 
   return (
     <List

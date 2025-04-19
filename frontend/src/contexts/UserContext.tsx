@@ -36,7 +36,7 @@ function UserProvider({
 }) {
   const [followingUsers, setFollowingUsers] = useState<UserProfileInfo[]>([]);
   const [blockingUsers, setBlockingUsers] = useState<UserProfileInfo[]>([]);
-  const { user } = useAuth();
+  const { user, authenticated } = useAuth();
 
   useEffect(() => {
     if (user) {
@@ -52,7 +52,7 @@ function UserProvider({
       setFollowingUsers([]);
       setBlockingUsers([]);
     }
-  }, [user]);
+  }, [authenticated]);
 
   const isFollowing = (targetUserId: number) => {
     return followingUsers.some(user => user.id == targetUserId);

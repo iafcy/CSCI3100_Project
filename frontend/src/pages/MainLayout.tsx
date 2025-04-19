@@ -16,7 +16,7 @@ import useThread from '../hooks/useThreads';
 export default function MainLayout() {
   const theme = useTheme();
   const { categoryId, threadId } = useParams();
-  const { user } = useAuth();
+  const { authenticated } = useAuth();
   const navigate = useNavigate();
   const { threads, setThreads, threadsCount, setThreadsCount } = useThread();
 
@@ -35,7 +35,7 @@ export default function MainLayout() {
         setThreadsCount(response.data.data.threadsCount)
       })
       .finally(() => setLoading(false));
-  }, [categoryId, user, sortBy]);
+  }, [categoryId, authenticated, sortBy]);
 
   const loadMoreThreads = async () => {
     if (threads.length >= threadsCount) {
