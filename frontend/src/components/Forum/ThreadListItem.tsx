@@ -11,10 +11,9 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
 export default function ThreadListItem({
-  thread, isLast
+  thread
 }: {
   thread: Thread;
-  isLast: boolean;
 }) {
   const { threadId: activeThreadId } = useParams();
   const theme = useTheme();
@@ -48,7 +47,7 @@ export default function ThreadListItem({
         gap: 1,
         textDecoration: null,
         boxSizing: 'border-box',
-        mb: isLast ? 6 : 0,
+        mb: 0,
         color: Number(activeThreadId) == thread.id ? theme.palette.primary.main : theme.palette.text.primary
       }}
     >

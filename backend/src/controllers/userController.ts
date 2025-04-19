@@ -12,6 +12,11 @@ const followUser = async (req: any, res: any) => {
       message: 'success',
       data: data
     });
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
+    });
   }
 }
 
@@ -26,6 +31,11 @@ const unfollowUser = async (req: any, res: any) => {
     return res.status(200).json({
       message: 'success',
       data: null,
+    });
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
     });
   }
 }
@@ -42,6 +52,11 @@ const blockUser = async (req: any, res: any) => {
       message: 'success',
       data: data
     });
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
+    });
   }
 }
 
@@ -57,6 +72,11 @@ const unblockUser = async (req: any, res: any) => {
       message: 'success',
       data: null,
     });
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
+    });
   }
 }
 
@@ -70,6 +90,11 @@ const getFollowingUser = async (req: any, res: any) => {
       message: 'success',
       data: data
     });
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
+    });
   }
 }
 
@@ -82,6 +107,11 @@ const getBlockingUser = async (req: any, res: any) => {
     return res.status(200).json({
       message: 'success',
       data: data
+    });
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
     });
   }
 }

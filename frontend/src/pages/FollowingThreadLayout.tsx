@@ -24,22 +24,44 @@ export default function FollowingThreadLayout() {
     navigate('/');
   }
 
-  const { threads, setThreads } = useThread();
+  const { threads, setThreads, threadsCount, setThreadsCount } = useThread();
 
   const [searchParams] = useSearchParams();
   const sortBy = searchParams.get('sort_by') || 'time';
 
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
 
   useEffect(() => {
     setLoading(true);
 
-    axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/thread/following?sort_by=${sortBy}`)
+    axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/thread/following?sort_by=${sortBy}&limit=10`)
       .then((response) => {
         setThreads(response.data.data.threads);
+        setThreadsCount(response.data.data.threadsCount)
       })
       .finally(() => setLoading(false));
   }, [user, sortBy]);
+
+  const loadMoreThreads = async () => {
+    if (threads.length >= threadsCount) {
+      return;
+    }
+
+    setLoadingMore(true);
+    
+    axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/thread/following?sort_by=${sortBy}&limit=10&offset=${threads.length}`)
+      .then((response) => {
+        if (response.data.data.threads.length > 0) {
+          setThreads([
+            ...threads,
+            ...response.data.data.threads,
+          ]);
+        }
+        setThreadsCount(response.data.data.threadsCount)
+      })
+      .finally(() => setLoadingMore(false));
+  };
 
   return (
     <Container
@@ -98,7 +120,8 @@ export default function FollowingThreadLayout() {
             </Tabs>
             <ThreadList
               loading={loading}
-              threads={threads}
+              loadingMore={loadingMore}
+              loadMoreThreads={loadMoreThreads}
             />
           </Box>
           <Box

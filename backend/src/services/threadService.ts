@@ -68,11 +68,14 @@ const getUserThreadsCount = async (
 
 const getUserThreads = async (
   userId: number,
+  limit: number,
+  offset: number,
   sort_by: 'time' | 'likes',
 ) => {
   const { data, error } = await supabase
     .rpc('get_user_threads_with_counts', {
-      return_limit: 20,
+      return_limit: limit,
+      return_offset: offset,
       current_user_id: userId,
       sort_by: sort_by
     });
@@ -93,11 +96,14 @@ const getFollowingThreadsCount = async (
 
 const getFollowingThreads = async (
   userId: number,
+  limit: number,
+  offset: number,
   sort_by: 'time' | 'likes',
 ) => {
   const { data, error } = await supabase
     .rpc('get_following_threads_with_counts', {
-      return_limit: 20,
+      return_limit: limit,
+      return_offset: offset,
       current_user_id: userId,
       sort_by: sort_by
     });

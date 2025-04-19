@@ -64,22 +64,66 @@ const getThreads = async (req: any, res: any) => {
         comments: data
       },
     });
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
+    });
   }
 }
 
 const getUserThreads = async (req: any, res: any) => {
   const { userId } = req.params;
-  const { sort_by = 'time' } = req.query; // sort by time or likes
+  const { sort_by = 'time', limit = 10, offset = 0 } = req.query; // sort by time or likes
 
   if (!['time', 'likes'].includes(sort_by)) {
     return res.status(400).json({ message: "Invalid sort_by parameter. Use 'time' or 'likes'." });
   }
 
-  const { data: userData, error: userError} = await threadService.getUserNameById(userId);
-  const { count, error: countError } = await threadService.getUserThreadsCount(userId);
-  const { data, error } = await threadService.getUserThreads(userId, sort_by);
+  if (isNaN(limit) || limit <= 0) {
+    return res.status(400).json({ message: 'Invalid limit value' });
+  }
 
-  if (!error && !countError && !userError) {
+  if (isNaN(offset) || offset < 0) {
+    return res.status(400).json({ message: 'Invalid offset value' });
+  }
+
+  const { data: userData, error: userError } = await threadService.getUserNameById(userId);
+  
+  if (userError) {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: userError.message
+    });
+  }
+
+  const { count, error: countError } = await threadService.getUserThreadsCount(userId);
+
+  if (!countError) {
+    if (count && count <= offset) {
+      return res.status(200).json({
+        message: 'success',
+        data: {
+          threadsCount: Number(count),
+          threads: []
+        }
+      });
+    }
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: countError.message
+    });
+  }
+
+  const { data, error } = await threadService.getUserThreads(
+    userId,
+    limit,
+    offset,
+    sort_by
+  );
+
+  if (!error) {
     return res.status(200).json({
       message: 'success',
       data: {
@@ -88,27 +132,68 @@ const getUserThreads = async (req: any, res: any) => {
         threads: data
       }
     });
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
+    });
   }
 }
 
 const getFollowingThreads = async (req: any, res: any) => {
   const userId = req.user.id;
-  const { sort_by = 'time' } = req.query; // sort by time or likes
+  const { sort_by = 'time', limit = 10, offset = 0 } = req.query; // sort by time or likes
 
   if (!['time', 'likes'].includes(sort_by)) {
     return res.status(400).json({ message: "Invalid sort_by parameter. Use 'time' or 'likes'." });
   }
 
-  const { data: count, error: countError } = await threadService.getFollowingThreadsCount(userId);
-  const { data, error } = await threadService.getFollowingThreads(userId, sort_by);
+  if (isNaN(limit) || limit <= 0) {
+    return res.status(400).json({ message: 'Invalid limit value' });
+  }
 
-  if (!error && !countError) {
+  if (isNaN(offset) || offset < 0) {
+    return res.status(400).json({ message: 'Invalid offset value' });
+  }
+
+  const { data: count, error: countError } = await threadService.getFollowingThreadsCount(userId);
+
+  if (!countError) {
+    if (count && count <= offset) {
+      return res.status(200).json({
+        message: 'success',
+        data: {
+          threadsCount: Number(count),
+          threads: []
+        }
+      });
+    }
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: countError.message
+    });
+  }
+
+  const { data, error } = await threadService.getFollowingThreads(
+    userId,
+    limit,
+    offset,
+    sort_by,
+  );
+
+  if (!error) {
     return res.status(200).json({
       message: 'success',
       data: {
         threadsCount: Number(count),
         threads: data
       }
+    });
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
     });
   }
 }
@@ -124,6 +209,11 @@ const likeThread = async (req: any, res: any) => {
       message: 'success',
       data: data,
     });
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
+    });
   }
 }
 
@@ -138,6 +228,11 @@ const dislikeThread = async (req: any, res: any) => {
       message: 'success',
       data: data,
     });
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
+    });
   }
 }
 
@@ -151,6 +246,11 @@ const removeReaction = async (req: any, res: any) => {
     return res.status(200).json({
       message: 'success',
       data: data,
+    });
+  } else {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: error.message
     });
   }
 }
