@@ -16,16 +16,17 @@ import { UserProvider } from "./contexts/UserContext";
 import { SettingsProvider } from "./contexts/SettingsContext";
 import UserThreadLayout from "./pages/UserThreadLayout";
 import FollowingThreadLayout from "./pages/FollowingThreadLayout";
+import ErrorPage from "./pages/ErrorPage";
 
 function App() {
   return (
-    <SettingsProvider>
-      <AuthProvider>
-        <CategoriesProvider>
-          <ThreadProvider>
-            <NavProvider>
-              <UserProvider>
-                <Router>
+    <Router>
+      <SettingsProvider>
+        <AuthProvider>
+          <CategoriesProvider>
+            <ThreadProvider>
+              <NavProvider>
+                <UserProvider>
                   <Routes>
                     <Route path="/" element={<Navigate to="/category/1" replace />} />
                     <Route path="/category/:categoryId" element={<MainLayout />}>
@@ -38,14 +39,17 @@ function App() {
                     <Route path="/following" element={<FollowingThreadLayout />}>
                       <Route path="thread/:threadId" element={<Thread />} />
                     </Route>
+                    
+                    <Route path="/error" element={<ErrorPage />} />
+                    <Route path="*" element={<ErrorPage title="Page Not Found" message="Oops! This page doesn't exist." />} />
                   </Routes>
-                </Router>
-              </UserProvider>
-            </NavProvider>
-          </ThreadProvider>
-        </CategoriesProvider>
-      </AuthProvider>
-    </SettingsProvider>
+                </UserProvider>
+              </NavProvider>
+            </ThreadProvider>
+          </CategoriesProvider>
+        </AuthProvider>
+      </SettingsProvider>
+    </Router>
   )
 }
 
