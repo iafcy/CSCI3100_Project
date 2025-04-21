@@ -1,5 +1,6 @@
+import * as React from 'react';
 import { styled } from '@mui/material/styles';
-import Button from '@mui/material/Button';
+import Button, { ButtonProps } from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Typography from '@mui/material/Typography';
 
@@ -16,43 +17,65 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 export default function FileUploadButton({
-  onChange, filename
-} : {
+  onChange,
+  filename,
+  name,
+  onBlur,
+  inputRef,
+  error = false,
+  buttonProps
+}: {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   filename: string | undefined;
+  name?: string;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  inputRef?: React.Ref<HTMLInputElement>;
+  error?: boolean;
+  buttonProps?: ButtonProps;
 }) {
   return (
     <Button
       component="label"
       variant="outlined"
+      fullWidth
       tabIndex={-1}
       startIcon={<CloudUploadIcon />}
-      
+      error={error}
+      {...buttonProps}
     >
       <Typography
         sx={{
           flexShrink: 0,
           display: 'inline',
-          mx: 2
+          mx: 1,
         }}
       >
         Upload License Key
       </Typography>
+
       <Typography
+        component="span"
         sx={{
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
-          flexGrow: 0,
-          display: 'inline'
+          flexGrow: 1,
+          display: 'inline',
+          textAlign: 'left',
+          pl: 1,
+          color: error ? 'error.main' : (filename ? 'text.primary' : 'text.secondary'),
         }}
       >
-        {filename ? `(${filename})` : ''}
+        {filename ? filename : '(No file selected)'}
       </Typography>
+
       <VisuallyHiddenInput
         type="file"
         onChange={onChange}
-        multiple
+        name={name}
+        onBlur={onBlur}
+        ref={inputRef}
+        accept="text/plain"
       />
     </Button>
   );

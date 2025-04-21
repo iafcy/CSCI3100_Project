@@ -1,4 +1,6 @@
-import * as React from 'react';
+import { useState } from 'react';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
@@ -13,250 +15,142 @@ import FormHelperText from '@mui/material/FormHelperText';
 import supabase from '../../utils/supabase';
 import FileUploadButton from './FileUploadButton';
 import axios from '../../utils/axios';
+import { signupSchema, SignupFormData } from '../../types/types';
 
-export default function LoginForm({
+export default function SignupForm({
   onClose
-} : {
+}: {
   onClose: () => void;
 }) {
-  const [showPassword, setShowPassword] = React.useState<boolean>(false);
-  const [showPasswordConfirm, setShowPasswordConfirm] = React.useState<boolean>(false);
-  const [username, setUsername] = React.useState<string>('');
-  const [email, setEmail] = React.useState<string>('');
-  const [password, setPassword] = React.useState<string>('');
-  const [passwordConfirm, setPasswordConfirm] = React.useState<string>('');
-  const [licenseKeyFile, setLicenseKeyFile] = React.useState<File | null>(null);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState<boolean>(false);
 
-  const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true);
-  const [usernameErrorMessage, setUsernameErrorMessage] = React.useState<string | null>(null);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState<string | null>(null);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState<string | null>(null);
-  const [passwordConfirmErrorMessage, setPasswordConfirmErrorMessage] = React.useState<string | null>(null);
-  const [licenseKeyFileErrorMessage, setLicenseKeyFileErrorMessage] = React.useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    control,
+    setError,
+    trigger,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+    mode: 'all',
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      passwordConfirm: '',
+      licenseKeyFile: undefined,
+    }
+  });
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleClickShowPasswordConfirm = () => setShowPasswordConfirm((show) => !show);
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
-  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
 
-  const validateUsername = (username: string) => {
-    if (!username) {
-      setUsernameErrorMessage("Username is required.");
-    } else {
-      setUsernameErrorMessage(null);
-      return true;
-    }
-    return false;
-  };
+  const onSubmit: SubmitHandler<SignupFormData> = async (data) => {
+    const { username, email, password, licenseKeyFile } = data;
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+    const formData = new FormData();
+    formData.append('file', licenseKeyFile);
 
-    if (!email) {
-      setEmailErrorMessage("Email is required.");
-    } else if (!emailRegex.test(email)) {
-      setEmailErrorMessage("Please enter a valid email address.");
-    } else {
-      setEmailErrorMessage(null);
-      return true;
-    }
+    try {
+      // Verify License Key
+      const response = await axios.post<{ message: string; data?: { license_id: string } }>( // Add type hint for response data
+        `${import.meta.env.VITE_BACKEND_API_URL}/license/verify`,
+        formData
+      );
 
-    return false;
-  };
+      const licenseId = response.data?.data?.license_id;
 
-  const validatePassword = (password: string) => {
-    const passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).*$/;
+      // Sign Up with Supabase
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username,
+            license_id: licenseId
+          }
+        }
+      });
 
-    if (!password) {
-      setPasswordErrorMessage("Password is required.");
-    } else if (password.length < 8 || password.length > 24) {
-      setPasswordErrorMessage("Password must be 8-24 characters long.");
-    } else if (!passwordRegex.test(password)) {
-      setPasswordErrorMessage("Password must include at least 1 lowercase character, uppercase character, symbol and number.");
-    } else {
-      setPasswordErrorMessage(null);
-      return true;
-    }
-
-    return false;
-  }
-
-  const validatePasswordConfirm = (passwordConfirm: string) => {
-    if (password != passwordConfirm) {
-      setPasswordConfirmErrorMessage("Password and Confirm Password do not match.")
-    } else {
-      setPasswordConfirmErrorMessage(null);
-      return true;
-    }
-
-    return false;
-  }
-
-  const validateLicenseKeyFile = (files: File | FileList | null) => {
-    let file: File | null = null;
-
-    if (!files) {
-      setLicenseKeyFileErrorMessage('License key is required.');
-      return false;
-    }
-
-    if (files instanceof FileList) {
-      if (files.length === 0) {
-        setLicenseKeyFileErrorMessage('License key is required.');
-        return false;
-      } else if (files.length > 1) {
-        setLicenseKeyFileErrorMessage('Please only upload 1 file.');
-        return false;
-      }
-      file = files[0];
-    } else if (files instanceof File) {
-      file = files;
-    }
-
-    if (file) {
-      if (file.size > 256) {
-        setLicenseKeyFileErrorMessage('File size exceeds 0.25KB. Please upload a smaller file.');
-        return false;
-      } else if (file.type !== 'text/plain') {
-        setLicenseKeyFileErrorMessage('Please upload a txt file.');
-        return false;
+      if (signUpError) {
+        console.error("Supabase signup error:", signUpError.message);
+        setError("root.serverError", { type: "manual", message: signUpError.message || "Signup failed. Please try again." });
       } else {
-        setLicenseKeyFileErrorMessage(null);
-        return true;
+        onClose();
+      }
+
+    } catch (error: any) {
+      console.error("Submission error:", error);
+
+      if (error.response) {
+        const backendMessage = error.response.data?.message;
+        setError("licenseKeyFile", {
+          type: "manual",
+          message: backendMessage || "License verification failed. Please check the file and try again."
+        });
+      } else {
+        setError("root.serverError", { type: "manual", message: "An unexpected error occurred. Please check your connection and try again." });
       }
     }
-
-    return false;
-  }
-
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(e.target.value);
-    const isValid = validateUsername(e.target.value);
-
-    setDisableSubmit(!isValid || emailErrorMessage !== null || passwordErrorMessage !== null || passwordConfirmErrorMessage !== null);
-  }
-
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-    const isValid = validateEmail(e.target.value);
-
-    setDisableSubmit(usernameErrorMessage !== null || !isValid || passwordErrorMessage !== null || passwordConfirmErrorMessage !== null);
-  }
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value)
-    const isValid = validatePassword(e.target.value);
-    setDisableSubmit(usernameErrorMessage !== null || emailErrorMessage !== null || !isValid || passwordConfirmErrorMessage !== null);
-  }
-
-  const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordConfirm(e.target.value)
-    const isValid = validatePasswordConfirm(e.target.value);
-    setDisableSubmit(usernameErrorMessage !== null || emailErrorMessage !== null || passwordErrorMessage !== null || !isValid);
-  }
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLicenseKeyFile(event.target.files ? event.target.files[0] : null);
-    const isValid = validateLicenseKeyFile(event.target.files);
-    setDisableSubmit(usernameErrorMessage !== null || emailErrorMessage !== null || passwordErrorMessage !== null || passwordConfirmErrorMessage !== null || !isValid);
   };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (validateUsername(username) && validateEmail(email) && validatePassword(password) && validatePasswordConfirm(passwordConfirm) && validateLicenseKeyFile(licenseKeyFile)) {
-      setLoading(true);
-
-      if (licenseKeyFile) {
-        const formData = new FormData();
-        formData.append('file', licenseKeyFile);
-
-        axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/license/verify`, formData)
-          .then(async (response) => {
-            // license key is verified, proceed to signup
-            const { data, error } = await supabase.auth.signUp({
-              email, password, options: { data: {
-                username,
-                license_id: response.data.data.license_id
-              }}
-            });
-      
-            if (error) {
-              console.log(error.message);
-              setLoading(false);
-            } else {
-              setLoading(false);
-              onClose();
-            }
-          })
-          .catch((error) => {
-            // invalid license key file
-            setLicenseKeyFileErrorMessage(error.response.data.message);
-            setLoading(false);
-          })
-      }
-    }
-  }
 
   return (
     <Box
       component="form"
       sx={{ width: '100%', mt: 2 }}
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
+      noValidate
     >
       <TextField
         required
-        id="signup-usename"
+        id="signup-username"
         label="Username"
         variant="outlined"
         fullWidth={true}
-        value={username}
-        onChange={handleUsernameChange}
-        error={usernameErrorMessage !== null}
-        helperText={usernameErrorMessage}
+        {...register("username")}
+        error={!!errors.username}
+        helperText={errors.username?.message}
         sx={{ mb: 2 }}
+        aria-invalid={errors.username ? "true" : "false"}
       />
 
       <TextField
         required
         id="signup-email"
         label="Email"
+        type="email"
         variant="outlined"
         fullWidth={true}
-        value={email}
-        onChange={handleEmailChange}
-        error={emailErrorMessage !== null}
-        helperText={emailErrorMessage}
+        {...register("email")}
+        error={!!errors.email}
+        helperText={errors.email?.message}
         sx={{ mb: 2 }}
+        aria-invalid={errors.email ? "true" : "false"}
       />
-      
+
       <FormControl
         required
         variant="outlined"
         fullWidth={true}
         sx={{ mb: 2 }}
+        error={!!errors.password}
       >
         <InputLabel htmlFor="signup-password">Password</InputLabel>
         <OutlinedInput
           id="signup-password"
           type={showPassword ? 'text' : 'password'}
-          value={password}
-          onChange={handlePasswordChange}
-          error={passwordErrorMessage !== null}
+          {...register("password")}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
-                aria-label={
-                  showPassword ? 'hide the password' : 'display the password'
-                }
+                aria-label={showPassword ? 'hide password' : 'show password'}
                 onClick={handleClickShowPassword}
                 onMouseDown={handleMouseDownPassword}
-                onMouseUp={handleMouseUpPassword}
                 edge="end"
               >
                 {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -264,68 +158,101 @@ export default function LoginForm({
             </InputAdornment>
           }
           label="Password"
+          aria-invalid={errors.password ? "true" : "false"}
+          aria-describedby={errors.password ? "signup-password-error" : undefined}
         />
-        {passwordErrorMessage !== null && (
-          <FormHelperText error={true}>{passwordErrorMessage}</FormHelperText>
-        )}
+        <FormHelperText error id="signup-password-error">
+          {errors.password?.message}
+        </FormHelperText>
       </FormControl>
-      
+
       <FormControl
         required
         variant="outlined"
         fullWidth={true}
         sx={{ mb: 2 }}
+        error={!!errors.passwordConfirm}
       >
-          <InputLabel htmlFor="signup-password-confirm">Confirm Password</InputLabel>
-          <OutlinedInput
-            id="signup-password-confirm"
-            type={showPasswordConfirm ? 'text' : 'password'}
-            value={passwordConfirm}
-            onChange={handlePasswordConfirmChange}
-            error={passwordConfirmErrorMessage !== null}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label={
-                    showPasswordConfirm ? 'hide the password' : 'display the password'
-                  }
-                  onClick={handleClickShowPasswordConfirm}
-                  onMouseDown={handleMouseDownPassword}
-                  onMouseUp={handleMouseUpPassword}
-                  edge="end"
-                >
-                  {showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Password"
-          />
-          {passwordConfirmErrorMessage !== null && (
-            <FormHelperText error={true}>{passwordConfirmErrorMessage}</FormHelperText>
+        <InputLabel htmlFor="signup-password-confirm">Confirm Password</InputLabel>
+        <OutlinedInput
+          id="signup-password-confirm"
+          type={showPasswordConfirm ? 'text' : 'password'}
+          {...register("passwordConfirm")}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label={showPasswordConfirm ? 'hide password' : 'show password'}
+                onClick={handleClickShowPasswordConfirm}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+              >
+                {showPasswordConfirm ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+          label="Confirm Password"
+          aria-invalid={errors.passwordConfirm ? "true" : "false"}
+          aria-describedby={errors.passwordConfirm ? "signup-password-confirm-error" : undefined}
+        />
+        <FormHelperText error id="signup-password-confirm-error">
+          {errors.passwordConfirm?.message}
+        </FormHelperText>
+      </FormControl>
+
+      <FormControl
+        required margin="dense"
+        fullWidth={true}
+        error={!!errors.licenseKeyFile}
+        sx={{ mb: 2 }}
+      >
+        <Controller
+          name="licenseKeyFile"
+          control={control}
+          render={({
+             field: { onChange, onBlur, value, name, ref },
+             fieldState: { error }
+           }) => (
+            <FileUploadButton
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                onChange(event.target.files ? event.target.files[0] : null);
+                setTimeout(() => trigger("licenseKeyFile"), 0);
+              }}
+              onBlur={() => {
+                trigger("licenseKeyFile");
+                onBlur();
+              }}
+              name={name}
+              inputRef={ref}
+              filename={value instanceof File ? value.name : undefined} 
+              error={!!error}
+              buttonProps={{
+                 id: "license-key-upload-button",
+                 'aria-describedby': errors.licenseKeyFile ? "signup-license-error" : undefined
+              }}
+            />
           )}
+        />
+        <FormHelperText error id="signup-license-error">
+          {errors.licenseKeyFile?.message}
+        </FormHelperText>
       </FormControl>
 
-      <FormControl
-        required
-        variant="outlined"
-        fullWidth={true}
-        sx={{ mb: 2 }}
-      >
-        <FileUploadButton onChange={handleFileChange} filename={licenseKeyFile?.name} />
-        {licenseKeyFileErrorMessage !== null && (
-          <FormHelperText error={true}>{licenseKeyFileErrorMessage}</FormHelperText>
-        )}
-      </FormControl>
+      {errors.root?.serverError && (
+         <FormHelperText error sx={{ mb: 2, textAlign: 'center' }}>
+           {errors.root.serverError.message}
+         </FormHelperText>
+      )}
 
-      <Button
-        type="submit"
-        variant="contained"
-        disabled={disableSubmit}
-        sx={{ width: '100%', mt: 2 }}
-        loading={loading}
-      >
-        Register
-      </Button>
+       <Button
+         type="submit"
+         variant="contained"
+         disabled={!isValid || isSubmitting}
+         sx={{ width: '100%', mt: 2 }}
+         aria-busy={isSubmitting}
+         loading={isSubmitting}
+       >
+         {isSubmitting ? 'Registering...' : 'Register'}
+       </Button>
     </Box>
   );
 }

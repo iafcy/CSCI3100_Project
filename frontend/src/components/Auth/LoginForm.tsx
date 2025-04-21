@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
@@ -11,97 +11,56 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import FormHelperText from '@mui/material/FormHelperText';
 import supabase from '../../utils/supabase';
+import { loginSchema, LoginFormData } from '../../types/types';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export default function LoginForm({
   onClose
 } : {
   onClose: () => void;
 }) {
-  const [showPassword, setShowPassword] = React.useState<boolean>(false);
-  const [email, setEmail] = React.useState<string>('');
-  const [password, setPassword] = React.useState<string>('');
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const [disableSubmit, setDisableSubmit] = React.useState<boolean>(true);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState<string | null>(null);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    setError,
+    clearErrors,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: 'all',
+    defaultValues: {
+      email: '',
+      password: '',
+    }
+  });
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
   };
-  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
+    const { email, password } = data;
 
-    if (!email) {
-      setEmailErrorMessage("Email is required.");
-    } else if (!emailRegex.test(email)) {
-      setEmailErrorMessage("Please enter a valid email address.");
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+    if (loginError) {
+      console.error("Supabase login error:", loginError.message);
+      setError("root.serverError", { type: "manual", message: loginError.message || "Login failed. Please try again." });
     } else {
-      setEmailErrorMessage(null);
-      return true;
-    }
-
-    return false;
-  };
-
-  const validatePassword = (password: string) => {
-    const passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W)(?!.* ).*$/;
-
-    if (!password) {
-      setPasswordErrorMessage("Password is required.");
-    } else if (password.length < 8 || password.length > 24) {
-      setPasswordErrorMessage("Password must be 8-24 characters long.");
-    } else if (!passwordRegex.test(password)) {
-      setPasswordErrorMessage("Password must include at least 1 lowercase character, uppercase character, symbol and number.");
-    } else {
-      setPasswordErrorMessage(null);
-      return true;
-    }
-
-    return false;
-  }
-
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-    const isValid = validateEmail(e.target.value);
-    setDisableSubmit(!isValid || passwordErrorMessage !== null);
-  }
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value)
-    const isValid = validatePassword(e.target.value);
-    setDisableSubmit(emailErrorMessage !== null || !isValid);
-  }
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (validateEmail(email) && validatePassword(password)) {
-      setLoading(true);
-      const { error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password
-      });
+      const { error } = await supabase.auth.getUser();
 
       if (error) {
-        console.log(error.message);
-
-        setLoading(false);
+        console.error("Supabase login error:", error.message);
+        setError("root.serverError", { type: "manual", message: error.message || "Login failed. Please try again." });
       } else {
-        const { data, error } = await supabase.auth.getUser();
-
-        if (error) {
-          console.log(error.message);
-          setLoading(false);
-        } else {
-          setLoading(false);
-          onClose();
-        }
+        onClose();
       }
     }
   }
@@ -110,19 +69,25 @@ export default function LoginForm({
     <Box
       component="form"
       sx={{ width: '100%', mt: 2 }}
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
+      noValidate
     >
       <TextField
         required
-        id="login-email"
+        id="signup-email"
         label="Email"
+        type="email"
         variant="outlined"
         fullWidth={true}
-        value={email}
-        onChange={handleEmailChange}
-        error={emailErrorMessage !== null}
-        helperText={emailErrorMessage}
+        {...register("email", {
+          onChange: () => {
+            clearErrors("root.serverError");
+          },
+        })}
+        error={!!errors.email}
+        helperText={errors.email?.message}
         sx={{ mb: 2 }}
+        aria-invalid={errors.email ? "true" : "false"}
       />
       
       <FormControl
@@ -130,23 +95,23 @@ export default function LoginForm({
         variant="outlined"
         fullWidth={true}
         sx={{ mb: 2 }}
+        error={!!errors.password}
       >
-        <InputLabel htmlFor="logint-password">Password</InputLabel>
+        <InputLabel htmlFor="signup-password">Password</InputLabel>
         <OutlinedInput
-          id="login-password"
+          id="signup-password"
           type={showPassword ? 'text' : 'password'}
-          value={password}
-          onChange={handlePasswordChange}
-          error={passwordErrorMessage !== null}
+          {...register("password", {
+            onChange: () => {
+              clearErrors("root.serverError");
+            },
+          })}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
-                aria-label={
-                  showPassword ? 'hide the password' : 'display the password'
-                }
+                aria-label={showPassword ? 'hide password' : 'show password'}
                 onClick={handleClickShowPassword}
                 onMouseDown={handleMouseDownPassword}
-                onMouseUp={handleMouseUpPassword}
                 edge="end"
               >
                 {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -154,21 +119,30 @@ export default function LoginForm({
             </InputAdornment>
           }
           label="Password"
+          aria-invalid={errors.password ? "true" : "false"}
+          aria-describedby={errors.password ? "signup-password-error" : undefined}
         />
-        {passwordErrorMessage !== null && (
-          <FormHelperText error={true}>{passwordErrorMessage}</FormHelperText>
-        )}
+        <FormHelperText error id="signup-password-error">
+          {errors.password?.message}
+        </FormHelperText>
       </FormControl>
 
+      {errors.root?.serverError && (
+        <FormHelperText error sx={{ mb: 2, textAlign: 'center' }}>
+          {errors.root.serverError.message}
+        </FormHelperText>
+      )}
+
       <Button
-        type="submit"
-        variant="contained"
-        disabled={disableSubmit}
-        sx={{ width: '100%', mt: 2 }}
-        loading={loading}
-      >
-        Login
-      </Button>
+         type="submit"
+         variant="contained"
+         disabled={!isValid || isSubmitting}
+         sx={{ width: '100%', mt: 2 }}
+         aria-busy={isSubmitting}
+         loading={isSubmitting}
+       >
+         {isSubmitting ? 'Logging in...' : 'Login'}
+       </Button>
     </Box>
   );
 }
