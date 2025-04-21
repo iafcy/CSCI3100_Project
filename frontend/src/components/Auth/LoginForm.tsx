@@ -51,13 +51,11 @@ export default function LoginForm({
     });
 
     if (loginError) {
-      console.error("Supabase login error:", loginError.message);
       setError("root.serverError", { type: "manual", message: loginError.message || "Login failed. Please try again." });
     } else {
       const { error } = await supabase.auth.getUser();
 
       if (error) {
-        console.error("Supabase login error:", error.message);
         setError("root.serverError", { type: "manual", message: error.message || "Login failed. Please try again." });
       } else {
         onClose();

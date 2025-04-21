@@ -25,7 +25,7 @@ const AuthProvider = ({
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      console.log(session)
+      
       if (session && !authenticated) {
         setAuthenticated(true);
       } else if (!session && authenticated) {

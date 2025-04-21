@@ -58,7 +58,6 @@ export default function EditorDialog({
     axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/thread`, data)
       .then(response => {
         const newThread = response.data.data;
-        console.log(newThread)
 
         if (newThread.category_id == activeCategory?.id) {
           setThreads([

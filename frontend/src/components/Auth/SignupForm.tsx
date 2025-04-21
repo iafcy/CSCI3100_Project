@@ -78,15 +78,12 @@ export default function SignupForm({
       });
 
       if (signUpError) {
-        console.error("Supabase signup error:", signUpError.message);
         setError("root.serverError", { type: "manual", message: signUpError.message || "Signup failed. Please try again." });
       } else {
         onClose();
       }
 
     } catch (error: any) {
-      console.error("Submission error:", error);
-
       if (error.response) {
         const backendMessage = error.response.data?.message;
         setError("licenseKeyFile", {
