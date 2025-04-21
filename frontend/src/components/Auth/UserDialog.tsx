@@ -7,15 +7,22 @@ import useAuth from '../../hooks/useAuth';
 
 export default function UserDialog() {
   const { session } = useAuth();
-  const [open, setOpen] = React.useState(false);
+  const [openAuth, setOpenAuth] = React.useState(false);
+  const [openAccount, setOpenAccount] = React.useState(false);
 
   const handleOpen = (event: React.MouseEvent) => {
     event.stopPropagation();
-    setOpen(true);
+
+    if (session) {
+      setOpenAccount(true);
+    } else {
+      setOpenAuth(true);
+    }
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setOpenAccount(false);
+    setOpenAuth(false);
   };
 
   return (
@@ -27,17 +34,19 @@ export default function UserDialog() {
         <AccountCircleIcon />
       </IconButton>
 
-      {session && open ? (
-        <AccountDialog
-          open={open}
-          onClose={handleClose}
-        />
-      ) : (
+      {openAuth && 
         <AuthDialog
-          open={open}
+          open={openAuth}
           onClose={handleClose}
         />
-      )}
+      }
+
+      {openAccount && 
+        <AccountDialog
+          open={openAccount}
+          onClose={handleClose}
+        />
+      }
     </>
   );
 }
