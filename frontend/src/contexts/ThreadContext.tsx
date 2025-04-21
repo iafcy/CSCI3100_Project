@@ -7,10 +7,12 @@ type ThreadContextType = {
   threads: Thread[];
   threadsCount: number;
   comments: Comment[];
+  commentPageCount: number;
   setActiveThread: React.Dispatch<React.SetStateAction<Thread | null>>;
   setThreads: React.Dispatch<React.SetStateAction<Thread[]>>;
   setThreadsCount: React.Dispatch<React.SetStateAction<number>>;
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
+  setCommentPageCount: React.Dispatch<React.SetStateAction<number>>;
   toggleLike: (threadId: number) => { error: any };
   toggleDislike: (threadId: number) => { error: any };
 }
@@ -20,10 +22,12 @@ const ThreadContext = createContext<ThreadContextType>({
   threads: [],
   threadsCount: 0,
   comments: [],
+  commentPageCount: 1,
   setActiveThread: () => {},
   setThreads: () => {},
   setThreadsCount: () => {},
   setComments: () => {},
+  setCommentPageCount: () => {},
   toggleLike: () => ({ error: null }),
   toggleDislike: () => ({ error: null }),
 });
@@ -37,6 +41,7 @@ const ThreadProvider = ({
   const [threads, setThreads] = useState<Thread[]>([]);
   const [threadsCount, setThreadsCount] = useState<number>(0);
   const [comments, setComments] = useState<Comment[]>([]);
+  const [commentPageCount, setCommentPageCount] = useState<number>(1);
 
   const toggleLike = (threadId: number) => {
     let returnError = null;
@@ -140,10 +145,12 @@ const ThreadProvider = ({
       threads,
       threadsCount,
       comments,
+      commentPageCount,
       setActiveThread,
       setThreads,
       setThreadsCount,
       setComments,
+      setCommentPageCount,
       toggleLike,
       toggleDislike
     }}>

@@ -27,7 +27,7 @@ export default function EditorDialog({
   isOp?: boolean;
 }) {
   const theme = useTheme();
-  const { comments, setComments } = useThread();
+  const { comments, setComments, commentPageCount, setCommentPageCount } = useThread();
   const [commentContent, setCommentContent] = useState<string>('');
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState<boolean>(false);
   const [errorSnackbarMessage, setErrorSnackbarMessage] = useState<string>('');
@@ -54,10 +54,14 @@ export default function EditorDialog({
 
     axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/comment`, data)
       .then(response => {
-        setComments([
-          ...comments,
-          response.data.data,
-        ])
+        if (comments.length < 10) {
+          setComments([
+            ...comments,
+            response.data.data,
+          ]);
+        } else {
+          setCommentPageCount(commentPageCount + 1);
+        }
 
         setCommentContent('');
         onClose();

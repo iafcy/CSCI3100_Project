@@ -18,8 +18,7 @@ export default function Thread() {
   const [searchParams, _] = useSearchParams();
   const page = searchParams.get('page') || 1;
 
-  const { comments, setComments } = useThread();
-  const [pageCount, setPageCount] = useState<number>(1);
+  const { comments, setComments, commentPageCount, setCommentPageCount } = useThread();
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -27,7 +26,7 @@ export default function Thread() {
     axios.get(`${import.meta.env.VITE_BACKEND_API_URL}/thread/${threadId}?page=${page}`)
       .then((response) => {
         setComments(response.data.data.comments);
-        setPageCount(response.data.data.pageCount);
+        setCommentPageCount(response.data.data.pageCount);
       })
       .finally(() => setLoading(false));
   }, [threadId, categoryId, searchParams, authenticated]);
@@ -61,7 +60,7 @@ export default function Thread() {
       <ListItem
         disablePadding
         sx={{
-          display: pageCount > 1 ? 'flex' : 'none',
+          display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
@@ -73,10 +72,13 @@ export default function Thread() {
           boxSizing: 'border-box',
         }}
       >
-        <CommentListPagination
-          page={Number(page)}
-          totalPages={pageCount}
-        />
+        {
+          commentPageCount > 1 &&
+          <CommentListPagination
+            page={Number(page)}
+            totalPages={commentPageCount}
+          />
+        }
       </ListItem>
     </List>
   );
