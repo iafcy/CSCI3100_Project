@@ -16,6 +16,8 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import UserActionDialog from './UserActionDialog';
 import useUser from '../../hooks/useUser';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export default function CommentListItem({
   comment, index, isFollowingUser, isBlockingUser
@@ -28,12 +30,15 @@ export default function CommentListItem({
   const { user } = useAuth();
   const theme = useTheme();
   const { activeThread } = useThread();
+  const { followUser, unfollowUser, blockUser, unblockUser } = useUser();
+
   const [likeCount, setLikeCount] = useState<number>(comment.like);
   const [dislikeCount, setDislikeCount] = useState<number>(comment.dislike);
   const [reaction, setReaction] = useState<'like' | 'dislike' | null>(comment.user_reaction);
   const [open, setOpen] = useState<boolean>(false);
   const [showBlocked, setShowBlocked] = useState<boolean>(false);
-  const { followUser, unfollowUser, blockUser, unblockUser } = useUser();
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState<boolean>(false);
+  const [errorSnackbarMessage, setErrorSnackbarMessage] = useState<string>('');
 
   const [searchParams, _] = useSearchParams();
   const page = searchParams.get('page') || 1;
@@ -53,13 +58,19 @@ export default function CommentListItem({
   };
 
   const handleLike = () => {
+    setOpenErrorSnackbar(false);
+    setErrorSnackbarMessage('');
+
     if (reaction == 'like') {
       axios.delete(`/comment/${comment.id}/reaction`)
         .then(response => {
           setReaction(null);
           setLikeCount(likeCount - 1);
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+          setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+          setOpenErrorSnackbar(true);
+        });
     } else {
       axios.post(`/comment/${comment.id}/like`)
         .then(response => {
@@ -70,18 +81,27 @@ export default function CommentListItem({
           setReaction('like');
           setLikeCount(likeCount + 1);
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+          setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+          setOpenErrorSnackbar(true);
+        });
     }
   }
 
   const handleDislike = () => {
+    setOpenErrorSnackbar(false);
+    setErrorSnackbarMessage('');
+
     if (reaction == 'dislike') {
       axios.delete(`/comment/${comment.id}/reaction`)
         .then(response => {
           setReaction(null);
           setDislikeCount(dislikeCount - 1);;
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+          setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+          setOpenErrorSnackbar(true);
+        });
     } else {
       axios.post(`/comment/${comment.id}/dislike`)
         .then(response => {
@@ -92,23 +112,34 @@ export default function CommentListItem({
           setReaction('dislike');
           setDislikeCount(dislikeCount + 1);
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+          setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+          setOpenErrorSnackbar(true);
+        });
     }
   }
 
   const handleToggleFollow = () => {
-    if (isFollowingUser) {
-      unfollowUser(comment.user_id);
-    } else {
-      followUser(comment.user_id)
+    setOpenErrorSnackbar(false);
+    setErrorSnackbarMessage('');
+
+    const action = isFollowingUser ? unfollowUser : followUser;
+    const { error } = action(comment.user_id);
+  
+    if (error) {
+      setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+      setOpenErrorSnackbar(true);
     }
   }
 
   const handleToggleBlock = () => {
-    if (isBlockingUser) {
-      unblockUser(comment.user_id);
-    } else {
-      blockUser(comment.user_id);
+    const action = isBlockingUser ? unblockUser : blockUser;
+    const { error } = action(comment.user_id);
+  
+    if (error) {
+      setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+      setOpenErrorSnackbar(true);
+    } else if (!isBlockingUser) {
       setShowBlocked(true);
     }
   }
@@ -262,6 +293,21 @@ export default function CommentListItem({
             open={open}
             onClose={handleClose}
           />
+
+          <Snackbar
+            open={openErrorSnackbar}
+            autoHideDuration={6000}
+            onClose={() => setOpenErrorSnackbar(false)}
+          >
+            <Alert
+              onClose={() => setOpenErrorSnackbar(false)}
+              severity='error'
+              variant='outlined'
+              sx={{ width: '100%' }}
+            >
+              {errorSnackbarMessage}
+            </Alert>
+          </Snackbar>
         </>
       }
     </ListItem>

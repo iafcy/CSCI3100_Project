@@ -16,6 +16,8 @@ import ListItemText from '@mui/material/ListItemText';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import FollowingListDialog from './FollowingListDialog';
 import BlockingListDialog from './BlockingListDialog';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export default function AccountDialog({
   open, onClose
@@ -28,15 +30,20 @@ export default function AccountDialog({
   const [loading, setLoading] = React.useState<boolean>(false);
   const [isOpenFollowingList, setIsOpenFollowingList] = React.useState<boolean>(false);
   const [isOpenBlockingList, setIsOpenBlockingList] = React.useState<boolean>(false);
+  const [openErrorSnackbar, setOpenErrorSnackbar] = React.useState<boolean>(false);
+  const [errorSnackbarMessage, setErrorSnackbarMessage] = React.useState<string>('');
 
   const handleLogout = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
     setLoading(true);
+    setOpenErrorSnackbar(false);
+    setErrorSnackbarMessage('');
 
     const { error } = await supabase.auth.signOut();
 
     if (error) {
-      console.log(error.message);
+      setErrorSnackbarMessage(error.message);
+      setOpenErrorSnackbar(true);
       setLoading(false);
     } else {
       setLoading(false);
@@ -61,7 +68,7 @@ export default function AccountDialog({
       onClick={(e) => e.stopPropagation()}
       maxWidth='xs'
       fullWidth={true}
-    >
+    >      
       <DialogTitle 
         sx={{
           m: 0,
@@ -163,6 +170,21 @@ export default function AccountDialog({
             >
               Log out
             </Button>
+
+            <Snackbar
+              open={openErrorSnackbar}
+              autoHideDuration={6000}
+              onClose={() => setOpenErrorSnackbar(false)}
+            >
+              <Alert
+                onClose={() => setOpenErrorSnackbar(false)}
+                severity='error'
+                variant='outlined'
+                sx={{ width: '100%' }}
+              >
+                {errorSnackbarMessage}
+              </Alert>
+            </Snackbar>
           </ListItem>
         </List>
       </DialogContent>

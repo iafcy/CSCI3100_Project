@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -10,6 +11,8 @@ import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
 import { useTheme } from '@mui/material';
 import useUser from '../../hooks/useUser';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export default function BlockingListDialog({
   open, onClose
@@ -19,6 +22,20 @@ export default function BlockingListDialog({
 }) {
   const theme = useTheme();
   const { blockingUsers, unblockUser } = useUser();
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState<boolean>(false);
+  const [errorSnackbarMessage, setErrorSnackbarMessage] = useState<string>('');
+
+  const handleUnblock = (id: number) => {
+    setOpenErrorSnackbar(false);
+    setErrorSnackbarMessage('');
+
+    const { error } = unblockUser(id);
+
+    if (error) {
+      setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+      setOpenErrorSnackbar(true);
+    }
+  }
 
   return (
     <Dialog
@@ -74,7 +91,7 @@ export default function BlockingListDialog({
                   }}
                   secondaryAction={
                     <Button
-                      onClick={() => unblockUser(user.id)}
+                      onClick={() => handleUnblock(user.id)}
                     >
                       Unblock
                     </Button>
@@ -86,6 +103,21 @@ export default function BlockingListDialog({
             ))}
           </List>
         }
+
+        <Snackbar
+          open={openErrorSnackbar}
+          autoHideDuration={6000}
+          onClose={() => setOpenErrorSnackbar(false)}
+        >
+          <Alert
+            onClose={() => setOpenErrorSnackbar(false)}
+            severity='error'
+            variant='outlined'
+            sx={{ width: '100%' }}
+          >
+            {errorSnackbarMessage}
+          </Alert>
+        </Snackbar>
       </DialogContent>
     </Dialog>
   )

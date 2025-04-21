@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -12,6 +12,8 @@ import Button from '@mui/material/Button';
 import axios from '../../utils/axios';
 import { Comment } from '../../types/types';
 import useThread from '../../hooks/useThreads';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export default function EditorDialog({
   open, onClose, treadTitle, threadId
@@ -26,7 +28,10 @@ export default function EditorDialog({
 }) {
   const theme = useTheme();
   const { comments, setComments } = useThread();
-  const [commentContent, setCommentContent] = React.useState<string>('');
+  const [commentContent, setCommentContent] = useState<string>('');
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState<boolean>(false);
+  const [errorSnackbarMessage, setErrorSnackbarMessage] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleClose = () => {
     if (commentContent == '') {
@@ -38,6 +43,10 @@ export default function EditorDialog({
   }
 
   const handleCreate = () => {
+    setLoading(true);
+    setOpenErrorSnackbar(false);
+    setErrorSnackbarMessage('');
+
     const data = {
       threadId: threadId,
       content: commentContent,
@@ -45,8 +54,6 @@ export default function EditorDialog({
 
     axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/comment`, data)
       .then(response => {
-        console.log(response.data.data);
-
         setComments([
           ...comments,
           response.data.data,
@@ -55,7 +62,13 @@ export default function EditorDialog({
         setCommentContent('');
         onClose();
       })
-      .catch(error => console.log(error));
+      .catch(error => {
+        setErrorSnackbarMessage(error.response.data?.message || 'Failed to create comment. Please try again.');
+        setOpenErrorSnackbar(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      })
   };
 
   return (
@@ -125,9 +138,25 @@ export default function EditorDialog({
           variant="contained"
           onClick={handleCreate}
           disabled={commentContent == ''}
+          loading={loading}
         >
           Create
         </Button>
+
+        <Snackbar
+          open={openErrorSnackbar}
+          autoHideDuration={6000}
+          onClose={() => setOpenErrorSnackbar(false)}
+        >
+          <Alert
+            onClose={() => setOpenErrorSnackbar(false)}
+            severity='error'
+            variant='outlined'
+            sx={{ width: '100%' }}
+          >
+            {errorSnackbarMessage}
+          </Alert>
+        </Snackbar>
       </DialogActions>
     </Dialog>
   )

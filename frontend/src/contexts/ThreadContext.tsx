@@ -11,8 +11,8 @@ type ThreadContextType = {
   setThreads: React.Dispatch<React.SetStateAction<Thread[]>>;
   setThreadsCount: React.Dispatch<React.SetStateAction<number>>;
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
-  toggleLike: (threadId: number) => void;
-  toggleDislike: (threadId: number) => void;
+  toggleLike: (threadId: number) => { error: any };
+  toggleDislike: (threadId: number) => { error: any };
 }
 
 const ThreadContext = createContext<ThreadContextType>({
@@ -24,8 +24,8 @@ const ThreadContext = createContext<ThreadContextType>({
   setThreads: () => {},
   setThreadsCount: () => {},
   setComments: () => {},
-  toggleLike: () => {},
-  toggleDislike: () => {},
+  toggleLike: () => ({ error: null }),
+  toggleDislike: () => ({ error: null }),
 });
 
 const ThreadProvider = ({
@@ -39,6 +39,8 @@ const ThreadProvider = ({
   const [comments, setComments] = useState<Comment[]>([]);
 
   const toggleLike = (threadId: number) => {
+    let returnError = null;
+
     setThreads(threads.map(thread => {
       if (thread.id === threadId) {
         const updatedThread = { ...thread };
@@ -73,15 +75,20 @@ const ThreadProvider = ({
             }
             return t;
           }));
+          returnError = error;
         });
   
         return updatedThread;
       }
       return thread;
     }));
+
+    return { error: returnError };
   };
   
   const toggleDislike = (threadId: number) => {
+    let returnError = null;
+
     setThreads(threads.map(thread => {
       if (thread.id === threadId) {
         const updatedThread = { ...thread };
@@ -116,12 +123,15 @@ const ThreadProvider = ({
             }
             return t;
           }));
+          returnError = error;
         });
   
         return updatedThread;
       }
       return thread;
     }));
+
+    return { error: returnError };
   };
 
   return (

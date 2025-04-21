@@ -12,6 +12,8 @@ import CommentEditorDialog from '../Editor/CommentEditorDialog';
 import useThread from '../../hooks/useThreads';
 import useAuth from '../../hooks/useAuth';
 import AuthDialog from '../Auth/AuthDialog';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export default function ThreadHeader () {
   const theme = useTheme();
@@ -22,6 +24,8 @@ export default function ThreadHeader () {
   const location = useLocation();
 
   const [open, setOpen] = useState(false);
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState<boolean>(false);
+  const [errorSnackbarMessage, setErrorSnackbarMessage] = useState<string>('');
     
   const handleOpen = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -41,7 +45,31 @@ export default function ThreadHeader () {
     } else if (location.pathname.startsWith('/following')) {
       navigate('/following');
     }
-  }
+  };
+
+  const handleToggleLike = (id: number) => {
+    setOpenErrorSnackbar(false);
+    setErrorSnackbarMessage('');
+
+    const { error } = toggleLike(id);
+
+    if (error) {
+      setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+      setOpenErrorSnackbar(true);
+    }
+  };
+
+  const handleToggleDisike = (id: number) => {
+    setOpenErrorSnackbar(false);
+    setErrorSnackbarMessage('');
+
+    const { error } = toggleDislike(id);
+
+    if (error) {
+      setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+      setOpenErrorSnackbar(true);
+    }
+  };
 
   return (
     (
@@ -120,7 +148,7 @@ export default function ThreadHeader () {
               color="inherit"
               aria-label="like"
               edge='start'
-              onClick={user && activeThread ? () => toggleLike(activeThread.id) : handleOpen}
+              onClick={user && activeThread ? () => handleToggleLike(activeThread.id) : handleOpen}
             >
               <ThumbUpIcon
                 fontSize='small'
@@ -143,7 +171,7 @@ export default function ThreadHeader () {
               color="inherit"
               aria-label="dislike"
               edge='start'
-              onClick={user && activeThread ? () => toggleDislike(activeThread.id) : handleOpen}
+              onClick={user && activeThread ? () => handleToggleDisike(activeThread.id) : handleOpen}
             >
               <ThumbDownIcon
                 fontSize='small'
@@ -153,6 +181,21 @@ export default function ThreadHeader () {
             <Typography variant='body2'>{activeThread.dislike}</Typography>
           </Box>
         </Box>
+
+        <Snackbar
+          open={openErrorSnackbar}
+          autoHideDuration={6000}
+          onClose={() => setOpenErrorSnackbar(false)}
+        >
+          <Alert
+            onClose={() => setOpenErrorSnackbar(false)}
+            severity='error'
+            variant='outlined'
+            sx={{ width: '100%' }}
+          >
+            {errorSnackbarMessage}
+          </Alert>
+        </Snackbar>
       </Box>
     )
   )

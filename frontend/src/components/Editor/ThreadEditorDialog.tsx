@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -15,6 +15,8 @@ import axios from '../../utils/axios';
 import { useNavigate } from "react-router-dom";
 import useThread from '../../hooks/useThreads';
 import useNav from '../../hooks/useNav';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 
 export default function EditorDialog({
   open, onClose
@@ -26,9 +28,12 @@ export default function EditorDialog({
   const theme = useTheme();
   const { threads, setThreads } = useThread();
   const { activeCategory } = useNav();
-  const [selectedCategory, setSelectedCategory] = React.useState<string>('');
-  const [threadTitle, setThreadTitle] = React.useState<string>('');
-  const [threadContent, setThreadContent] = React.useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [threadTitle, setThreadTitle] = useState<string>('');
+  const [threadContent, setThreadContent] = useState<string>('');
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState<boolean>(false);
+  const [errorSnackbarMessage, setErrorSnackbarMessage] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleClose = () => {
     if (threadContent == '' && threadTitle == '') {
@@ -40,6 +45,10 @@ export default function EditorDialog({
   }
 
   const handleCreate = () => {
+    setLoading(true);
+    setOpenErrorSnackbar(false);
+    setErrorSnackbarMessage('');
+
     const data = {
       categoryId: selectedCategory,
       title: threadTitle,
@@ -64,7 +73,13 @@ export default function EditorDialog({
         navigate(`/category/${newThread.category_id}`);
         onClose();
       })
-      .catch(error => console.log(error));
+      .catch(error => {
+        setErrorSnackbarMessage(error.response.data?.message || 'Failed to create thread. Please try again.');
+        setOpenErrorSnackbar(true);
+      })
+      .finally(() => {
+        setLoading(false);
+      })
   };
 
   return (
@@ -160,9 +175,25 @@ export default function EditorDialog({
           variant="contained"
           onClick={handleCreate}
           disabled={threadContent == '' || threadTitle == ''}
+          loading={loading}
         >
           Create
         </Button>
+
+        <Snackbar
+          open={openErrorSnackbar}
+          autoHideDuration={6000}
+          onClose={() => setOpenErrorSnackbar(false)}
+        >
+          <Alert
+            onClose={() => setOpenErrorSnackbar(false)}
+            severity='error'
+            variant='outlined'
+            sx={{ width: '100%' }}
+          >
+            {errorSnackbarMessage}
+          </Alert>
+        </Snackbar>
       </DialogActions>
     </Dialog>
   )

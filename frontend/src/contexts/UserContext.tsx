@@ -11,22 +11,22 @@ type UserContextType = {
   followingUsers: UserProfileInfo[];
   blockingUsers: UserProfileInfo[];
   isFollowing: (targetUserId: number) => boolean;
-  followUser: (targetUserId: number) => void;
-  unfollowUser: (targetUserId: number) => void;
+  followUser: (targetUserId: number) => { data: any, error: any};
+  unfollowUser: (targetUserId: number) => { data: any, error: any};
   isBlocking: (targetUserId: number) => boolean;
-  blockUser: (targetUserId: number) => void;
-  unblockUser: (targetUserId: number) => void;
+  blockUser: (targetUserId: number) => { data: any, error: any};
+  unblockUser: (targetUserId: number) => { data: any, error: any};
 }
 
 const UserContext = createContext<UserContextType>({
   followingUsers: [],
   blockingUsers: [],
   isFollowing: () => false,
-  followUser: () => {},
-  unfollowUser: () => {},
+  followUser: () => ({ data: null, error: null }),
+  unfollowUser: () => ({ data: null, error: null }),
   isBlocking: () => false,
-  blockUser: () => {},
-  unblockUser: () => {},
+  blockUser: () => ({ data: null, error: null }),
+  unblockUser: () => ({ data: null, error: null }),
 });
 
 function UserProvider({
@@ -63,9 +63,14 @@ function UserProvider({
       axios.post('/user/follow', { targetUserId })
         .then(response => {
           setFollowingUsers([response.data.data, ...followingUsers]);
+          return { data: response.data, error: null };
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+          return { data: null, error };
+        });
     }
+
+    return { data: null, error: null };
   }
 
   const unfollowUser = (targetUserId: number) => {
@@ -73,9 +78,14 @@ function UserProvider({
       axios.post('/user/unfollow', { targetUserId })
         .then(response => {
           setFollowingUsers(followingUsers.filter(user => user.id !== targetUserId));
+          return { data: response.data, error: null };
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+          return { data: null, error };
+        });
     }
+
+    return { data: null, error: null };
   }
 
   const isBlocking = (targetUserId: number) => {
@@ -87,9 +97,14 @@ function UserProvider({
       axios.post('/user/block', { targetUserId })
         .then(response => {
           setBlockingUsers([response.data.data, ...blockingUsers]);
+          return { data: response.data, error: null };
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+          return { data: null, error };
+        });
     }
+
+    return { data: null, error: null };
   }
 
   const unblockUser = (targetUserId: number) => {
@@ -97,9 +112,14 @@ function UserProvider({
       axios.post('/user/unblock', { targetUserId })
         .then(response => {
           setBlockingUsers(blockingUsers.filter(user => user.id !== targetUserId));
+          return { data: response.data, error: null };
         })
-        .catch(error => console.log(error));
+        .catch(error => {
+          return { data: null, error };
+        });
     }
+    
+    return { data: null, error: null };
   }
 
   return (
