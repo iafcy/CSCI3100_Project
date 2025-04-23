@@ -14,18 +14,40 @@ export default function ErrorPage({
     <Box
       sx={{
         bgcolor: theme.palette.background.paper,
-        maxWidth: '100%',
+        width: '100%',
         height: '100vh',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         m: 0,
-        p: 0
+        p: 2
       }}
     >
-      <Typography variant='h1' component='h2' sx={{ mb: 2 }}>{title}</Typography>
-      <Typography variant='h4' sx={{ mb: 6 }}>{message}</Typography>
+      <img 
+        src='/logo.webp'
+        style={{
+          width: '100%',
+          maxWidth: 200,
+          height: 'auto'
+        }}   
+      />
+      <Box
+        sx={{
+          textAlign: 'center'
+        }}
+      >
+        <Typography variant='h2' component='h1' sx={{ mb: 2 }}>{title}</Typography>
+      </Box>
+
+      <Box
+        sx={{
+          textAlign: 'center'
+        }}
+      >
+        <Typography variant='h5' sx={{ mb: 6 }}>{message}</Typography>
+      </Box>
+
       <Button
         component={Link}
         to='/'

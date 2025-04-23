@@ -6,6 +6,8 @@ import {
 } from "react-router-dom";
 import MainLayout from "./pages/MainLayout";
 import CategoryHome from "./pages/CategoryHome";
+import UserHome from "./pages/UserHome";
+import FollowingHome from "./pages/FollowingHome";
 import Thread from "./pages/Thread";
 import './App.css';
 import { CategoriesProvider } from "./contexts/CategoriesContext";
@@ -34,9 +36,11 @@ function App() {
                       <Route path="thread/:threadId" element={<Thread />} />
                     </Route>
                     <Route path="/user/:userId" element={<UserThreadLayout />}>
+                      <Route index element={<UserHome />} />
                       <Route path="thread/:threadId" element={<Thread />} />
                     </Route>
                     <Route path="/following" element={<FollowingThreadLayout />}>
+                      <Route index element={<FollowingHome />} />
                       <Route path="thread/:threadId" element={<Thread />} />
                     </Route>
                     

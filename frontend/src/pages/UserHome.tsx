@@ -2,10 +2,10 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import useNav from '../hooks/useNav';
 
-export default function CategoryHome() {
-  const { activeCategory } = useNav();
+export default function UserHome() {
+  const { activeUserProfile } = useNav();
 
-  if (!activeCategory) {
+  if (!activeUserProfile) {
     return null;
   }
 
@@ -28,7 +28,7 @@ export default function CategoryHome() {
           height: 'auto'
         }}   
       />
-      <Typography variant='h4' component='h1' color='textPrimary'>CUHKG - {activeCategory.name}</Typography>
+      <Typography variant='h4' component='h1' color='textPrimary'>CUHKG - {activeUserProfile.username}</Typography>
     </Box>
   );
 }

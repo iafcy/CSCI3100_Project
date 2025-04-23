@@ -1,14 +1,7 @@
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import useNav from '../hooks/useNav';
 
-export default function CategoryHome() {
-  const { activeCategory } = useNav();
-
-  if (!activeCategory) {
-    return null;
-  }
-
+export default function FollowingHome() {
   return (
     <Box
       sx={{
@@ -28,7 +21,7 @@ export default function CategoryHome() {
           height: 'auto'
         }}   
       />
-      <Typography variant='h4' component='h1' color='textPrimary'>CUHKG - {activeCategory.name}</Typography>
+      <Typography variant='h4' component='h1' color='textPrimary'>CUHKG - Following</Typography>
     </Box>
   );
 }

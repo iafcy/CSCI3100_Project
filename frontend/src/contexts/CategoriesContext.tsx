@@ -28,7 +28,7 @@ function CategoriesProvider({
         console.log(error);
         navigate('/error');
       })
-  }, []);
+  }, [navigate]);
 
   return (
     <CategoriesContext.Provider
