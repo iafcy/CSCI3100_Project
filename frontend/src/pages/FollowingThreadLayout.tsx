@@ -40,6 +40,9 @@ export default function FollowingThreadLayout() {
         setThreads(response.data.data.threads);
         setThreadsCount(response.data.data.threadsCount)
       })
+      .catch(() => navigate('/error', {
+        replace: true,
+      }))
       .finally(() => setLoading(false));
   }, [authenticated, sortBy]);
 

@@ -37,6 +37,19 @@ const getThreads = async (req: any, res: any) => {
     return res.status(400).json({ message: 'Invalid offset value' });
   }
 
+  const { data: categoryData, error: categoryError } = await categoryService.getCategoryById(categoryId);
+
+  if (categoryError) {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: categoryError.message
+    });
+  } else if (!categoryData) {
+    return res.status(400).json({
+      message: 'Category not found',
+    });
+  }
+
   const { count, error: countError } = await categoryService.getThreadsCountByCategoryId(categoryId);
 
   if (!countError) {

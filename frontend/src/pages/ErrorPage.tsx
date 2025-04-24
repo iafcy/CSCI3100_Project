@@ -2,13 +2,15 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-export default function ErrorPage({
-  title = "Something went wrong...",
-  message = "We are sorry, this is embarrassing. Please try again later.",
-}) {
+export default function ErrorPage() {
   const theme = useTheme();
+  const location = useLocation();
+
+  const state = location.state || {};
+  const title = state.title || "Something went wrong";
+  const message = state.message || "An unexpected error occurred.";
 
   return (
     <Box

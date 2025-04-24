@@ -36,8 +36,18 @@ const getThreadsByCategoryId = async (
   return { data, error };
 }
 
+const getCategoryById = async (id: number) => {
+  const { data, error } = await supabase.from('categories')
+    .select()
+    .eq('id', id)
+    .single();
+  
+  return { data, error };
+}
+
 export default {
   getCategoryList,
   getThreadsCountByCategoryId,
   getThreadsByCategoryId,
+  getCategoryById
 }

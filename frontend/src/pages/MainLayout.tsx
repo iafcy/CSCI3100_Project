@@ -34,6 +34,13 @@ export default function MainLayout() {
         setThreads(response.data.data.threads);
         setThreadsCount(response.data.data.threadsCount)
       })
+      .catch(() => navigate('/error', {
+        replace: true,
+        state: {
+          title: "Category Not Found",
+          message: "Oops! This page doesn't exist."
+        }
+      }))
       .finally(() => setLoading(false));
   }, [categoryId, authenticated, sortBy]);
 

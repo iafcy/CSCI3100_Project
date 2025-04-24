@@ -45,7 +45,20 @@ function App() {
                     </Route>
                     
                     <Route path="/error" element={<ErrorPage />} />
-                    <Route path="*" element={<ErrorPage title="Page Not Found" message="Oops! This page doesn't exist." />} />
+
+                    <Route
+                      path="*"
+                      element={
+                        <Navigate
+                          to="/error"
+                          replace
+                          state={{
+                            title: "Page Not Found",
+                            message: "Oops! This page doesn't exist."
+                          }}
+                        />
+                      }
+                    />
                   </Routes>
                 </UserProvider>
               </NavProvider>

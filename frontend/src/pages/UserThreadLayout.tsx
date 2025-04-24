@@ -44,6 +44,13 @@ export default function UserThreadLayout() {
           username: response.data.data.username
         });
       })
+      .catch(() => navigate('/error', {
+        replace: true,
+        state: {
+          title: "User Not Found",
+          message: "Oops! This user doesn't exist."
+        }
+      }))
       .finally(() => setLoading(false));
   }, [userId, authenticated, sortBy]);
 
