@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import Tooltip from '@mui/material/Tooltip';
 
 export default function ThreadListItem({
   thread
@@ -59,11 +60,16 @@ export default function ThreadListItem({
           width: '100%'
         }}
       >
-        <Typography component="h6">
+        <Typography
+          noWrap
+          component="h6"
+        >
           {thread.username}
         </Typography>
         <Typography
+          noWrap
           sx={{
+            ml: 2,
             flexShrink: 0,
             color: Number(activeThreadId) == thread.id ? theme.palette.primary.main : theme.palette.secondary.main
           }}  
@@ -79,9 +85,18 @@ export default function ThreadListItem({
           width: '100%',
         }}
       >
-        <Typography component="h6">
-          {thread.title}
-        </Typography>
+        <Tooltip title={thread.title} enterTouchDelay={0}>
+          <Typography
+            noWrap
+            component="h6"
+            sx={{
+              overflow: 'hidden',     
+              flexGrow: 0,
+            }}
+          >
+            {thread.title}
+          </Typography>
+        </Tooltip>
         <Box
           sx={{
             display: 'flex',
@@ -89,7 +104,8 @@ export default function ThreadListItem({
             alignItems: 'center',
             gap: 1,
             flexShrink: 0,
-            color: Number(activeThreadId) == thread.id ? theme.palette.primary.main : theme.palette.secondary.main
+            color: Number(activeThreadId) == thread.id ? theme.palette.primary.main : theme.palette.secondary.main,
+            ml: 2
           }}
         >
           <ThumbUpIcon fontSize='small' />

@@ -48,7 +48,9 @@ export default function Navbar() {
           borderBottomStyle: 'solid',
           borderBottomColor: theme.palette.divider,
           alignItems: 'center',
-          height: 64
+          height: 64,
+          maxWidth: '100%',
+          overflow: 'hidden'
         }}
       >
         <Box
@@ -65,6 +67,7 @@ export default function Navbar() {
             borderRightWidth: '.5px',
             borderRightStyle: 'solid',
             borderRightColor: theme.palette.divider,
+            flexShrink: 0
           }}
         >
           <Toolbar>

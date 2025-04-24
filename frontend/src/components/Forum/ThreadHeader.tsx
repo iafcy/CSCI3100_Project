@@ -14,6 +14,7 @@ import useAuth from '../../hooks/useAuth';
 import AuthDialog from '../Auth/AuthDialog';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import Tooltip from '@mui/material/Tooltip';
 
 export default function ThreadHeader () {
   const theme = useTheme();
@@ -76,14 +77,14 @@ export default function ThreadHeader () {
       activeThread &&
       <Box
         sx={{
-          display: {
-            xs: 'flex',
-            lg: 'flex'
-          },
-          flexGrow: 1,
+          display: 'flex',
           px: 2.5,
           alignItems: 'center',
           justifyContent: 'space-between',
+          width: '100%',
+          flexGrow: 1,
+          minWidth: 0,
+          overflow: 'hidden',
         }}
       >
         <Box
@@ -91,6 +92,9 @@ export default function ThreadHeader () {
             display: 'flex',
             alignItems: 'center',
             gap: 2,
+            overflow: 'hidden',     
+            flex: '1 1 0',
+            minWidth: 0,
           }}
         >
           <IconButton
@@ -101,16 +105,34 @@ export default function ThreadHeader () {
             <ArrowBackIcon fontSize='small' />
           </IconButton>
           
-          <Typography noWrap variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {activeThread.title}
-          </Typography>
+          <Tooltip
+            title={activeThread.title}
+            enterTouchDelay={0}
+          >
+            <Typography
+              noWrap
+              variant="h6"
+              component="div"
+              sx={{
+                minWidth: 0,
+                flex: '1 1 auto', 
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                flexGrow: 0
+              }}
+            >
+              {activeThread.title}
+            </Typography>
+          </Tooltip>
         </Box>
 
         <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
-            gap: 0.5
+            gap: 0.5,
+            flexShrink: 0,
           }}
         >
           <IconButton
