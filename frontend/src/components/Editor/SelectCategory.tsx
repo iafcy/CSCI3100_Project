@@ -18,9 +18,7 @@ export default function SelectCategory({
   const { categoryId } = useParams();
 
   React.useEffect(() => {
-    if (categoryId) {
-      setSelectedCategory(categoryId);
-    }
+    setSelectedCategory(categoryId ?? '1');
   }, []);
 
   const handleChange = (event: SelectChangeEvent) => {

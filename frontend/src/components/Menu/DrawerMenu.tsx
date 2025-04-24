@@ -40,14 +40,14 @@ export default function TemporaryDrawer() {
         setActiveCategory(category);
         document.title = `${category.name} | CUHKG`;
       }
-    } else if (userId) {
-      document.title = `${activeUserProfile?.username} | CUHKG`;
+    } else if (userId && activeUserProfile) {
+      document.title = `${activeUserProfile.username} | CUHKG`;
     } else if (location.pathname.startsWith('/following')) {
       document.title = 'Following | CUHKG';
     } else {
       document.title = 'CUHKG';
     }
-  }, [categoryId, categories, activeThread]);
+  }, [categoryId, categories, activeThread, activeUserProfile]);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
