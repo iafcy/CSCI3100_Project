@@ -14,6 +14,7 @@ import { Comment } from '../../types/types';
 import useThread from '../../hooks/useThreads';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import CloseWarningDialog from './CloseWarningDialog';
 
 export default function EditorDialog({
   open, onClose, treadTitle, threadId
@@ -32,13 +33,15 @@ export default function EditorDialog({
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState<boolean>(false);
   const [errorSnackbarMessage, setErrorSnackbarMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [openWarning, setOpenWarning] = useState<boolean>(false);
 
-  const handleClose = () => {
-    if (commentContent == '') {
+  const handleClose = (confirm: boolean = false) => {
+    if (commentContent == '' || confirm) {
+      setCommentContent('');
+      setOpenWarning(false);
       onClose();
     } else {
-      // ask if user want to save the content
-      onClose();
+      setOpenWarning(true);
     }
   }
 
@@ -77,7 +80,7 @@ export default function EditorDialog({
 
   return (
     <Dialog
-      onClose={handleClose}
+      onClose={() => handleClose(false)}
       open={open}
       onClick={(e) => e.stopPropagation()}
       maxWidth='lg'
@@ -97,7 +100,7 @@ export default function EditorDialog({
         Comment on "{treadTitle}"
         <IconButton
           aria-label="close"
-          onClick={handleClose}
+          onClick={() => handleClose(false)}
           sx={{
             color: theme.palette.text.primary,
           }}
@@ -146,6 +149,12 @@ export default function EditorDialog({
         >
           Create
         </Button>
+
+        <CloseWarningDialog
+          open={openWarning}
+          onContinue={() => setOpenWarning(false)}
+          onDiscard={() => handleClose(true)}
+        />
 
         <Snackbar
           open={openErrorSnackbar}
