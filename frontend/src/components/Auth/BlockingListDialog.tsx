@@ -25,7 +25,7 @@ export default function BlockingListDialog({
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState<boolean>(false);
   const [errorSnackbarMessage, setErrorSnackbarMessage] = useState<string>('');
 
-  const handleUnblock = (id: number) => {
+  const handleUnblock = (id: string) => {
     setOpenErrorSnackbar(false);
     setErrorSnackbarMessage('');
 

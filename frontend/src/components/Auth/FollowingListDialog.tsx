@@ -25,7 +25,7 @@ export default function FollowingListDialog({
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState<boolean>(false);
   const [errorSnackbarMessage, setErrorSnackbarMessage] = useState<string>('');
 
-  const handleUnfollow = (id: number) => {
+  const handleUnfollow = (id: string) => {
     setOpenErrorSnackbar(false);
     setErrorSnackbarMessage('');
 

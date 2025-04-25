@@ -15,7 +15,7 @@ export default function UserActionDialog({
   username, userId, isFollowed, isBlocked, handleToggleFollow, handleToggleBlock
 } : {
   username: string;
-  userId: number;
+  userId: string;
   isFollowed: boolean;
   isBlocked: boolean;
   handleToggleFollow: () => void;

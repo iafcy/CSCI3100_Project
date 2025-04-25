@@ -3,19 +3,19 @@ import axios from '../utils/axios';
 import useAuth from '../hooks/useAuth';
 
 type UserProfileInfo = {
-  id: number;
+  id: string;
   username: string;
 }
 
 type UserContextType = {
   followingUsers: UserProfileInfo[];
   blockingUsers: UserProfileInfo[];
-  isFollowing: (targetUserId: number) => boolean;
-  followUser: (targetUserId: number) => { data: any, error: any};
-  unfollowUser: (targetUserId: number) => { data: any, error: any};
-  isBlocking: (targetUserId: number) => boolean;
-  blockUser: (targetUserId: number) => { data: any, error: any};
-  unblockUser: (targetUserId: number) => { data: any, error: any};
+  isFollowing: (targetUserId: string) => boolean;
+  followUser: (targetUserId: string) => { data: any, error: any};
+  unfollowUser: (targetUserId: string) => { data: any, error: any};
+  isBlocking: (targetUserId: string) => boolean;
+  blockUser: (targetUserId: string) => { data: any, error: any};
+  unblockUser: (targetUserId: string) => { data: any, error: any};
 }
 
 const UserContext = createContext<UserContextType>({
@@ -54,11 +54,11 @@ function UserProvider({
     }
   }, [authenticated]);
 
-  const isFollowing = (targetUserId: number) => {
+  const isFollowing = (targetUserId: string) => {
     return followingUsers.some(user => user.id == targetUserId);
   }
 
-  const followUser = (targetUserId: number) => {
+  const followUser = (targetUserId: string) => {
     if (user && !isFollowing(targetUserId)) {
       axios.post('/user/follow', { targetUserId })
         .then(response => {
@@ -73,7 +73,7 @@ function UserProvider({
     return { data: null, error: null };
   }
 
-  const unfollowUser = (targetUserId: number) => {
+  const unfollowUser = (targetUserId: string) => {
     if (user && isFollowing(targetUserId)) {
       axios.post('/user/unfollow', { targetUserId })
         .then(response => {
@@ -88,11 +88,11 @@ function UserProvider({
     return { data: null, error: null };
   }
 
-  const isBlocking = (targetUserId: number) => {
+  const isBlocking = (targetUserId: string) => {
     return blockingUsers.some(user => user.id == targetUserId);
   }
 
-  const blockUser = (targetUserId: number) => {
+  const blockUser = (targetUserId: string) => {
     if (user && !isBlocking(targetUserId)) {
       axios.post('/user/block', { targetUserId })
         .then(response => {
@@ -107,7 +107,7 @@ function UserProvider({
     return { data: null, error: null };
   }
 
-  const unblockUser = (targetUserId: number) => {
+  const unblockUser = (targetUserId: string) => {
     if (user && isBlocking(targetUserId)) {
       axios.post('/user/unblock', { targetUserId })
         .then(response => {
