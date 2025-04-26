@@ -5,6 +5,18 @@ const followUser = async (req: any, res: any) => {
   const payload = req.body;
   const targetUserId = payload.targetUserId;
 
+  const { data: userData, error: userError } = await userService.getUserNameById(targetUserId);
+  if (userError) {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: userError.message
+    });
+  } else if (!userData) {
+    return res.status(400).json({
+      message: 'User not found',
+    });
+  }
+
   const { data, error } = await userService.followUser(userId, targetUserId);
 
   if (!error) {
@@ -24,6 +36,18 @@ const unfollowUser = async (req: any, res: any) => {
   const userId = req.user.id;
   const payload = req.body;
   const targetUserId = payload.targetUserId;
+
+  const { data: userData, error: userError } = await userService.getUserNameById(targetUserId);
+  if (userError) {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: userError.message
+    });
+  } else if (!userData) {
+    return res.status(400).json({
+      message: 'User not found',
+    });
+  }
 
   const { error } = await userService.unfollowUser(userId, targetUserId);
 
@@ -45,6 +69,18 @@ const blockUser = async (req: any, res: any) => {
   const payload = req.body;
   const targetUserId = payload.targetUserId;
 
+  const { data: userData, error: userError } = await userService.getUserNameById(targetUserId);
+  if (userError) {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: userError.message
+    });
+  } else if (!userData) {
+    return res.status(400).json({
+      message: 'User not found',
+    });
+  }
+
   const { data, error } = await userService.blockUser(userId, targetUserId);
 
   if (!error) {
@@ -64,6 +100,18 @@ const unblockUser = async (req: any, res: any) => {
   const userId = req.user.id;
   const payload = req.body;
   const targetUserId = payload.targetUserId;
+
+  const { data: userData, error: userError } = await userService.getUserNameById(targetUserId);
+  if (userError) {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: userError.message
+    });
+  } else if (!userData) {
+    return res.status(400).json({
+      message: 'User not found',
+    });
+  }
 
   const { error } = await userService.unblockUser(userId, targetUserId);
 

@@ -50,7 +50,7 @@ const likeCommentById = async (
     comment_id: commentId,
     user_id: userId,
     is_like: true,
-  }).select();
+  }).select().single();
 
   return { data, error };
 }
@@ -63,7 +63,7 @@ const dislikeCommentById = async (
     comment_id: commentId,
     user_id: userId,
     is_like: false,
-  }).select();
+  }).select().single();
 
   return { data, error };
 }
@@ -76,8 +76,17 @@ const removeReactionInCommentById = async (
     .delete()
     .eq('comment_id', commentId)
     .eq('user_id', userId)
-    .select();
+    .select().single();
 
+  return { data, error };
+}
+
+const getCommentById = async (id: number) => {
+  const { data, error } = await supabase.from('comments')
+    .select()
+    .eq('id', id)
+    .single();
+  
   return { data, error };
 }
 
@@ -85,5 +94,6 @@ export default {
   createComment,
   likeCommentById,
   dislikeCommentById,
-  removeReactionInCommentById
+  removeReactionInCommentById,
+  getCommentById
 }

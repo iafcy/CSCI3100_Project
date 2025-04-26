@@ -43,18 +43,6 @@ const getThreadPageById = async (
   return { data, error };
 }
 
-const getUserNameById = async (
-  userId: number
-) => {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select('username')
-    .eq('id', userId)
-    .single();
-
-  return { data, error };
-}
-
 const getUserThreadsCount = async (
   userId: number,
 ) => {
@@ -150,16 +138,25 @@ const removeReactionInThreadById = async (
   return { data, error };
 }
 
+const getThreadById = async (id: number) => {
+  const { data, error } = await supabase.from('threads')
+    .select()
+    .eq('id', id)
+    .single();
+  
+  return { data, error };
+}
+
 export default {
   createThread,
   getThreadPageCountById,
   getThreadPageById,
-  getUserNameById,
   getUserThreadsCount,
   getUserThreads,
   getFollowingThreadsCount,
   getFollowingThreads,
   likeThreadById,
   dislikeThreadById,
-  removeReactionInThreadById
+  removeReactionInThreadById,
+  getThreadById
 }

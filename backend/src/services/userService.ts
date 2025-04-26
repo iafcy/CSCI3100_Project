@@ -82,6 +82,18 @@ const getBlockingUser = async (
   return { data: flattenedData, error };
 }
 
+const getUserNameById = async (
+  userId: number
+) => {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('username')
+    .eq('id', userId)
+    .single();
+
+  return { data, error };
+}
+
 export default {
   followUser,
   unfollowUser,
@@ -89,4 +101,5 @@ export default {
   unblockUser,
   getFollowingUser,
   getBlockingUser,
+  getUserNameById
 }

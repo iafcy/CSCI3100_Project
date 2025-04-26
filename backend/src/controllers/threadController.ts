@@ -1,5 +1,6 @@
 import threadService from '../services/threadService';
 import commentService from '../services/commentService';
+import userService from '../services/userService';
 
 const createThread = async (req: any, res: any) => {
   const userId = req.user.id;
@@ -52,6 +53,18 @@ const getThreads = async (req: any, res: any) => {
   const { page = 1 } = req.query;
   const userId = req.user?.id ?? null;
 
+  const { data: threadData, error: threadError } = await threadService.getThreadById(threadId);
+  if (threadError) {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: threadError.message
+    });
+  } else if (!threadData) {
+    return res.status(400).json({
+      message: 'Thread not found',
+    });
+  }
+
   const pageCount = await threadService.getThreadPageCountById(threadId);
   const { data, error } = await threadService.getThreadPageById(threadId, page, userId);
 
@@ -88,12 +101,16 @@ const getUserThreads = async (req: any, res: any) => {
     return res.status(400).json({ message: 'Invalid offset value' });
   }
 
-  const { data: userData, error: userError } = await threadService.getUserNameById(userId);
+  const { data: userData, error: userError } = await userService.getUserNameById(userId);
   
   if (userError) {
     return res.status(500).json({
       message: 'Internal server error',
       error: userError.message
+    });
+  } else if (!userData) {
+    return res.status(400).json({
+      message: 'User not found',
     });
   }
 
@@ -202,6 +219,18 @@ const likeThread = async (req: any, res: any) => {
   const userId = req.user.id;
   const { threadId } = req.params;
 
+  const { data: threadData, error: threadError } = await threadService.getThreadById(threadId);
+  if (threadError) {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: threadError.message
+    });
+  } else if (!threadData) {
+    return res.status(400).json({
+      message: 'Thread not found',
+    });
+  }
+
   const { data, error } = await threadService.likeThreadById(threadId, userId);
 
   if (!error) {
@@ -221,6 +250,18 @@ const dislikeThread = async (req: any, res: any) => {
   const userId = req.user.id;
   const { threadId } = req.params;
 
+  const { data: threadData, error: threadError } = await threadService.getThreadById(threadId);
+  if (threadError) {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: threadError.message
+    });
+  } else if (!threadData) {
+    return res.status(400).json({
+      message: 'Thread not found',
+    });
+  }
+
   const { data, error } = await threadService.dislikeThreadById(threadId, userId);
 
   if (!error) {
@@ -239,6 +280,18 @@ const dislikeThread = async (req: any, res: any) => {
 const removeReaction = async (req: any, res: any) => {
   const userId = req.user.id;
   const { threadId } = req.params;
+
+  const { data: threadData, error: threadError } = await threadService.getThreadById(threadId);
+  if (threadError) {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: threadError.message
+    });
+  } else if (!threadData) {
+    return res.status(400).json({
+      message: 'Thread not found',
+    });
+  }
 
   const { data, error } = await threadService.removeReactionInThreadById(threadId, userId);
 
