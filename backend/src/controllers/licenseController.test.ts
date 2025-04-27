@@ -1,5 +1,10 @@
 import request from 'supertest';
 import express from 'express';
+import fs from 'fs/promises';
+import path from 'path';
+
+const TEST_UPLOAD_DIR = path.join(__dirname, 'test-uploads');
+process.env.UPLOAD_DIR = TEST_UPLOAD_DIR;
 
 import licenseRouter from '../routes/licenseRouter';
 import licenseService from '../services/licenseService';
@@ -12,6 +17,24 @@ const mockedLicenseService = licenseService as jest.Mocked<
 const app = express();
 app.use(express.json());
 app.use('/license', licenseRouter);
+
+beforeEach(async () => {
+  await fs.mkdir(TEST_UPLOAD_DIR, { recursive: true });
+});
+
+afterEach(async () => {
+  try {
+    const files = await fs.readdir(TEST_UPLOAD_DIR);
+    const unlinkPromises = files.map((file) =>
+      fs.unlink(path.join(TEST_UPLOAD_DIR, file)),
+    );
+    await Promise.all(unlinkPromises);
+  } catch (err) {}
+});
+
+afterAll(async () => {
+  await fs.rm(TEST_UPLOAD_DIR, { recursive: true, force: true });
+});
 
 describe('POST /license/verify', () => {
   it('should return 400 if no file is uploaded', async () => {
