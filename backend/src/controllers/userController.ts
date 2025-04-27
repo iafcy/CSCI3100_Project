@@ -5,11 +5,12 @@ const followUser = async (req: any, res: any) => {
   const payload = req.body;
   const targetUserId = payload.targetUserId;
 
-  const { data: userData, error: userError } = await userService.getUserNameById(targetUserId);
+  const { data: userData, error: userError } =
+    await userService.getUserNameById(targetUserId);
   if (userError) {
     return res.status(500).json({
       message: 'Internal server error',
-      error: userError.message
+      error: userError.message,
     });
   } else if (!userData) {
     return res.status(400).json({
@@ -22,26 +23,27 @@ const followUser = async (req: any, res: any) => {
   if (!error) {
     return res.status(200).json({
       message: 'success',
-      data: data
+      data: data,
     });
   } else {
     return res.status(500).json({
       message: 'Internal server error',
-      error: error.message
+      error: error.message,
     });
   }
-}
+};
 
 const unfollowUser = async (req: any, res: any) => {
   const userId = req.user.id;
   const payload = req.body;
   const targetUserId = payload.targetUserId;
 
-  const { data: userData, error: userError } = await userService.getUserNameById(targetUserId);
+  const { data: userData, error: userError } =
+    await userService.getUserNameById(targetUserId);
   if (userError) {
     return res.status(500).json({
       message: 'Internal server error',
-      error: userError.message
+      error: userError.message,
     });
   } else if (!userData) {
     return res.status(400).json({
@@ -49,31 +51,32 @@ const unfollowUser = async (req: any, res: any) => {
     });
   }
 
-  const { error } = await userService.unfollowUser(userId, targetUserId);
+  const { data, error } = await userService.unfollowUser(userId, targetUserId);
 
   if (!error) {
     return res.status(200).json({
       message: 'success',
-      data: null,
+      data: data,
     });
   } else {
     return res.status(500).json({
       message: 'Internal server error',
-      error: error.message
+      error: error.message,
     });
   }
-}
+};
 
 const blockUser = async (req: any, res: any) => {
   const userId = req.user.id;
   const payload = req.body;
   const targetUserId = payload.targetUserId;
 
-  const { data: userData, error: userError } = await userService.getUserNameById(targetUserId);
+  const { data: userData, error: userError } =
+    await userService.getUserNameById(targetUserId);
   if (userError) {
     return res.status(500).json({
       message: 'Internal server error',
-      error: userError.message
+      error: userError.message,
     });
   } else if (!userData) {
     return res.status(400).json({
@@ -86,26 +89,27 @@ const blockUser = async (req: any, res: any) => {
   if (!error) {
     return res.status(200).json({
       message: 'success',
-      data: data
+      data: data,
     });
   } else {
     return res.status(500).json({
       message: 'Internal server error',
-      error: error.message
+      error: error.message,
     });
   }
-}
+};
 
 const unblockUser = async (req: any, res: any) => {
   const userId = req.user.id;
   const payload = req.body;
   const targetUserId = payload.targetUserId;
 
-  const { data: userData, error: userError } = await userService.getUserNameById(targetUserId);
+  const { data: userData, error: userError } =
+    await userService.getUserNameById(targetUserId);
   if (userError) {
     return res.status(500).json({
       message: 'Internal server error',
-      error: userError.message
+      error: userError.message,
     });
   } else if (!userData) {
     return res.status(400).json({
@@ -113,20 +117,20 @@ const unblockUser = async (req: any, res: any) => {
     });
   }
 
-  const { error } = await userService.unblockUser(userId, targetUserId);
+  const { data, error } = await userService.unblockUser(userId, targetUserId);
 
   if (!error) {
     return res.status(200).json({
       message: 'success',
-      data: null,
+      data: data,
     });
   } else {
     return res.status(500).json({
       message: 'Internal server error',
-      error: error.message
+      error: error.message,
     });
   }
-}
+};
 
 const getFollowingUser = async (req: any, res: any) => {
   const userId = req.user.id;
@@ -136,15 +140,15 @@ const getFollowingUser = async (req: any, res: any) => {
   if (!error) {
     return res.status(200).json({
       message: 'success',
-      data: data
+      data: data,
     });
   } else {
     return res.status(500).json({
       message: 'Internal server error',
-      error: error.message
+      error: error.message,
     });
   }
-}
+};
 
 const getBlockingUser = async (req: any, res: any) => {
   const userId = req.user.id;
@@ -154,15 +158,15 @@ const getBlockingUser = async (req: any, res: any) => {
   if (!error) {
     return res.status(200).json({
       message: 'success',
-      data: data
+      data: data,
     });
   } else {
     return res.status(500).json({
       message: 'Internal server error',
-      error: error.message
+      error: error.message,
     });
   }
-}
+};
 
 export default {
   followUser,
