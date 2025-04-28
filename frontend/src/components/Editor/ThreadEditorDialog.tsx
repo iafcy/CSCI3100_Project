@@ -12,16 +12,17 @@ import SelectCategory from './SelectCategory';
 import TiptapEditor from './TipTapEditor';
 import Button from '@mui/material/Button';
 import axios from '../../utils/axios';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import useThread from '../../hooks/useThreads';
 import useNav from '../../hooks/useNav';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import CloseWarningDialog from './CloseWarningDialog';
 
-export default function EditorDialog({
-  open, onClose
-} : {
+export default function ThreadEditorDialog({
+  open,
+  onClose,
+}: {
   open: boolean;
   onClose: () => void;
 }) {
@@ -46,7 +47,7 @@ export default function EditorDialog({
     } else {
       setOpenWarning(true);
     }
-  }
+  };
 
   const handleCreate = () => {
     setLoading(true);
@@ -57,17 +58,15 @@ export default function EditorDialog({
       categoryId: selectedCategory,
       title: threadTitle,
       content: threadContent,
-    }
+    };
 
-    axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/thread`, data)
-      .then(response => {
+    axios
+      .post(`${import.meta.env.VITE_BACKEND_API_URL}/thread`, data)
+      .then((response) => {
         const newThread = response.data.data;
 
         if (newThread.category_id == activeCategory?.id) {
-          setThreads([
-            response.data.data,
-            ...threads,
-          ]);
+          setThreads([response.data.data, ...threads]);
         }
 
         setThreadTitle('');
@@ -76,13 +75,16 @@ export default function EditorDialog({
         navigate(`/category/${newThread.category_id}`);
         onClose();
       })
-      .catch(error => {
-        setErrorSnackbarMessage(error.response.data?.message || 'Failed to create thread. Please try again.');
+      .catch((error) => {
+        setErrorSnackbarMessage(
+          error.response.data?.message ||
+            'Failed to create thread. Please try again.',
+        );
         setOpenErrorSnackbar(true);
       })
       .finally(() => {
         setLoading(false);
-      })
+      });
   };
 
   return (
@@ -90,10 +92,10 @@ export default function EditorDialog({
       onClose={() => handleClose(false)}
       open={open}
       onClick={(e) => e.stopPropagation()}
-      maxWidth='lg'
+      maxWidth="lg"
       fullWidth={true}
     >
-      <DialogTitle 
+      <DialogTitle
         sx={{
           m: 0,
           py: 1,
@@ -101,7 +103,7 @@ export default function EditorDialog({
           backgroundColor: theme.palette.background.paper,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
         }}
       >
         Create Thread
@@ -115,8 +117,8 @@ export default function EditorDialog({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      
-      <DialogContent 
+
+      <DialogContent
         dividers
         sx={{
           color: theme.palette.text.primary,
@@ -124,7 +126,7 @@ export default function EditorDialog({
           height: '80vh',
           display: 'flex',
           flexDirection: 'column',
-          overflowY: 'hidden'
+          overflowY: 'hidden',
         }}
       >
         <Box
@@ -147,17 +149,19 @@ export default function EditorDialog({
             fullWidth={true}
             sx={{
               mb: 2,
-              bgcolor: theme.palette.background.default
+              bgcolor: theme.palette.background.default,
             }}
             value={threadTitle}
             onChange={(e) => setThreadTitle(e.target.value)}
           />
         </Box>
 
-        <Box sx={{
-          flex: 1,
-          overflow: 'hidden',
-        }}>
+        <Box
+          sx={{
+            flex: 1,
+            overflow: 'hidden',
+          }}
+        >
           <TiptapEditor
             content={threadContent}
             onContentUpdate={setThreadContent}
@@ -174,7 +178,7 @@ export default function EditorDialog({
         }}
       >
         <Button
-          size='small'
+          size="small"
           variant="contained"
           onClick={handleCreate}
           disabled={threadContent == '' || threadTitle == ''}
@@ -196,8 +200,8 @@ export default function EditorDialog({
         >
           <Alert
             onClose={() => setOpenErrorSnackbar(false)}
-            severity='error'
-            variant='outlined'
+            severity="error"
+            variant="outlined"
             sx={{ width: '100%' }}
           >
             {errorSnackbarMessage}
@@ -205,5 +209,5 @@ export default function EditorDialog({
         </Snackbar>
       </DialogActions>
     </Dialog>
-  )
+  );
 }

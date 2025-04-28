@@ -16,9 +16,12 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import CloseWarningDialog from './CloseWarningDialog';
 
-export default function EditorDialog({
-  open, onClose, treadTitle, threadId
-} : {
+export default function CommentEditorDialog({
+  open,
+  onClose,
+  treadTitle,
+  threadId,
+}: {
   open: boolean;
   onClose: () => void;
   treadTitle: string;
@@ -28,7 +31,8 @@ export default function EditorDialog({
   isOp?: boolean;
 }) {
   const theme = useTheme();
-  const { comments, setComments, commentPageCount, setCommentPageCount } = useThread();
+  const { comments, setComments, commentPageCount, setCommentPageCount } =
+    useThread();
   const [commentContent, setCommentContent] = useState<string>('');
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState<boolean>(false);
   const [errorSnackbarMessage, setErrorSnackbarMessage] = useState<string>('');
@@ -43,7 +47,7 @@ export default function EditorDialog({
     } else {
       setOpenWarning(true);
     }
-  }
+  };
 
   const handleCreate = () => {
     setLoading(true);
@@ -53,15 +57,13 @@ export default function EditorDialog({
     const data = {
       threadId: threadId,
       content: commentContent,
-    }
+    };
 
-    axios.post(`${import.meta.env.VITE_BACKEND_API_URL}/comment`, data)
-      .then(response => {
+    axios
+      .post(`${import.meta.env.VITE_BACKEND_API_URL}/comment`, data)
+      .then((response) => {
         if (comments.length < 10) {
-          setComments([
-            ...comments,
-            response.data.data,
-          ]);
+          setComments([...comments, response.data.data]);
         } else {
           setCommentPageCount(commentPageCount + 1);
         }
@@ -69,13 +71,16 @@ export default function EditorDialog({
         setCommentContent('');
         onClose();
       })
-      .catch(error => {
-        setErrorSnackbarMessage(error.response.data?.message || 'Failed to create comment. Please try again.');
+      .catch((error) => {
+        setErrorSnackbarMessage(
+          error.response.data?.message ||
+            'Failed to create comment. Please try again.',
+        );
         setOpenErrorSnackbar(true);
       })
       .finally(() => {
         setLoading(false);
-      })
+      });
   };
 
   return (
@@ -83,10 +88,10 @@ export default function EditorDialog({
       onClose={() => handleClose(false)}
       open={open}
       onClick={(e) => e.stopPropagation()}
-      maxWidth='lg'
+      maxWidth="lg"
       fullWidth={true}
     >
-      <DialogTitle 
+      <DialogTitle
         sx={{
           m: 0,
           py: 1,
@@ -94,7 +99,7 @@ export default function EditorDialog({
           backgroundColor: theme.palette.background.paper,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
         }}
       >
         Comment on "{treadTitle}"
@@ -108,8 +113,8 @@ export default function EditorDialog({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      
-      <DialogContent 
+
+      <DialogContent
         dividers
         sx={{
           color: theme.palette.text.primary,
@@ -117,14 +122,16 @@ export default function EditorDialog({
           height: '80vh',
           display: 'flex',
           flexDirection: 'column',
-          overflowY: 'hidden'
+          overflowY: 'hidden',
         }}
       >
-        <Box sx={{
-          flex: 1,
-          overflow: 'hidden',
-          p: 1
-        }}>
+        <Box
+          sx={{
+            flex: 1,
+            overflow: 'hidden',
+            p: 1,
+          }}
+        >
           <TiptapEditor
             content={commentContent}
             onContentUpdate={setCommentContent}
@@ -141,7 +148,7 @@ export default function EditorDialog({
         }}
       >
         <Button
-          size='small'
+          size="small"
           variant="contained"
           onClick={handleCreate}
           disabled={commentContent == ''}
@@ -163,8 +170,8 @@ export default function EditorDialog({
         >
           <Alert
             onClose={() => setOpenErrorSnackbar(false)}
-            severity='error'
-            variant='outlined'
+            severity="error"
+            variant="outlined"
             sx={{ width: '100%' }}
           >
             {errorSnackbarMessage}
@@ -172,5 +179,5 @@ export default function EditorDialog({
         </Snackbar>
       </DialogActions>
     </Dialog>
-  )
+  );
 }

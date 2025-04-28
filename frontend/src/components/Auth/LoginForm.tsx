@@ -15,11 +15,7 @@ import { loginSchema, LoginFormData } from '../../types/types';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-export default function LoginForm({
-  onClose
-} : {
-  onClose: () => void;
-}) {
+export default function LoginForm({ onClose }: { onClose: () => void }) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const {
@@ -34,11 +30,13 @@ export default function LoginForm({
     defaultValues: {
       email: '',
       password: '',
-    }
+    },
   });
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.preventDefault();
   };
 
@@ -47,21 +45,27 @@ export default function LoginForm({
 
     const { error: loginError } = await supabase.auth.signInWithPassword({
       email: email,
-      password: password
+      password: password,
     });
 
     if (loginError) {
-      setError("root.serverError", { type: "manual", message: loginError.message || "Login failed. Please try again." });
+      setError('root.serverError', {
+        type: 'manual',
+        message: loginError.message || 'Login failed. Please try again.',
+      });
     } else {
       const { error } = await supabase.auth.getUser();
 
       if (error) {
-        setError("root.serverError", { type: "manual", message: error.message || "Login failed. Please try again." });
+        setError('root.serverError', {
+          type: 'manual',
+          message: error.message || 'Login failed. Please try again.',
+        });
       } else {
         onClose();
       }
     }
-  }
+  };
 
   return (
     <Box
@@ -69,25 +73,26 @@ export default function LoginForm({
       sx={{ width: '100%', mt: 2 }}
       onSubmit={handleSubmit(onSubmit)}
       noValidate
+      data-testid="login-form"
     >
       <TextField
         required
-        id="signup-email"
+        id="login-email"
         label="Email"
         type="email"
         variant="outlined"
         fullWidth={true}
-        {...register("email", {
+        {...register('email', {
           onChange: () => {
-            clearErrors("root.serverError");
+            clearErrors('root.serverError');
           },
         })}
         error={!!errors.email}
         helperText={errors.email?.message}
         sx={{ mb: 2 }}
-        aria-invalid={errors.email ? "true" : "false"}
+        aria-invalid={errors.email ? 'true' : 'false'}
       />
-      
+
       <FormControl
         required
         variant="outlined"
@@ -95,13 +100,13 @@ export default function LoginForm({
         sx={{ mb: 2 }}
         error={!!errors.password}
       >
-        <InputLabel htmlFor="signup-password">Password</InputLabel>
+        <InputLabel htmlFor="login-password">Password</InputLabel>
         <OutlinedInput
-          id="signup-password"
+          id="login-password"
           type={showPassword ? 'text' : 'password'}
-          {...register("password", {
+          {...register('password', {
             onChange: () => {
-              clearErrors("root.serverError");
+              clearErrors('root.serverError');
             },
           })}
           endAdornment={
@@ -117,10 +122,12 @@ export default function LoginForm({
             </InputAdornment>
           }
           label="Password"
-          aria-invalid={errors.password ? "true" : "false"}
-          aria-describedby={errors.password ? "signup-password-error" : undefined}
+          aria-invalid={errors.password ? 'true' : 'false'}
+          aria-describedby={
+            errors.password ? 'login-password-error' : undefined
+          }
         />
-        <FormHelperText error id="signup-password-error">
+        <FormHelperText error id="login-password-error">
           {errors.password?.message}
         </FormHelperText>
       </FormControl>
@@ -132,15 +139,15 @@ export default function LoginForm({
       )}
 
       <Button
-         type="submit"
-         variant="contained"
-         disabled={!isValid || isSubmitting}
-         sx={{ width: '100%', mt: 2 }}
-         aria-busy={isSubmitting}
-         loading={isSubmitting}
-       >
-         {isSubmitting ? 'Logging in...' : 'Login'}
-       </Button>
+        type="submit"
+        variant="contained"
+        disabled={!isValid || isSubmitting}
+        sx={{ width: '100%', mt: 2 }}
+        aria-busy={isSubmitting}
+        loading={isSubmitting}
+      >
+        {isSubmitting ? 'Logging in...' : 'Login'}
+      </Button>
     </Box>
   );
 }
