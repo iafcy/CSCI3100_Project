@@ -88,9 +88,31 @@ const getUserNameById = async (userId: number) => {
     .from('profiles')
     .select('username')
     .eq('id', userId)
-    .single();
+    .maybeSingle();
 
   return { data, error };
+};
+
+const isUserFollowed = async (userId: number, targetUserId: number) => {
+  const { data, error } = await supabase
+    .from('follows')
+    .select()
+    .eq('user_id', userId)
+    .eq('target_user_id', targetUserId)
+    .maybeSingle();
+
+  return { isFollowed: !!data, error };
+};
+
+const isUserBlocked = async (userId: number, targetUserId: number) => {
+  const { data, error } = await supabase
+    .from('blocks')
+    .select()
+    .eq('user_id', userId)
+    .eq('target_user_id', targetUserId)
+    .maybeSingle();
+
+  return { isBlocked: !!data, error };
 };
 
 export default {
@@ -101,4 +123,6 @@ export default {
   getFollowingUser,
   getBlockingUser,
   getUserNameById,
+  isUserFollowed,
+  isUserBlocked,
 };

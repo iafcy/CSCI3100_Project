@@ -20,11 +20,18 @@ const createComment = async (req: any, res: any) => {
     });
   }
 
-  const { data: threadData, error: threadError } = await threadService.getThreadById(threadId);
+  if (typeof content !== 'string') {
+    return res.status(400).json({
+      message: 'Content should be a string',
+    });
+  }
+
+  const { data: threadData, error: threadError } =
+    await threadService.getThreadById(threadId);
   if (threadError) {
     return res.status(500).json({
       message: 'Internal server error',
-      error: threadError.message
+      error: threadError.message,
     });
   } else if (!threadData) {
     return res.status(400).json({
@@ -47,25 +54,26 @@ const createComment = async (req: any, res: any) => {
         like: 0,
         dislike: 0,
         user_reaction: null,
-      }
+      },
     });
   } else {
     return res.status(500).json({
       message: 'Internal server error',
-      error: error.message
+      error: error.message,
     });
   }
-}
+};
 
 const likeComment = async (req: any, res: any) => {
   const userId = req.user.id;
   const { commentId } = req.params;
 
-  const { data: commentData, error: commentError} = await commentService.getCommentById(commentId);
+  const { data: commentData, error: commentError } =
+    await commentService.getCommentById(commentId);
   if (commentError) {
     return res.status(500).json({
       message: 'Internal server error',
-      error: commentError.message
+      error: commentError.message,
     });
   } else if (!commentData) {
     return res.status(400).json({
@@ -73,30 +81,34 @@ const likeComment = async (req: any, res: any) => {
     });
   }
 
-  const { data, error } = await commentService.likeCommentById(commentId, userId);
+  const { data, error } = await commentService.likeCommentById(
+    commentId,
+    userId,
+  );
 
   if (!error) {
     return res.status(200).json({
       message: 'success',
-      data: data
+      data: data,
     });
   } else {
     return res.status(500).json({
       message: 'Internal server error',
-      error: error.message
+      error: error.message,
     });
   }
-}
+};
 
 const dislikeComment = async (req: any, res: any) => {
   const userId = req.user.id;
   const { commentId } = req.params;
 
-  const { data: commentData, error: commentError} = await commentService.getCommentById(commentId);
+  const { data: commentData, error: commentError } =
+    await commentService.getCommentById(commentId);
   if (commentError) {
     return res.status(500).json({
       message: 'Internal server error',
-      error: commentError.message
+      error: commentError.message,
     });
   } else if (!commentData) {
     return res.status(400).json({
@@ -104,30 +116,34 @@ const dislikeComment = async (req: any, res: any) => {
     });
   }
 
-  const { data, error } = await commentService.dislikeCommentById(commentId, userId);
+  const { data, error } = await commentService.dislikeCommentById(
+    commentId,
+    userId,
+  );
 
   if (!error) {
     return res.status(200).json({
       message: 'success',
-      data: data
+      data: data,
     });
   } else {
     return res.status(500).json({
       message: 'Internal server error',
-      error: error.message
+      error: error.message,
     });
   }
-}
+};
 
 const removeReaction = async (req: any, res: any) => {
   const userId = req.user.id;
   const { commentId } = req.params;
 
-  const { data: commentData, error: commentError} = await commentService.getCommentById(commentId);
+  const { data: commentData, error: commentError } =
+    await commentService.getCommentById(commentId);
   if (commentError) {
     return res.status(500).json({
       message: 'Internal server error',
-      error: commentError.message
+      error: commentError.message,
     });
   } else if (!commentData) {
     return res.status(400).json({
@@ -135,24 +151,27 @@ const removeReaction = async (req: any, res: any) => {
     });
   }
 
-  const { data, error } = await commentService.removeReactionInCommentById(commentId, userId);
+  const { data, error } = await commentService.removeReactionInCommentById(
+    commentId,
+    userId,
+  );
 
   if (!error) {
     return res.status(200).json({
       message: 'success',
-      data: data
+      data: data,
     });
   } else {
     return res.status(500).json({
       message: 'Internal server error',
-      error: error.message
+      error: error.message,
     });
   }
-}
+};
 
 export default {
   createComment,
   likeComment,
   dislikeComment,
-  removeReaction
+  removeReaction,
 };

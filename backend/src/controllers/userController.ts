@@ -18,6 +18,17 @@ const followUser = async (req: any, res: any) => {
     });
   }
 
+  const { isFollowed, error: isFollowedError } =
+    await userService.isUserFollowed(userId, targetUserId);
+  if (isFollowedError) {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: isFollowedError.message,
+    });
+  } else if (isFollowed) {
+    return res.sendStatus(204);
+  }
+
   const { data, error } = await userService.followUser(userId, targetUserId);
 
   if (!error) {
@@ -48,6 +59,19 @@ const unfollowUser = async (req: any, res: any) => {
   } else if (!userData) {
     return res.status(400).json({
       message: 'User not found',
+    });
+  }
+
+  const { isFollowed, error: isFollowedError } =
+    await userService.isUserFollowed(userId, targetUserId);
+  if (isFollowedError) {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: isFollowedError.message,
+    });
+  } else if (!isFollowed) {
+    return res.status(400).json({
+      message: 'User is not already followed',
     });
   }
 
@@ -84,6 +108,19 @@ const blockUser = async (req: any, res: any) => {
     });
   }
 
+  const { isBlocked, error: isBlockedError } = await userService.isUserBlocked(
+    userId,
+    targetUserId,
+  );
+  if (isBlockedError) {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: isBlockedError.message,
+    });
+  } else if (isBlocked) {
+    return res.sendStatus(204);
+  }
+
   const { data, error } = await userService.blockUser(userId, targetUserId);
 
   if (!error) {
@@ -114,6 +151,21 @@ const unblockUser = async (req: any, res: any) => {
   } else if (!userData) {
     return res.status(400).json({
       message: 'User not found',
+    });
+  }
+
+  const { isBlocked, error: isBlockedError } = await userService.isUserBlocked(
+    userId,
+    targetUserId,
+  );
+  if (isBlockedError) {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: isBlockedError.message,
+    });
+  } else if (!isBlocked) {
+    return res.status(400).json({
+      message: 'User is not already blocked',
     });
   }
 

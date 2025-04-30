@@ -144,7 +144,7 @@ const getThreadById = async (id: number) => {
     .from('threads')
     .select()
     .eq('id', id)
-    .single();
+    .maybeSingle();
 
   return { data, error };
 };

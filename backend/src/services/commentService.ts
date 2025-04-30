@@ -94,7 +94,7 @@ const getCommentById = async (id: number) => {
     .from('comments')
     .select()
     .eq('id', id)
-    .single();
+    .maybeSingle();
 
   return { data, error };
 };

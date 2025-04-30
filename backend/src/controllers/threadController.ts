@@ -1,6 +1,7 @@
 import threadService from '../services/threadService';
 import commentService from '../services/commentService';
 import userService from '../services/userService';
+import categoryService from '../services/categoryService';
 
 const createThread = async (req: any, res: any) => {
   const userId = req.user.id;
@@ -9,6 +10,49 @@ const createThread = async (req: any, res: any) => {
   const categoryId = payload.categoryId;
   const title = payload.title;
   const content = payload.content;
+
+  if (!categoryId) {
+    return res.status(400).json({
+      message: 'Category ID is missing',
+    });
+  }
+
+  if (!title || title == '') {
+    return res.status(400).json({
+      message: 'Title is missing',
+    });
+  }
+
+  if (typeof title !== 'string') {
+    return res.status(400).json({
+      message: 'Title is should be a string',
+    });
+  }
+
+  if (!content || content == '') {
+    return res.status(400).json({
+      message: 'Content is missing',
+    });
+  }
+
+  if (typeof content !== 'string') {
+    return res.status(400).json({
+      message: 'Content is should be a string',
+    });
+  }
+
+  const { data: categoryData, error: categoryError } =
+    await categoryService.getCategoryById(categoryId);
+  if (categoryError) {
+    return res.status(500).json({
+      message: 'Internal server error',
+      error: categoryError.message,
+    });
+  } else if (!categoryData) {
+    return res.status(400).json({
+      message: 'Category not found',
+    });
+  }
 
   const { data: newThread, error: threadError } =
     await threadService.createThread(userId, categoryId, title);
