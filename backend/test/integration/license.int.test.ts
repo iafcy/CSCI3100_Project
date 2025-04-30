@@ -8,27 +8,6 @@ beforeAll(() => {
   execSync('npx supabase db reset', { stdio: 'inherit' });
 });
 
-const TEST_UPLOAD_DIR = path.join(__dirname, 'test-uploads');
-process.env.UPLOAD_DIR = TEST_UPLOAD_DIR;
-
-beforeEach(async () => {
-  await fs.mkdir(TEST_UPLOAD_DIR, { recursive: true });
-});
-
-afterEach(async () => {
-  try {
-    const files = await fs.readdir(TEST_UPLOAD_DIR);
-    const unlinkPromises = files.map((file) =>
-      fs.unlink(path.join(TEST_UPLOAD_DIR, file)),
-    );
-    await Promise.all(unlinkPromises);
-  } catch (err) {}
-});
-
-afterAll(async () => {
-  await fs.rm(TEST_UPLOAD_DIR, { recursive: true, force: true });
-});
-
 describe('POST /license/verify', () => {
   it('should return 400 if no file is uploaded', async () => {
     const res = await request(app).post('/license/verify');

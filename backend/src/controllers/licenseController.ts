@@ -6,6 +6,7 @@ const verifyLicense = async (req: any, res: any) => {
   }
 
   if (req.file.mimetype !== 'text/plain') {
+    await licenseService.removeFile(req.file.path);
     return res.status(400).json({ message: 'Please upload a txt file' });
   }
 
@@ -21,24 +22,24 @@ const verifyLicense = async (req: any, res: any) => {
     return res.status(200).json({
       message: 'success',
       data: {
-        license_id: licenseKey
-      }
+        license_id: licenseKey,
+      },
     });
   }
-  
+
   if (!exists) {
     return res.status(400).json({
       message: 'Not a valid license key',
     });
   }
-  
+
   if (activated) {
     return res.status(400).json({
       message: 'License key is already activated',
     });
   }
-}
+};
 
 export default {
-  verifyLicense
+  verifyLicense,
 };

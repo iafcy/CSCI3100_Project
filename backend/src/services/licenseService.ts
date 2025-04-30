@@ -14,12 +14,16 @@ const checkLicense = async (licenseKey: string) => {
     : { exists: false, activated: false };
 };
 
+const removeFile = async (path: string) => {
+  await fs.unlink(path);
+};
+
 const readLicenseKey = async (licenseKeyFilePath: string) => {
   try {
     const filePath = path.resolve(licenseKeyFilePath);
     const licenseKey = (await fs.readFile(filePath, 'utf8')).trim();
 
-    await fs.unlink(filePath);
+    await removeFile(filePath);
 
     return licenseKey;
   } catch (err) {
@@ -30,4 +34,5 @@ const readLicenseKey = async (licenseKeyFilePath: string) => {
 export default {
   checkLicense,
   readLicenseKey,
+  removeFile,
 };
