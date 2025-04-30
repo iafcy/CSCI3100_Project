@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test:unit": "jest --testMatch '**/?(*.)+(unit.test).[jt]s?(x)'",
+    "test:integration": "DOTENV_CONFIG_PATH=.env.test jest --testMatch '**/?(*.)+(int.test).[jt]s?(x)' --runInBand",
     "dev": "nodemon src/server.ts"
   },
   "keywords": [],
