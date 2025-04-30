@@ -105,7 +105,7 @@ SUPABASE_KEY=<ANON API key for accessing Supabase>
 SUPABASE_SERVICE_KEY=<Secret service API key for accessing Supabase>
 ```
 
-Tests files can be found in `/test/unit`. Execute the following command to execute the tests.
+Tests files can be found in `/test/integration`. Execute the following command to execute the tests.
 
 ```bash
 npm run test:integration
