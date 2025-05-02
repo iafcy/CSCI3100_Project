@@ -4,7 +4,8 @@
   "description": "This is the group project for the course CSCI3100 Software Engineering (2025 Fall) at the Chinese University of Hong Kong",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "cypress:ci": "cypress run",
+    "cypress:open": "cypress open",
     "dev": "npm run dev --workspace=frontend & npm run dev --workspace=backend",
     "prepare": "husky install"
   },
@@ -26,6 +27,7 @@
     "backend"
   ],
   "devDependencies": {
+    "cypress": "^14.3.2",
     "husky": "^8.0.0",
     "lint-staged": "^15.5.1",
     "prettier": "^3.5.3",
