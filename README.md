@@ -31,6 +31,7 @@ CUHKG is a web-forum designed for members of The Chinese University of Hong Kong
     <img src="https://img.shields.io/badge/Node%20js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white">
     <img src="https://img.shields.io/badge/Express%20js-000000?style=for-the-badge&logo=express&logoColor=white">
     <img src="https://img.shields.io/badge/Supabase-181818?style=for-the-badge&logo=supabase&logoColor=white">
+    <img src="https://img.shields.io/badge/Cypress-17202C?style=for-the-badge&logo=cypress&logoColor=white">
 </div>
 
 ## Installation
@@ -82,6 +83,9 @@ npm run dev --workspace=backend
 │   │   ├── server.ts
 │   │   ├── types/
 │   │   └── utils/
+|   ├── test/
+|   |   ├── unit/
+│   │   └── integration/
 ├── frontend/
 │   ├── public/
 │   ├── src/
@@ -92,7 +96,83 @@ npm run dev --workspace=backend
 │   │   ├── main.tsx
 │   │   ├── types/
 │   │   └── utils/
+├── cypress/
+│   ├── e2e/
+│   └── support/
+├── supabase/
+│   └── seed.sql
 ├── package-lock.json
 ├── package.json
 └── tsconfig.json
+```
+
+## End-to-end testing
+
+The End-to-end tests test the entire application including frontend, backend, and the database (local instance) to verify that the application is functioning cohesively as a whole.
+
+The tests make use of a local instance of Supabase.
+
+#### Setup for End-to-end testing
+
+1. Prerequisites
+
+- Docker
+
+2. Setup Supabase
+
+```bash
+npx supabase login
+
+# It will pull all necessary docker images if you do not have them
+npx supabase start
+
+# Link the cloud instance to the local instance
+npx supabase link --project-ref <project-id>
+npx supabase db pull
+
+# Reset the local instance and populate with seed data in ../supabase/seed.sql
+npx supabase db reset
+```
+
+3. Copy .env.sample in both `/frontend` and `/backend`
+
+```bash
+cp .env.example .env.test
+```
+
+4. Setup environment variables for the local instance in `/backend`
+
+```bash
+API_PORT=<Port number for the backend>
+
+LOG_LEVEL=<Log level for logger>
+
+SUPABASE_DB_PASSWORD=<Password for accessing Supabase>
+SUPABASE_URL=<URL for connecting to Supabase>
+SUPABASE_KEY=<ANON API key for accessing Supabase>
+SUPABASE_SERVICE_KEY=<Secret service API key for accessing Supabase>
+```
+
+5. Setup environment variables for the local instance in `/frontend`
+
+```bash
+VITE_BACKEND_API_URL=<URL of the backend server>
+
+VITE_SUPABASE_URL=<URL for connecting to Supabase>
+VITE_SUPABASE_KEY=<ANON API key for accessing Supabase>
+```
+
+6. Run the frontend and backend
+
+```bash
+npm run test:e2e --workspace=backend
+npm run test:e2e --workspace=frontend
+```
+
+Tests files can be found in `/cypress/e2e`. Execute the following command to execute the tests.
+
+```bash
+npm run cypress:open # launches the cypress test runner
+# or
+npm run cypress:ci # tests in a headless browser
 ```
