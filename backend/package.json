@@ -7,7 +7,7 @@
     "test:integration": "DOTENV_CONFIG_PATH=.env.test jest --testMatch '**/?(*.)+(int.test).[jt]s?(x)' --runInBand",
     "test:e2e": "DOTENV_CONFIG_PATH=.env.test nodemon src/server.ts",
     "dev": "nodemon src/server.ts",
-    "start": " npx ts-node src/server.ts"
+    "start": "npx ts-node src/server.ts"
   },
   "keywords": [],
   "author": "",
