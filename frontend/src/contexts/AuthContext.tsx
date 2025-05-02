@@ -1,6 +1,6 @@
-import { createContext, useEffect, useState } from "react";
-import supabase from "../utils/supabase";
-import { Session, User } from "@supabase/supabase-js";
+import { createContext, useEffect, useState } from 'react';
+import supabase from '../utils/supabase';
+import { Session, User } from '@supabase/supabase-js';
 
 const AuthContext = createContext<{
   session: Session | null;
@@ -12,11 +12,7 @@ const AuthContext = createContext<{
   authenticated: false,
 });
 
-const AuthProvider = ({
-  children
-} : {
-  children: React.ReactNode
-}) => {
+const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [authenticated, setAuthenticated] = useState<boolean>(false);
@@ -25,30 +21,27 @@ const AuthProvider = ({
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
-      if (session && !authenticated) {
-        setAuthenticated(true);
-      } else if (!session && authenticated) {
-        setAuthenticated(false);
-      }
-    })
-    
+    });
+
     const authStateListener = supabase.auth.onAuthStateChange(
       async (_, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        if (session && !authenticated) {
-          setAuthenticated(true);
-        } else if (!session && authenticated) {
-          setAuthenticated(false);
-        }
-      }
+      },
     );
 
     return () => {
       authStateListener.data.subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    if (session && !authenticated) {
+      setAuthenticated(true);
+    } else if (!session && authenticated) {
+      setAuthenticated(false);
+    }
+  }, [session]);
 
   return (
     <AuthContext.Provider value={{ session, user, authenticated }}>
