@@ -13,10 +13,10 @@ jest.mock('../utils/supabase', () => ({
 import request from 'supertest';
 import express from 'express';
 
-import threadRouter from '../routes/threadRouter';
-import threadService from '../services/threadService';
-import commentService from '../services/commentService';
-import userService from '../services/userService';
+import threadRouter from '../../src/routes/threadRouter';
+import threadService from '../../src/services/threadService';
+import commentService from '../../src/services/commentService';
+import userService from '../../src/services/userService';
 import { title } from 'process';
 
 jest.mock('../services/threadService');
