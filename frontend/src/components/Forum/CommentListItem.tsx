@@ -69,7 +69,7 @@ export default function CommentListItem({
     if (reaction == 'like') {
       axios
         .delete(`/comment/${comment.id}/reaction`)
-        .then((response) => {
+        .then(() => {
           setReaction(null);
           setLikeCount(likeCount - 1);
         })
@@ -83,7 +83,7 @@ export default function CommentListItem({
     } else {
       axios
         .post(`/comment/${comment.id}/like`)
-        .then((response) => {
+        .then(() => {
           if (reaction == 'dislike') {
             setDislikeCount(dislikeCount - 1);
           }
@@ -108,7 +108,7 @@ export default function CommentListItem({
     if (reaction == 'dislike') {
       axios
         .delete(`/comment/${comment.id}/reaction`)
-        .then((response) => {
+        .then(() => {
           setReaction(null);
           setDislikeCount(dislikeCount - 1);
         })
@@ -122,7 +122,7 @@ export default function CommentListItem({
     } else {
       axios
         .post(`/comment/${comment.id}/dislike`)
-        .then((response) => {
+        .then(() => {
           if (reaction == 'like') {
             setLikeCount(likeCount - 1);
           }
