@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "types": [
+      "jest"
+    ],
+    "module": "commonjs",
+    "target": "es6",
+    "esModuleInterop": true
+  },
+  "exclude": [
+    "../../cypress",
+    "node_modules"
+  ]
+}
