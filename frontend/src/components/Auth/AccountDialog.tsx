@@ -20,20 +20,27 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
 export default function AccountDialog({
-  open, onClose
-} : {
+  open,
+  onClose,
+}: {
   open: boolean;
   onClose: () => void;
 }) {
   const { user } = useAuth();
   const theme = useTheme();
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [isOpenFollowingList, setIsOpenFollowingList] = React.useState<boolean>(false);
-  const [isOpenBlockingList, setIsOpenBlockingList] = React.useState<boolean>(false);
-  const [openErrorSnackbar, setOpenErrorSnackbar] = React.useState<boolean>(false);
-  const [errorSnackbarMessage, setErrorSnackbarMessage] = React.useState<string>('');
+  const [isOpenFollowingList, setIsOpenFollowingList] =
+    React.useState<boolean>(false);
+  const [isOpenBlockingList, setIsOpenBlockingList] =
+    React.useState<boolean>(false);
+  const [openErrorSnackbar, setOpenErrorSnackbar] =
+    React.useState<boolean>(false);
+  const [errorSnackbarMessage, setErrorSnackbarMessage] =
+    React.useState<string>('');
 
-  const handleLogout = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleLogout = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     event.preventDefault();
     setLoading(true);
     setOpenErrorSnackbar(false);
@@ -49,27 +56,27 @@ export default function AccountDialog({
       setLoading(false);
       onClose();
     }
-  }
+  };
 
   const handleOpenFollowingList = (event: React.MouseEvent) => {
     event.stopPropagation();
     setIsOpenFollowingList(true);
-  }
+  };
 
   const handleOpenBlockingList = (event: React.MouseEvent) => {
     event.stopPropagation();
     setIsOpenBlockingList(true);
-  }
+  };
 
   return (
     <Dialog
       onClose={onClose}
       open={open}
       onClick={(e) => e.stopPropagation()}
-      maxWidth='xs'
+      maxWidth="xs"
       fullWidth={true}
-    >      
-      <DialogTitle 
+    >
+      <DialogTitle
         sx={{
           m: 0,
           py: 1,
@@ -77,7 +84,7 @@ export default function AccountDialog({
           backgroundColor: theme.palette.background.paper,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
         }}
       >
         Account
@@ -91,12 +98,12 @@ export default function AccountDialog({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent 
+      <DialogContent
         dividers
         sx={{
           color: theme.palette.text.primary,
           backgroundColor: theme.palette.background.paper,
-          p: 0
+          p: 0,
         }}
       >
         <List sx={{ minWidth: 250 }}>
@@ -105,8 +112,9 @@ export default function AccountDialog({
               display: 'flex',
               alignItems: 'center',
               gap: 2,
-              py: 2
+              py: 2,
             }}
+            data-testid="account-username"
           >
             <Avatar></Avatar>
             {user?.user_metadata.username}
@@ -160,13 +168,14 @@ export default function AccountDialog({
             sx={{
               display: 'flex',
               justifyContent: 'space-between',
-              py: 2
+              py: 2,
             }}
           >
             <Button
               fullWidth
               onClick={handleLogout}
               loading={loading}
+              data-testid="logout-btn"
             >
               Log out
             </Button>
@@ -178,8 +187,8 @@ export default function AccountDialog({
             >
               <Alert
                 onClose={() => setOpenErrorSnackbar(false)}
-                severity='error'
-                variant='outlined'
+                severity="error"
+                variant="outlined"
                 sx={{ width: '100%' }}
               >
                 {errorSnackbarMessage}

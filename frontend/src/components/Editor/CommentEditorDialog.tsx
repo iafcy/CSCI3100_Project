@@ -153,6 +153,7 @@ export default function CommentEditorDialog({
           onClick={handleCreate}
           disabled={commentContent == ''}
           loading={loading}
+          data-testid="create-comment-btn"
         >
           Create
         </Button>

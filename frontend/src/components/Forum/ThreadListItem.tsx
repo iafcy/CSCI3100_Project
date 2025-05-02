@@ -11,11 +11,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import Tooltip from '@mui/material/Tooltip';
 
-export default function ThreadListItem({
-  thread
-}: {
-  thread: Thread;
-}) {
+export default function ThreadListItem({ thread }: { thread: Thread }) {
   const { threadId: activeThreadId } = useParams();
   const theme = useTheme();
   const { setActiveThread } = useThread();
@@ -35,7 +31,11 @@ export default function ThreadListItem({
     <ListItem
       disablePadding
       component={Link}
-      to={sortBy == null ? `thread/${thread.id}` : `thread/${thread.id}?sort_by=${sortBy}`}
+      to={
+        sortBy == null
+          ? `thread/${thread.id}`
+          : `thread/${thread.id}?sort_by=${sortBy}`
+      }
       sx={{
         display: 'flex',
         flexDirection: 'column',
@@ -49,21 +49,22 @@ export default function ThreadListItem({
         textDecoration: null,
         boxSizing: 'border-box',
         mb: 0,
-        color: Number(activeThreadId) == thread.id ? theme.palette.primary.main : theme.palette.text.primary
+        color:
+          Number(activeThreadId) == thread.id
+            ? theme.palette.primary.main
+            : theme.palette.text.primary,
       }}
+      data-testid={`thread-btn-${thread.id}`}
     >
       <Box
         sx={{
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
-          width: '100%'
+          width: '100%',
         }}
       >
-        <Typography
-          noWrap
-          component="h6"
-        >
+        <Typography noWrap component="h6">
           {thread.username}
         </Typography>
         <Typography
@@ -71,8 +72,11 @@ export default function ThreadListItem({
           sx={{
             ml: 2,
             flexShrink: 0,
-            color: Number(activeThreadId) == thread.id ? theme.palette.primary.main : theme.palette.secondary.main
-          }}  
+            color:
+              Number(activeThreadId) == thread.id
+                ? theme.palette.primary.main
+                : theme.palette.secondary.main,
+          }}
         >
           {dayjs(thread.created_at).fromNow()}
         </Typography>
@@ -90,7 +94,7 @@ export default function ThreadListItem({
             noWrap
             component="h6"
             sx={{
-              overflow: 'hidden',     
+              overflow: 'hidden',
               flexGrow: 0,
             }}
           >
@@ -104,14 +108,17 @@ export default function ThreadListItem({
             alignItems: 'center',
             gap: 1,
             flexShrink: 0,
-            color: Number(activeThreadId) == thread.id ? theme.palette.primary.main : theme.palette.secondary.main,
-            ml: 2
+            color:
+              Number(activeThreadId) == thread.id
+                ? theme.palette.primary.main
+                : theme.palette.secondary.main,
+            ml: 2,
           }}
         >
-          <ThumbUpIcon fontSize='small' />
+          <ThumbUpIcon fontSize="small" />
           {thread.like}
         </Box>
       </Box>
     </ListItem>
-  )
+  );
 }

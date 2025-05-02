@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '@mui/material';
 import ReplyIcon from '@mui/icons-material/Reply';
 import CommentEditorDialog from '../Editor/CommentEditorDialog';
@@ -16,18 +16,19 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import Tooltip from '@mui/material/Tooltip';
 
-export default function ThreadHeader () {
+export default function ThreadHeader() {
   const theme = useTheme();
   const { categoryId, userId } = useParams();
   const navigate = useNavigate();
-  const { activeThread, setActiveThread, toggleLike, toggleDislike } = useThread();
+  const { activeThread, setActiveThread, toggleLike, toggleDislike } =
+    useThread();
   const { user } = useAuth();
   const location = useLocation();
 
   const [open, setOpen] = useState(false);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState<boolean>(false);
   const [errorSnackbarMessage, setErrorSnackbarMessage] = useState<string>('');
-    
+
   const handleOpen = (event: React.MouseEvent) => {
     event.stopPropagation();
     setOpen(true);
@@ -55,7 +56,9 @@ export default function ThreadHeader () {
     const { error } = toggleLike(id);
 
     if (error) {
-      setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+      setErrorSnackbarMessage(
+        error.response.data?.message || 'Unexpected error. Please try again.',
+      );
       setOpenErrorSnackbar(true);
     }
   };
@@ -67,14 +70,15 @@ export default function ThreadHeader () {
     const { error } = toggleDislike(id);
 
     if (error) {
-      setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+      setErrorSnackbarMessage(
+        error.response.data?.message || 'Unexpected error. Please try again.',
+      );
       setOpenErrorSnackbar(true);
     }
   };
 
   return (
-    (
-      activeThread &&
+    activeThread && (
       <Box
         sx={{
           display: 'flex',
@@ -92,7 +96,7 @@ export default function ThreadHeader () {
             display: 'flex',
             alignItems: 'center',
             gap: 2,
-            overflow: 'hidden',     
+            overflow: 'hidden',
             flex: '1 1 0',
             minWidth: 0,
           }}
@@ -101,25 +105,23 @@ export default function ThreadHeader () {
             color="inherit"
             aria-label="like"
             onClick={handleBack}
+            data-testid="thread-back-btn"
           >
-            <ArrowBackIcon fontSize='small' />
+            <ArrowBackIcon fontSize="small" />
           </IconButton>
-          
-          <Tooltip
-            title={activeThread.title}
-            enterTouchDelay={0}
-          >
+
+          <Tooltip title={activeThread.title} enterTouchDelay={0}>
             <Typography
               noWrap
               variant="h6"
               component="div"
               sx={{
                 minWidth: 0,
-                flex: '1 1 auto', 
+                flex: '1 1 auto',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
-                flexGrow: 0
+                flexGrow: 0,
               }}
             >
               {activeThread.title}
@@ -138,6 +140,7 @@ export default function ThreadHeader () {
           <IconButton
             color="inherit"
             onClick={handleOpen}
+            data-testid="comment-editor-btn"
           >
             <ReplyIcon />
           </IconButton>
@@ -150,10 +153,7 @@ export default function ThreadHeader () {
               threadId={activeThread.id}
             />
           ) : (
-            <AuthDialog
-              open={open}
-              onClose={handleClose}
-            />
+            <AuthDialog open={open} onClose={handleClose} />
           )}
 
           <Box
@@ -162,22 +162,32 @@ export default function ThreadHeader () {
               flexDirection: 'row',
               alignItems: 'center',
               px: 1,
-              py: 0.5
+              py: 0.5,
             }}
           >
             <IconButton
               size="small"
               color="inherit"
               aria-label="like"
-              edge='start'
-              onClick={user && activeThread ? () => handleToggleLike(activeThread.id) : handleOpen}
+              edge="start"
+              onClick={
+                user && activeThread
+                  ? () => handleToggleLike(activeThread.id)
+                  : handleOpen
+              }
+              data-testid="thread-like-btn"
             >
               <ThumbUpIcon
-                fontSize='small'
-                sx={{ color: activeThread.user_reaction == 'like' ? theme.palette.primary.main : theme.palette.secondary.main }}
+                fontSize="small"
+                sx={{
+                  color:
+                    activeThread.user_reaction == 'like'
+                      ? theme.palette.primary.main
+                      : theme.palette.secondary.main,
+                }}
               />
             </IconButton>
-            <Typography variant='body2'>{activeThread.like}</Typography>
+            <Typography variant="body2">{activeThread.like}</Typography>
           </Box>
           <Box
             sx={{
@@ -185,22 +195,32 @@ export default function ThreadHeader () {
               flexDirection: 'row',
               alignItems: 'center',
               px: 1,
-              py: 0.5
+              py: 0.5,
             }}
           >
             <IconButton
               size="small"
               color="inherit"
               aria-label="dislike"
-              edge='start'
-              onClick={user && activeThread ? () => handleToggleDisike(activeThread.id) : handleOpen}
+              edge="start"
+              onClick={
+                user && activeThread
+                  ? () => handleToggleDisike(activeThread.id)
+                  : handleOpen
+              }
+              data-testid="thread-dislike-btn"
             >
               <ThumbDownIcon
-                fontSize='small'
-                sx={{ color: activeThread.user_reaction == 'dislike' ? theme.palette.primary.main : theme.palette.secondary.main }}
+                fontSize="small"
+                sx={{
+                  color:
+                    activeThread.user_reaction == 'dislike'
+                      ? theme.palette.primary.main
+                      : theme.palette.secondary.main,
+                }}
               />
             </IconButton>
-            <Typography variant='body2'>{activeThread.dislike}</Typography>
+            <Typography variant="body2">{activeThread.dislike}</Typography>
           </Box>
         </Box>
 
@@ -211,8 +231,8 @@ export default function ThreadHeader () {
         >
           <Alert
             onClose={() => setOpenErrorSnackbar(false)}
-            severity='error'
-            variant='outlined'
+            severity="error"
+            variant="outlined"
             sx={{ width: '100%' }}
           >
             {errorSnackbarMessage}
@@ -220,5 +240,5 @@ export default function ThreadHeader () {
         </Snackbar>
       </Box>
     )
-  )
+  );
 }

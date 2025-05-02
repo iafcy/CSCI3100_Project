@@ -30,23 +30,16 @@ export default function UserDialog() {
       <IconButton
         size="small"
         onClick={handleOpen}
+        data-testid="open-account-btn"
       >
         <AccountCircleIcon />
       </IconButton>
 
-      {openAuth && 
-        <AuthDialog
-          open={openAuth}
-          onClose={handleClose}
-        />
-      }
+      {openAuth && <AuthDialog open={openAuth} onClose={handleClose} />}
 
-      {openAccount && 
-        <AccountDialog
-          open={openAccount}
-          onClose={handleClose}
-        />
-      }
+      {openAccount && (
+        <AccountDialog open={openAccount} onClose={handleClose} />
+      )}
     </>
   );
 }

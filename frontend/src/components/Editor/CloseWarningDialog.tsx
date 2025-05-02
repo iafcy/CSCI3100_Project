@@ -9,8 +9,10 @@ import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material';
 
 export default function CloseWarningDialog({
-  open, onContinue, onDiscard
-} : {
+  open,
+  onContinue,
+  onDiscard,
+}: {
   open: boolean;
   onContinue: () => void;
   onDiscard: () => void;
@@ -21,10 +23,10 @@ export default function CloseWarningDialog({
     <Dialog
       onClick={(e) => e.stopPropagation()}
       open={open}
-      maxWidth='xs'
+      maxWidth="xs"
       fullWidth={true}
     >
-      <DialogTitle 
+      <DialogTitle
         sx={{
           m: 0,
           py: 1,
@@ -32,36 +34,33 @@ export default function CloseWarningDialog({
           backgroundColor: theme.palette.background.paper,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
         }}
-        align='center'
+        align="center"
       >
         Warning
-        <IconButton
-          aria-label="close"
-          onClick={onContinue}
-        >
+        <IconButton aria-label="close" onClick={onContinue}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent 
+      <DialogContent
         dividers
         sx={{
           color: theme.palette.text.primary,
           backgroundColor: theme.palette.background.paper,
-          p: 0
+          p: 0,
         }}
       >
         <Box
           sx={{
             bgcolor: theme.palette.background.default,
-            py: 2
+            py: 2,
           }}
         >
-          <Typography align='center'>
+          <Typography align="center">
             Your inputted content will not be saved.
           </Typography>
-          <Typography align='center'>
+          <Typography align="center">
             Do you want to continue to edit?
           </Typography>
         </Box>
@@ -71,7 +70,7 @@ export default function CloseWarningDialog({
             width: '100%',
             display: 'flex',
             justifyContent: 'space-between',
-          }}  
+          }}
         >
           <Button
             sx={{
@@ -79,15 +78,17 @@ export default function CloseWarningDialog({
               py: 1,
             }}
             onClick={onContinue}
+            data-testid="continue-input-btn"
           >
             Continue
           </Button>
           <Button
             sx={{
               flex: 1,
-              py: 1
+              py: 1,
             }}
             onClick={onDiscard}
+            data-testid="discard-input-btn"
           >
             Close & Discard
           </Button>

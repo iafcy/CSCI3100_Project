@@ -20,7 +20,10 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 
 export default function CommentListItem({
-  comment, index, isFollowingUser, isBlockingUser
+  comment,
+  index,
+  isFollowingUser,
+  isBlockingUser,
 }: {
   comment: Comment;
   index: number;
@@ -34,7 +37,9 @@ export default function CommentListItem({
 
   const [likeCount, setLikeCount] = useState<number>(comment.like);
   const [dislikeCount, setDislikeCount] = useState<number>(comment.dislike);
-  const [reaction, setReaction] = useState<'like' | 'dislike' | null>(comment.user_reaction);
+  const [reaction, setReaction] = useState<'like' | 'dislike' | null>(
+    comment.user_reaction,
+  );
   const [open, setOpen] = useState<boolean>(false);
   const [showBlocked, setShowBlocked] = useState<boolean>(false);
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState<boolean>(false);
@@ -48,7 +53,7 @@ export default function CommentListItem({
   if (!activeThread) {
     return null;
   }
-    
+
   const handleOpen = (event: React.MouseEvent) => {
     event.stopPropagation();
     setOpen(true);
@@ -62,18 +67,23 @@ export default function CommentListItem({
     setErrorSnackbarMessage('');
 
     if (reaction == 'like') {
-      axios.delete(`/comment/${comment.id}/reaction`)
-        .then(response => {
+      axios
+        .delete(`/comment/${comment.id}/reaction`)
+        .then((response) => {
           setReaction(null);
           setLikeCount(likeCount - 1);
         })
-        .catch(error => {
-          setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+        .catch((error) => {
+          setErrorSnackbarMessage(
+            error.response.data?.message ||
+              'Unexpected error. Please try again.',
+          );
           setOpenErrorSnackbar(true);
         });
     } else {
-      axios.post(`/comment/${comment.id}/like`)
-        .then(response => {
+      axios
+        .post(`/comment/${comment.id}/like`)
+        .then((response) => {
           if (reaction == 'dislike') {
             setDislikeCount(dislikeCount - 1);
           }
@@ -81,30 +91,38 @@ export default function CommentListItem({
           setReaction('like');
           setLikeCount(likeCount + 1);
         })
-        .catch(error => {
-          setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+        .catch((error) => {
+          setErrorSnackbarMessage(
+            error.response.data?.message ||
+              'Unexpected error. Please try again.',
+          );
           setOpenErrorSnackbar(true);
         });
     }
-  }
+  };
 
   const handleDislike = () => {
     setOpenErrorSnackbar(false);
     setErrorSnackbarMessage('');
 
     if (reaction == 'dislike') {
-      axios.delete(`/comment/${comment.id}/reaction`)
-        .then(response => {
+      axios
+        .delete(`/comment/${comment.id}/reaction`)
+        .then((response) => {
           setReaction(null);
-          setDislikeCount(dislikeCount - 1);;
+          setDislikeCount(dislikeCount - 1);
         })
-        .catch(error => {
-          setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+        .catch((error) => {
+          setErrorSnackbarMessage(
+            error.response.data?.message ||
+              'Unexpected error. Please try again.',
+          );
           setOpenErrorSnackbar(true);
         });
     } else {
-      axios.post(`/comment/${comment.id}/dislike`)
-        .then(response => {
+      axios
+        .post(`/comment/${comment.id}/dislike`)
+        .then((response) => {
           if (reaction == 'like') {
             setLikeCount(likeCount - 1);
           }
@@ -112,12 +130,15 @@ export default function CommentListItem({
           setReaction('dislike');
           setDislikeCount(dislikeCount + 1);
         })
-        .catch(error => {
-          setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+        .catch((error) => {
+          setErrorSnackbarMessage(
+            error.response.data?.message ||
+              'Unexpected error. Please try again.',
+          );
           setOpenErrorSnackbar(true);
         });
     }
-  }
+  };
 
   const handleToggleFollow = () => {
     setOpenErrorSnackbar(false);
@@ -125,24 +146,28 @@ export default function CommentListItem({
 
     const action = isFollowingUser ? unfollowUser : followUser;
     const { error } = action(comment.user_id);
-  
+
     if (error) {
-      setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+      setErrorSnackbarMessage(
+        error.response.data?.message || 'Unexpected error. Please try again.',
+      );
       setOpenErrorSnackbar(true);
     }
-  }
+  };
 
   const handleToggleBlock = () => {
     const action = isBlockingUser ? unblockUser : blockUser;
     const { error } = action(comment.user_id);
-  
+
     if (error) {
-      setErrorSnackbarMessage(error.response.data?.message || 'Unexpected error. Please try again.');
+      setErrorSnackbarMessage(
+        error.response.data?.message || 'Unexpected error. Please try again.',
+      );
       setOpenErrorSnackbar(true);
     } else if (!isBlockingUser) {
       setShowBlocked(true);
     }
-  }
+  };
 
   return (
     <ListItem
@@ -158,25 +183,25 @@ export default function CommentListItem({
         boxSizing: 'border-box',
         mt: 2,
         bgcolor: theme.palette.background.default,
-        color: theme.palette.text.primary
+        color: theme.palette.text.primary,
       }}
     >
-      {isBlockingUser &&
+      {isBlockingUser && (
         <Box
           onClick={() => setShowBlocked(!showBlocked)}
           sx={{
             cursor: 'pointer',
             width: '100%',
-            color: theme.palette.secondary.main
+            color: theme.palette.secondary.main,
           }}
         >
           <Typography component="h6">
             Blocked user: {comment.username}
           </Typography>
         </Box>
-      }
-      
-      {(showBlocked || !isBlockingUser) &&
+      )}
+
+      {(showBlocked || !isBlockingUser) && (
         <>
           <Box
             sx={{
@@ -191,11 +216,18 @@ export default function CommentListItem({
               sx={{
                 display: 'flex',
                 flexDirection: 'row',
-                gap: 1
+                gap: 1,
               }}
             >
-              <Typography component="h6" color={activeThread.user_id == comment.user_id ? theme.palette.primary.main : theme.palette.secondary.main}>
-                #{(index + 1) + (Number(page) - 1) * 10} 
+              <Typography
+                component="h6"
+                color={
+                  activeThread.user_id == comment.user_id
+                    ? theme.palette.primary.main
+                    : theme.palette.secondary.main
+                }
+              >
+                #{index + 1 + (Number(page) - 1) * 10}
               </Typography>
               <UserActionDialog
                 username={comment.username}
@@ -207,14 +239,14 @@ export default function CommentListItem({
               />
               <Typography
                 sx={{
-                  color: theme.palette.secondary.main
+                  color: theme.palette.secondary.main,
                 }}
               >
                 •
               </Typography>
               <Typography
                 sx={{
-                  color: theme.palette.secondary.main
+                  color: theme.palette.secondary.main,
                 }}
               >
                 {dayjs(comment.created_at).fromNow()}
@@ -223,11 +255,9 @@ export default function CommentListItem({
           </Box>
 
           {/* Comment content */}
-          <Box
-            sx={{ py: 2 }}
-          >
-            <Typography variant='body1'>
-              <div dangerouslySetInnerHTML={{__html: comment.content}} />
+          <Box sx={{ py: 2 }}>
+            <Typography variant="body1">
+              <div dangerouslySetInnerHTML={{ __html: comment.content }} />
             </Typography>
           </Box>
 
@@ -236,7 +266,7 @@ export default function CommentListItem({
             sx={{
               bgcolor: theme.palette.divider,
               display: 'flex',
-              mb: 1
+              mb: 1,
             }}
           >
             <Box
@@ -245,23 +275,29 @@ export default function CommentListItem({
                 flexDirection: 'row',
                 alignItems: 'center',
                 px: 1,
-                py: 0.5
+                py: 0.5,
               }}
             >
               <IconButton
                 size="small"
                 color="inherit"
                 aria-label="like"
-                edge='start'
+                edge="start"
                 onClick={user ? handleLike : handleOpen}
+                data-testid={`comment-like-btn-${comment.id}`}
               >
                 <ThumbUpIcon
-                  fontSize='small'
-                  sx={{ color: reaction == 'like' ? theme.palette.primary.main : theme.palette.secondary.main }}
+                  fontSize="small"
+                  sx={{
+                    color:
+                      reaction == 'like'
+                        ? theme.palette.primary.main
+                        : theme.palette.secondary.main,
+                  }}
                 />
               </IconButton>
 
-              <Typography variant='body2'>{likeCount}</Typography>
+              <Typography variant="body2">{likeCount}</Typography>
             </Box>
             <Box
               sx={{
@@ -269,30 +305,33 @@ export default function CommentListItem({
                 flexDirection: 'row',
                 alignItems: 'center',
                 px: 1,
-                py: 0.5
+                py: 0.5,
               }}
             >
               <IconButton
                 size="small"
                 color="inherit"
                 aria-label="dislike"
-                edge='start'
+                edge="start"
                 onClick={user ? handleDislike : handleOpen}
+                data-testid={`comment-dislike-btn-${comment.id}`}
               >
                 <ThumbDownIcon
-                  fontSize='small'
-                  sx={{ color: reaction == 'dislike' ? theme.palette.primary.main : theme.palette.secondary.main }}
+                  fontSize="small"
+                  sx={{
+                    color:
+                      reaction == 'dislike'
+                        ? theme.palette.primary.main
+                        : theme.palette.secondary.main,
+                  }}
                 />
               </IconButton>
 
-              <Typography variant='body2'>{dislikeCount}</Typography>
+              <Typography variant="body2">{dislikeCount}</Typography>
             </Box>
           </Box>
 
-          <AuthDialog
-            open={open}
-            onClose={handleClose}
-          />
+          <AuthDialog open={open} onClose={handleClose} />
 
           <Snackbar
             open={openErrorSnackbar}
@@ -301,15 +340,15 @@ export default function CommentListItem({
           >
             <Alert
               onClose={() => setOpenErrorSnackbar(false)}
-              severity='error'
-              variant='outlined'
+              severity="error"
+              variant="outlined"
               sx={{ width: '100%' }}
             >
               {errorSnackbarMessage}
             </Alert>
           </Snackbar>
         </>
-      }
+      )}
     </ListItem>
   );
 }

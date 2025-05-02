@@ -35,11 +35,11 @@ export default function Settings() {
     event.stopPropagation();
   };
 
-  const handleFontSizeChange = (_ : Event, val: number | number[]) => {
+  const handleFontSizeChange = (_: Event, val: number | number[]) => {
     const newVal = Array.isArray(val) ? val[0] : val;
     setFontValue(newVal);
     setFontSize(12 + newVal * 2); // 12, 14, 16
-  }
+  };
 
   return (
     <>
@@ -47,6 +47,7 @@ export default function Settings() {
         size="small"
         color="inherit"
         onClick={handleOpen}
+        data-testid="settings-btn"
       >
         <SettingsIcon />
       </IconButton>
@@ -55,10 +56,10 @@ export default function Settings() {
         onClick={(e) => e.stopPropagation()}
         onClose={handleClose}
         open={open}
-        maxWidth='sm'
+        maxWidth="sm"
         fullWidth={true}
       >
-        <DialogTitle 
+        <DialogTitle
           sx={{
             m: 0,
             py: 1,
@@ -66,7 +67,7 @@ export default function Settings() {
             backgroundColor: theme.palette.background.paper,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
           }}
         >
           Settings
@@ -76,12 +77,13 @@ export default function Settings() {
             sx={{
               color: theme.palette.text.primary,
             }}
+            data-testid="close-settings-btn"
           >
             <CloseIcon />
           </IconButton>
         </DialogTitle>
 
-        <DialogContent 
+        <DialogContent
           dividers
           sx={{
             color: theme.palette.text.primary,
@@ -93,14 +95,15 @@ export default function Settings() {
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                p: 0
+                p: 0,
               }}
             >
               <Typography>Dark mode</Typography>
               <Switch
                 onChange={toggleTheme}
                 checked={mode == 'dark'}
-                edge='end'
+                edge="end"
+                data-testid="color-mode-toggle"
               />
             </ListItem>
 
@@ -108,14 +111,16 @@ export default function Settings() {
               sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                p: 0
+                p: 0,
               }}
             >
-              <Typography>Font size</Typography>
+              <Typography data-testid="font-size-slider-title">
+                Font size
+              </Typography>
               <Slider
                 sx={{
                   maxWidth: 125,
-                  mr: 1.5
+                  mr: 1.5,
                 }}
                 value={fontValue}
                 onChange={handleFontSizeChange}
@@ -136,6 +141,7 @@ export default function Settings() {
                 ]}
                 min={0}
                 max={2}
+                data-testid="font-size-slider"
               />
             </ListItem>
           </List>

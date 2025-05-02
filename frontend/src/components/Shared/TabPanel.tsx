@@ -11,23 +11,21 @@ function TabPanel(props: {
     <div
       role="tabpanel"
       hidden={value !== index}
-      id={`auth-tabpanel-${index}`}
-      aria-labelledby={`auth-tab-${index}`}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
       {...other}
     >
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
     </div>
   );
 }
-  
+
 function a11yProps(index: number) {
   return {
-    id: `auth-tab-${index}`,
-    'aria-controls': `auth-tabpanel-${index}`,
+    id: `tab-${index}`,
+    'aria-controls': `tabpanel-${index}`,
+    'data-testid': `tab-${index}`,
   };
 }
 
-export {
-  TabPanel,
-  a11yProps
-}
+export { TabPanel, a11yProps };

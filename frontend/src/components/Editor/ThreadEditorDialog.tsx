@@ -183,6 +183,7 @@ export default function ThreadEditorDialog({
           onClick={handleCreate}
           disabled={threadContent == '' || threadTitle == ''}
           loading={loading}
+          data-testid="create-thread-btn"
         >
           Create
         </Button>

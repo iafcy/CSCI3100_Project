@@ -8,7 +8,7 @@ import DrawerMenu from './Menu/DrawerMenu';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import ThreadEditorDialog from '../components/Editor/ThreadEditorDialog';
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation } from 'react-router-dom';
 import { useTheme } from '@mui/material';
 import ThreadHeader from './Forum/ThreadHeader';
 import useNav from '../hooks/useNav';
@@ -22,7 +22,7 @@ export default function Navbar() {
   const [open, setOpen] = React.useState(false);
   const { activeCategory, activeUserProfile } = useNav();
   const { session } = useAuth();
-    
+
   const handleOpen = (event: React.MouseEvent) => {
     event.stopPropagation();
     setOpen(true);
@@ -50,14 +50,15 @@ export default function Navbar() {
           alignItems: 'center',
           height: 64,
           maxWidth: '100%',
-          overflow: 'hidden'
+          overflow: 'hidden',
         }}
+        data-testid="nav-appbar"
       >
         <Box
           sx={{
             display: {
               xs: threadId ? 'none' : 'block',
-              lg: 'block'
+              lg: 'block',
             },
             width: '100%',
             maxWidth: { lg: '450px' },
@@ -67,45 +68,56 @@ export default function Navbar() {
             borderRightWidth: '.5px',
             borderRightStyle: 'solid',
             borderRightColor: theme.palette.divider,
-            flexShrink: 0
+            flexShrink: 0,
           }}
         >
           <Toolbar>
             <DrawerMenu />
-            
-            {categoryId && 
-              <Typography variant="h6" component="div" align="center" sx={{ flexGrow: 1 }}>
+
+            {categoryId && (
+              <Typography
+                variant="h6"
+                component="div"
+                align="center"
+                sx={{ flexGrow: 1 }}
+                data-testid="nav-category-name"
+              >
                 {activeCategory?.name}
               </Typography>
-            }
-            {userId && 
-              <Typography variant="h6" component="div" align="center" sx={{ flexGrow: 1 }}>
+            )}
+            {userId && (
+              <Typography
+                variant="h6"
+                component="div"
+                align="center"
+                sx={{ flexGrow: 1 }}
+              >
                 {activeUserProfile?.username}
               </Typography>
-            }
-            {location.pathname.startsWith('/following') && 
-              <Typography variant="h6" component="div" align="center" sx={{ flexGrow: 1 }}>
+            )}
+            {location.pathname.startsWith('/following') && (
+              <Typography
+                variant="h6"
+                component="div"
+                align="center"
+                sx={{ flexGrow: 1 }}
+              >
                 Following
               </Typography>
-            }
+            )}
 
             <IconButton
               color="inherit"
               onClick={handleOpen}
+              data-testid="thread-editor-btn"
             >
               <AddIcon />
             </IconButton>
-            
+
             {session ? (
-              <ThreadEditorDialog
-                open={open}
-                onClose={handleClose}
-              />
+              <ThreadEditorDialog open={open} onClose={handleClose} />
             ) : (
-              <AuthDialog
-                open={open}
-                onClose={handleClose}
-              />
+              <AuthDialog open={open} onClose={handleClose} />
             )}
           </Toolbar>
         </Box>
