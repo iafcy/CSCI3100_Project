@@ -6,8 +6,7 @@
   "scripts": {
     "cypress:ci": "cypress run",
     "cypress:open": "cypress open",
-    "dev": "npm run dev --workspace=frontend & npm run dev --workspace=backend",
-    "prepare": "husky install"
+    "dev": "npm run dev --workspace=frontend & npm run dev --workspace=backend"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": "prettier --write"
