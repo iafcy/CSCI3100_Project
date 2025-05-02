@@ -13,8 +13,8 @@ jest.mock('../utils/supabase', () => ({
 import request from 'supertest';
 import express from 'express';
 
-import userRouter from '../routes/userRouter';
-import userService from '../services/userService';
+import userRouter from '../../src/routes/userRouter';
+import userService from '../../src/services/userService';
 
 const mockUser = [
     { id: 1, name: 'mock1', username: 'user1' }
