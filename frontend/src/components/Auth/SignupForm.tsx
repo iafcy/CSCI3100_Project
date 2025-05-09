@@ -17,13 +17,10 @@ import FileUploadButton from './FileUploadButton';
 import axios from '../../utils/axios';
 import { signupSchema, SignupFormData } from '../../types/types';
 
-export default function SignupForm({
-  onClose
-}: {
-  onClose: () => void;
-}) {
+export default function SignupForm({ onClose }: { onClose: () => void }) {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showPasswordConfirm, setShowPasswordConfirm] = useState<boolean>(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] =
+    useState<boolean>(false);
 
   const {
     register,
@@ -41,12 +38,15 @@ export default function SignupForm({
       password: '',
       passwordConfirm: '',
       licenseKeyFile: undefined,
-    }
+    },
   });
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  const handleClickShowPasswordConfirm = () => setShowPasswordConfirm((show) => !show);
-  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClickShowPasswordConfirm = () =>
+    setShowPasswordConfirm((show) => !show);
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.preventDefault();
   };
 
@@ -58,9 +58,12 @@ export default function SignupForm({
 
     try {
       // Verify License Key
-      const response = await axios.post<{ message: string; data?: { license_id: string } }>( // Add type hint for response data
+      const response = await axios.post<{
+        message: string;
+        data?: { license_id: string };
+      }>( // Add type hint for response data
         `${import.meta.env.VITE_BACKEND_API_URL}/license/verify`,
-        formData
+        formData,
       );
 
       const licenseId = response.data?.data?.license_id;
@@ -72,26 +75,34 @@ export default function SignupForm({
         options: {
           data: {
             username,
-            license_id: licenseId
-          }
-        }
+            license_id: licenseId,
+          },
+        },
       });
 
       if (signUpError) {
-        setError("root.serverError", { type: "manual", message: signUpError.message || "Signup failed. Please try again." });
+        setError('root.serverError', {
+          type: 'manual',
+          message: signUpError.message || 'Signup failed. Please try again.',
+        });
       } else {
         onClose();
       }
-
     } catch (error: any) {
       if (error.response) {
         const backendMessage = error.response.data?.message;
-        setError("licenseKeyFile", {
-          type: "manual",
-          message: backendMessage || "License verification failed. Please check the file and try again."
+        setError('licenseKeyFile', {
+          type: 'manual',
+          message:
+            backendMessage ||
+            'License verification failed. Please check the file and try again.',
         });
       } else {
-        setError("root.serverError", { type: "manual", message: "An unexpected error occurred. Please check your connection and try again." });
+        setError('root.serverError', {
+          type: 'manual',
+          message:
+            'An unexpected error occurred. Please check your connection and try again.',
+        });
       }
     }
   };
@@ -109,11 +120,11 @@ export default function SignupForm({
         label="Username"
         variant="outlined"
         fullWidth={true}
-        {...register("username")}
+        {...register('username')}
         error={!!errors.username}
         helperText={errors.username?.message}
         sx={{ mb: 2 }}
-        aria-invalid={errors.username ? "true" : "false"}
+        aria-invalid={errors.username ? 'true' : 'false'}
       />
 
       <TextField
@@ -123,11 +134,11 @@ export default function SignupForm({
         type="email"
         variant="outlined"
         fullWidth={true}
-        {...register("email")}
+        {...register('email')}
         error={!!errors.email}
         helperText={errors.email?.message}
         sx={{ mb: 2 }}
-        aria-invalid={errors.email ? "true" : "false"}
+        aria-invalid={errors.email ? 'true' : 'false'}
       />
 
       <FormControl
@@ -141,7 +152,7 @@ export default function SignupForm({
         <OutlinedInput
           id="signup-password"
           type={showPassword ? 'text' : 'password'}
-          {...register("password")}
+          {...register('password')}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
@@ -155,8 +166,10 @@ export default function SignupForm({
             </InputAdornment>
           }
           label="Password"
-          aria-invalid={errors.password ? "true" : "false"}
-          aria-describedby={errors.password ? "signup-password-error" : undefined}
+          aria-invalid={errors.password ? 'true' : 'false'}
+          aria-describedby={
+            errors.password ? 'signup-password-error' : undefined
+          }
         />
         <FormHelperText error id="signup-password-error">
           {errors.password?.message}
@@ -170,15 +183,19 @@ export default function SignupForm({
         sx={{ mb: 2 }}
         error={!!errors.passwordConfirm}
       >
-        <InputLabel htmlFor="signup-password-confirm">Confirm Password</InputLabel>
+        <InputLabel htmlFor="signup-password-confirm">
+          Confirm Password
+        </InputLabel>
         <OutlinedInput
           id="signup-password-confirm"
           type={showPasswordConfirm ? 'text' : 'password'}
-          {...register("passwordConfirm")}
+          {...register('passwordConfirm')}
           endAdornment={
             <InputAdornment position="end">
               <IconButton
-                aria-label={showPasswordConfirm ? 'hide password' : 'show password'}
+                aria-label={
+                  showPasswordConfirm ? 'hide password' : 'show password'
+                }
                 onClick={handleClickShowPasswordConfirm}
                 onMouseDown={handleMouseDownPassword}
                 edge="end"
@@ -188,8 +205,10 @@ export default function SignupForm({
             </InputAdornment>
           }
           label="Confirm Password"
-          aria-invalid={errors.passwordConfirm ? "true" : "false"}
-          aria-describedby={errors.passwordConfirm ? "signup-password-confirm-error" : undefined}
+          aria-invalid={errors.passwordConfirm ? 'true' : 'false'}
+          aria-describedby={
+            errors.passwordConfirm ? 'signup-password-confirm-error' : undefined
+          }
         />
         <FormHelperText error id="signup-password-confirm-error">
           {errors.passwordConfirm?.message}
@@ -197,7 +216,8 @@ export default function SignupForm({
       </FormControl>
 
       <FormControl
-        required margin="dense"
+        required
+        margin="dense"
         fullWidth={true}
         error={!!errors.licenseKeyFile}
         sx={{ mb: 2 }}
@@ -206,50 +226,52 @@ export default function SignupForm({
           name="licenseKeyFile"
           control={control}
           render={({
-             field: { onChange, onBlur, value, name, ref },
-             fieldState: { error }
-           }) => (
+            field: { onChange, onBlur, value, name, ref },
+            fieldState: { error },
+          }) => (
             <FileUploadButton
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 onChange(event.target.files ? event.target.files[0] : null);
-                setTimeout(() => trigger("licenseKeyFile"), 0);
+                setTimeout(() => trigger('licenseKeyFile'), 0);
               }}
               onBlur={() => {
-                trigger("licenseKeyFile");
+                trigger('licenseKeyFile');
                 onBlur();
               }}
               name={name}
               inputRef={ref}
-              filename={value instanceof File ? value.name : undefined} 
+              filename={value instanceof File ? value.name : undefined}
               error={!!error}
               buttonProps={{
-                 id: "license-key-upload-button",
-                 'aria-describedby': errors.licenseKeyFile ? "signup-license-error" : undefined
+                id: 'license-key-upload-button',
+                'aria-describedby': errors.licenseKeyFile
+                  ? 'signup-license-error'
+                  : undefined,
               }}
             />
           )}
         />
         <FormHelperText error id="signup-license-error">
-          {errors.licenseKeyFile?.message}
+          {errors.licenseKeyFile?.message as React.ReactNode}
         </FormHelperText>
       </FormControl>
 
       {errors.root?.serverError && (
-         <FormHelperText error sx={{ mb: 2, textAlign: 'center' }}>
-           {errors.root.serverError.message}
-         </FormHelperText>
+        <FormHelperText error sx={{ mb: 2, textAlign: 'center' }}>
+          {errors.root.serverError.message}
+        </FormHelperText>
       )}
 
-       <Button
-         type="submit"
-         variant="contained"
-         disabled={!isValid || isSubmitting}
-         sx={{ width: '100%', mt: 2 }}
-         aria-busy={isSubmitting}
-         loading={isSubmitting}
-       >
-         {isSubmitting ? 'Registering...' : 'Register'}
-       </Button>
+      <Button
+        type="submit"
+        variant="contained"
+        disabled={!isValid || isSubmitting}
+        sx={{ width: '100%', mt: 2 }}
+        aria-busy={isSubmitting}
+        loading={isSubmitting}
+      >
+        {isSubmitting ? 'Registering...' : 'Register'}
+      </Button>
     </Box>
   );
 }
