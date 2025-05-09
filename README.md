@@ -7,6 +7,9 @@
 </div>
 
 <p align="center">
+    <a href="https://github.com/iafcy/CSCI3100_Project" target="_blank" >Github Repo</a>
+</p>
+<p align="center">
    <a href="#introduction" target="_blank">Introduction</a>
     •
    <a href="#core-technologies" target="_blank">Core Technologies</a>
